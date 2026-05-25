@@ -1,0 +1,25 @@
+import express from 'express';
+import { StatusCodes } from 'http-status-codes';
+
+const router = express.Router();
+
+router.get('/health', (req, res) => {
+  res.status(StatusCodes.OK).json({ status: 'ok' });
+});
+
+// Mount other routes here
+import userRoutes from './userRoutes.js';
+import authRoutes from './authRoutes.js';
+import disciplineReportRoutes from './disciplineReportRoutes.js';
+import companyRoutes from './companyRoutes.js';
+import dbConnectionRoutes from './dbConnectionRoutes.js';
+import productRoutes from './productRoutes.js';
+
+router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
+router.use('/discipline-reports', disciplineReportRoutes);
+router.use('/companies', companyRoutes);
+router.use('/database', dbConnectionRoutes);
+router.use('/products', productRoutes);
+
+export default router;

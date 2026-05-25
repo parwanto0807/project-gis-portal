@@ -1,0 +1,41 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "tsx src/index.js",
+    "dev": "nodemon --exec tsx src/index.js",
+    "prisma:generate": "npx prisma generate --schema=prisma/gis/schema.prisma && npx prisma generate --schema=prisma/hrm/schema.prisma",
+    "prisma:studio:gis": "npx prisma studio --schema=prisma/gis/schema.prisma",
+    "prisma:studio:hrm": "npx prisma studio --schema=prisma/hrm/schema.prisma",
+    "prisma:validate": "npx prisma validate --schema=prisma/gis/schema.prisma && npx prisma validate --schema=prisma/hrm/schema.prisma",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.19.1",
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "google-auth-library": "^10.5.0",
+    "helmet": "^8.1.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "mysql2": "^3.22.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "prisma": "^6.19.1",
+    "tsx": "^4.21.0"
+  }
+}

@@ -1,0 +1,371 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql" // Switch to "mysql" or "sqlserver" if need
+  url      = env("DATABASE_URL")
+}
+
+// Role enum for high-level categorization
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+  STAFF
+  SUPER_ADMIN
+  VENDOR
+}
+
+// Module define major application areas
+enum AppModule {
+  DASHBOARD
+  PROCUREMENT
+  INVENTORY
+  FINANCE
+  SALES
+  HR
+  SETTINGS
+  VENDOR_PORTAL
+}
+
+// Actions define what can be done within a module
+enum Action {
+  READ
+  CREATE
+  UPDATE
+  DELETE
+  APPROVE
+  EXPORT
+  MANAGE // Full access
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  username  String? @unique
+  password  String?
+  firstName String?
+  lastName  String?
+  picture   String?
+
+  // Basic classification
+  role   Role   @default(USER)
+  status Status @default(ACTIVE)
+
+  // Advanced granular permissions
+  permissions Permission[]
+
+  isEmailVerified Boolean   @default(false)
+  googleId        String?   @unique
+  lastLoginAt     DateTime?
+  loginAttempts   Int       @default(0)
+
+  refreshTokens  RefreshToken[]
+  companies      UserCompany[]
+  reports        DisciplineReport[] @relation("Reporter")
+  handledReports DisciplineReport[] @relation("Handler")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// Stores explicit permissions for a user
+// Example: User A can [READ, APPROVE] on [FINANCE] module
+model Permission {
+  id      Int       @id @default(autoincrement())
+  userId  Int
+  module  AppModule
+  actions Action[] // Array of allowed actions, e.g. [READ, CREATE]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, module]) // One permission entry per module per user to keep it clean
+  @@map("permissions")
+}
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  revoked    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  replacedBy String?
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// Enterprise Core Models
+
+model Company {
+  id       Int     @id @default(autoincrement())
+  code     String  @unique // Code for login/identification (e.g., "CORP001")
+  name     String
+  address  String?
+  phone    String?
+  email    String?
+  website  String?
+  logo     String?
+  isActive Boolean @default(true)
+
+  // Relations
+  users     UserCompany[]
+  suppliers Supplier[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companies")
+}
+
+model UserCompany {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  companyId  Int
+  supplierId Int? // Optional: Only populated if the user is a Supplier/Vendor
+  role       Role    @default(USER)
+  isDefault  Boolean @default(false)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  supplier Supplier? @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@index([userId])
+  @@index([companyId])
+  @@index([supplierId])
+  @@map("user_companies")
+}
+
+model Supplier {
+  id        Int    @id @default(autoincrement())
+  companyId Int
+  code      String // Vendor Code
+  name      String
+
+  // Relations
+  userAccess UserCompany[] // Users who can access this supplier portal
+
+  // Contact Info
+  contactPerson String?
+  email         String?
+  phone         String?
+  mobile        String?
+  address       String?
+  city          String?
+  state         String?
+  country       String?
+  zipCode       String?
+
+  // Financial & Logic
+  taxId         String? // NPWP
+  currency      String  @default("IDR")
+  termOfPayment Int     @default(0) // Days
+  creditLimit   Decimal @default(0) @db.Decimal(15, 2)
+  isActive      Boolean @default(true)
+  notes         String?
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, code])
+  @@index([companyId])
+  @@map("suppliers")
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BANNED
+}
+
+model DisciplineReport {
+  id                 Int       @id @default(autoincrement())
+  reporterId         Int
+  reporter           User      @relation("Reporter", fields: [reporterId], references: [id])
+  targetEmployeeId   String // EMPL_ID from HRM database
+  employeeName       String // Denormalized name for easier display
+  type               String // e.g., "Ngobrol", "Santai", "Tidur"
+  description        String    @db.Text
+  location           String?
+  photoUrl           String?
+  status             String    @default("PENDING") // PENDING, RESOLVED
+  actionTaken        String? // e.g., "SP1", "Peringatan Lisan"
+  improvementPlan    String?   @db.Text
+  resolutionPhotoUrl String?
+  resolutionSummary  String?   @db.Text
+  actionDate         DateTime?
+  handledById        Int?
+  handledBy          User?     @relation("Handler", fields: [handledById], references: [id])
+  handledAt          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@map("discipline_reports")
+}
+
+model SavedDatabaseConnection {
+  id        Int      @id @default(autoincrement())
+  name      String
+  host      String
+  port      String   @default("3306")
+  user      String
+  password  String
+  database  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("saved_database_connections")
+}
+
+model Satuan {
+  id         Int     @id @default(autoincrement())
+  satuan     String
+  keterangan String? @db.Text
+  oldId      String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skus ProductSku[]
+
+  @@map("satuan")
+}
+
+model TypeProduct {
+  id         String  @id @default(uuid())
+  typebarang String
+  keterangan String? @db.Text
+  oldId      String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skus ProductSku[]
+
+  @@map("type_product")
+}
+
+model jenisProduct {
+  id         String  @id @default(uuid())
+  namajenis  String
+  keterangan String? @db.Text
+  oldId      String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skus ProductSku[]
+
+  @@map("jenis_product")
+}
+
+model Gudang {
+  id         String  @id @default(uuid())
+  namaGudang String  @map("nama_gudang")
+  keterangan String? @db.Text
+  oldId      String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skus ProductSku[]
+
+  @@map("gudang")
+}
+
+model Product {
+  id            String  @id @default(uuid())
+  namaBarang    String  @map("nama_barang")
+  namaPanggilan String? @map("nama_panggilan")
+  customer      String?
+  keperluan     String?
+  supplier      String?
+  mtUang        String? @map("mtuang")
+  payment       String?
+  material      String?
+  icon          String?
+  kategori      String?
+
+  skus ProductSku[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tabel_barang")
+}
+
+model ProductSku {
+  id           String  @id @default(uuid())
+  sku          String  @unique // Unique SKU code for variant
+  part         String // Factory Part Number
+  sat          String?
+  warna        String?
+  lebar        String?
+  panjang      String?
+  jenis        String?
+  namaset      String?
+  harga        Float   @default(0.0)
+  item         Float   @default(0.0)
+  balance      Float   @default(0.0)
+  stawal       Float   @default(0.0)
+  stakhir      Float   @default(0.0)
+  tipe         String?
+  rak          String?
+  lokasi       String?
+  hargaJual    Float   @default(0.0) @map("hargajual")
+  hargaBeli    Float   @default(0.0) @map("hargabeli")
+  hargaProd    Float   @default(0.0) @map("hargaprod")
+  disc         Float   @default(0.0)
+  ppn          Float   @default(0.0)
+  ppnSo        Float   @default(0.0) @map("ppnso")
+  ukuran       String?
+  gambar       String?
+  set          String?
+  noSales      String? @map("nosales")
+  sales        String?
+  statusBarang String? @map("statusbarang")
+  hargaInv     Float   @default(0.0) @map("hargainv")
+  gudang       String  @default("KGD-01")
+  overStock    Int     @default(0) @map("over_stock")
+  limitStock   Int     @default(0) @map("limit_stock")
+
+  // Parent Relation
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // Relations (Foreign Keys)
+  satuanId       Int?
+  typeProductId  String?
+  jenisProductId String?
+  gudangId       String?
+
+  // Relation mapping
+  satuan         Satuan?       @relation(fields: [satuanId], references: [id], onDelete: SetNull)
+  typeProduct    TypeProduct?  @relation(fields: [typeProductId], references: [id], onDelete: SetNull)
+  jenisProduct   jenisProduct? @relation(fields: [jenisProductId], references: [id], onDelete: SetNull)
+  gudangRelation Gudang?       @relation(fields: [gudangId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("product_skus")
+}

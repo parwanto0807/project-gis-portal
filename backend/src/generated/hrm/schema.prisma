@@ -1,0 +1,184 @@
+generator hrm_client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/hrm"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("HRM_DATABASE_URL")
+}
+
+model Account {
+  id                String   @id
+  userId            String
+  provider          String
+  providerAccountId String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  type              String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime
+  User              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model User {
+  id        String    @id
+  email     String    @unique
+  password  String?
+  name      String?
+  image     String?
+  role      UserRole  @default(EMPLOYEE)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  isActive  Boolean   @default(true)
+  fcmToken  String?
+  Account   Account[]
+  Session   Session[]
+  karyawan  karyawan?
+}
+
+model Session {
+  id           String   @id
+  userId       String
+  sessionToken String   @unique
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model company {
+  id         String     @id @db.Uuid
+  KODE_CMPY  String     @unique @db.Char(3)
+  COMPANY    String?
+  ADDRESS1   String?
+  ADDRESS2   String?
+  ADDRESS3   String?
+  TLP        String?    @db.VarChar(20)
+  FAX        String?    @db.VarChar(20)
+  NPWP       String?    @db.VarChar(20)
+  DIRECTOR   String?
+  NPWPDIR    String?    @db.VarChar(20)
+  LOGO       String?
+  NPP        String?    @db.VarChar(30)
+  ASTEKBAYAR String?
+  EMAIL      String?    @db.VarChar(100)
+  HOMEPAGE   String?
+  HRDMNG     String?
+  NPWPMNG    String?    @db.VarChar(20)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  karyawan   karyawan[]
+
+  @@index([KODE_CMPY])
+}
+
+model karyawan {
+  EMPL_ID    String          @id @db.VarChar(9)
+  user_id    String?         @unique
+  NIK        String?         @unique @db.VarChar(10)
+  NAMA       String?         @db.VarChar(30)
+  KD_CMPY    String?         @db.Char(3)
+  KD_FACT    String?         @db.VarChar(2)
+  KD_BAG     String?         @db.VarChar(20)
+  KD_DEPT    String?         @db.VarChar(20)
+  KD_SEKSIE  String?         @db.VarChar(6)
+  KD_PKT     String?         @db.VarChar(5)
+  KD_JAB     String?         @db.VarChar(20)
+  KD_AGM     String?         @db.VarChar(2)
+  KD_SKL     String?         @db.VarChar(2)
+  BANK_CODE  String?         @db.Char(2)
+  KD_SEX     JenisKelamin?   @default(LAKILAKI)
+  ALAMAT1    String?         @db.VarChar(100)
+  KOTA       String?         @db.VarChar(30)
+  TELPON     String?         @db.VarChar(16)
+  HANDPHONE  String?         @db.VarChar(16)
+  EMAIL      String?         @db.VarChar(50)
+  TGL_LHR    DateTime?       @db.Date
+  TGL_MSK    DateTime?       @db.Date
+  TGL_OUT    DateTime?       @db.Date
+  ALASAN_OUT String?         @db.VarChar(100)
+  KD_OUT     Boolean?        @default(false)
+  KD_JNS     StatusKaryawan? @default(TETAP)
+  KD_STS     StatusAktif?    @default(AKTIF)
+  created_at DateTime        @default(now()) @db.Timestamp(6)
+  updated_at DateTime        @db.Timestamp(6)
+
+  company company? @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+  mstdept mstdept? @relation(fields: [KD_DEPT], references: [CKD_DEPT])
+  mstjab  mstjab?  @relation(fields: [KD_JAB], references: [CKD_JAB])
+  mstbag  mstbag?  @relation(fields: [KD_BAG], references: [CKD_BAG])
+  User    User?    @relation(fields: [user_id], references: [id])
+
+  @@index([KD_BAG])
+  @@index([KD_CMPY])
+  @@index([KD_DEPT])
+  @@index([KD_JAB])
+  @@index([KD_STS])
+  @@index([NAMA])
+  @@index([NIK])
+}
+
+model mstdept {
+  id         String     @id @db.Uuid
+  CKD_DEPT   String     @unique @db.VarChar(20)
+  CNM_DEPT   String?    @db.VarChar(30)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  karyawan   karyawan[]
+}
+
+model mstjab {
+  id         String     @id @db.Uuid
+  CKD_JAB    String     @unique @db.VarChar(20)
+  CNM_JAB    String?    @db.VarChar(30)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  karyawan   karyawan[]
+}
+
+model mstbag {
+  id         String     @id @db.Uuid
+  CKD_BAG    String     @unique @db.VarChar(20)
+  CNM_BAG    String?    @db.VarChar(30)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  karyawan   karyawan[]
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  USER
+  EMPLOYEE
+}
+
+enum StatusAktif {
+  AKTIF
+  TIDAK_AKTIF
+  SUSPENDED
+}
+
+enum StatusKaryawan {
+  TETAP
+  KONTRAK
+  OUTSOURCING
+  MAGANG
+  PROBATION
+}
+
+enum JenisKelamin {
+  LAKILAKI
+  PEREMPUAN
+}
