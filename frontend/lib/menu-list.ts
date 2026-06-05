@@ -26,6 +26,7 @@ interface Submenu {
     icon?: LucideIcon;
     action?: Action;
     disabled?: boolean;
+    module?: AppModule;
 }
 
 interface MenuItem {
@@ -74,9 +75,21 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
                     icon: Users,
                     module: AppModule.HR,
                     submenus: [
-                        { label: "Gis Discipline", href: "/admin/hr/discipline", icon: ClipboardCheck },
-                        { label: "Employees", href: "/admin/hr/employees", icon: Users, disabled: true },
-                        { label: "Temuan Peduli Bersinergi", href: "/admin/audit/temuan", icon: ShieldCheck },
+                        { label: "Gis Discipline", href: "/admin/hr/discipline", icon: ClipboardCheck, module: AppModule.HR_DISCIPLINE },
+                        { label: "Employees", href: "/admin/hr/employees", icon: Users, disabled: true, module: AppModule.HR_EMPLOYEES },
+                    ]
+                }
+            ]
+        },
+        {
+            groupLabel: "Audit & Compliance",
+            items: [
+                {
+                    label: "Audit Internal",
+                    icon: ShieldCheck,
+                    module: AppModule.AUDIT_TEMUAN,
+                    submenus: [
+                        { label: "Temuan Peduli Bersinergi", href: "/admin/audit/temuan", icon: ShieldCheck, module: AppModule.AUDIT_TEMUAN },
                     ]
                 }
             ]
@@ -102,6 +115,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
                     icon: Settings,
                     module: AppModule.SETTINGS,
                     submenus: [
+                        { label: "Profile", href: "/admin/settings/profile", icon: UserCog },
                         { label: "User Management", href: "/admin/users", icon: Users },
                         { label: "Database Connection", href: "/admin/settings/database", icon: Database },
                         { label: "Backup & Restore", href: "/admin/settings/backup", icon: Database },
@@ -123,12 +137,44 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
             // But typically we want to restrict. Assuming Dashboard is allowed for all OR checked.
             if (!item.module) return true;
 
-            // Check permissions
-            const permission = user.permissions?.find((p: any) => p.module === item.module);
-            if (!permission) return false;
+            // Staff bypass for specific menus
+            if (user.role?.toUpperCase() === 'STAFF') {
+                const allowedPaths = ['/admin/audit/temuan', '/admin/settings/profile'];
+                // Only keep submenus that match allowedPaths
+                item.submenus = item.submenus.filter(sub => allowedPaths.includes(sub.href));
+                if (item.submenus.length === 0 && !allowedPaths.includes(item.href || '')) {
+                    return false; // Hide this item entirely
+                }
+                return true;
+            }
 
-            // Check action if specified
-            if (item.action && !permission.actions.includes(item.action)) return false;
+            // Check permissions for parent item
+            let permission = user.permissions?.find((p: any) => p.module === item.module);
+            
+            // If parent requires permission and doesn't have it, hide entire group
+            if (item.module && !permission) return false;
+
+            // Filter submenus based on specific module permissions
+            const filteredSubmenus = item.submenus.filter((sub: any) => {
+                if (!sub.module) return true; // if no specific module on submenu, allow (relies on parent)
+                
+                const subPermission = user.permissions?.find((p: any) => p.module === sub.module);
+                if (!subPermission) return false;
+                
+                if (sub.action && !subPermission.actions.includes(sub.action)) return false;
+                
+                return true;
+            });
+
+            // If it had submenus initially, but all were filtered out due to lack of sub-permissions, hide the parent too (unless it has a direct href)
+            if (item.submenus.length > 0 && filteredSubmenus.length === 0 && !item.href) {
+                return false;
+            }
+
+            item.submenus = filteredSubmenus;
+
+            // Check action if specified for parent
+            if (item.action && permission && !permission.actions.includes(item.action)) return false;
 
             return true;
         }).map(item => ({

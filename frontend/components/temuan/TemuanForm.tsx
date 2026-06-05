@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 
@@ -143,90 +144,131 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>{initialData ? 'Edit Temuan Peduli' : 'Tambah Temuan Peduli'}</DialogTitle>
+                    <DialogTitle className="text-xl flex items-center gap-2">
+                        {initialData ? 'Edit Temuan Peduli' : 'Tambah Temuan Peduli'}
+                    </DialogTitle>
+                    <DialogDescription>
+                        Mohon isi form di bawah ini dengan data yang valid dan sesuai dengan fakta di lapangan.
+                    </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={onSubmit} className="space-y-4 mt-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label>Area (Gedung)</Label>
-                            <Select value={formData.area} onValueChange={(val) => setFormData({ ...formData, area: val, tempatTemuan: '' })}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih Area" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {AREAS.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
+                <form onSubmit={onSubmit} className="space-y-6 mt-4">
+                    
+                    {/* SECTION 1: LOKASI & WAKTU */}
+                    <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/50">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                            <MapPin className="w-4 h-4" />
+                            <span>Lokasi & Waktu Temuan</span>
                         </div>
-                        <div className="space-y-2">
-                            <Label>Tempat Temuan</Label>
-                            <Select value={formData.tempatTemuan} onValueChange={(val) => setFormData({ ...formData, tempatTemuan: val })} disabled={!formData.area}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih Tempat" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {formData.area && (TEMPAT_TEMUAN as any)[formData.area]?.map((t: string) => (
-                                        <SelectItem key={t} value={t}>{t}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Tanggal</Label>
-                            <Input type="date" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} required />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Jam</Label>
-                            <Input type="time" value={formData.jam} onChange={e => setFormData({ ...formData, jam: e.target.value })} required />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Kategori 4M (Pilih 1 atau lebih)</Label>
-                        <div className="flex gap-4">
-                            {KATEGORI_4M.map(cat => (
-                                <div key={cat} className="flex items-center space-x-2">
-                                    <Checkbox 
-                                        id={cat} 
-                                        checked={formData.kategori4M.includes(cat)}
-                                        onCheckedChange={() => handleCheckboxChange(cat)}
-                                    />
-                                    <label htmlFor={cat} className="text-sm font-medium leading-none cursor-pointer">
-                                        {cat}
-                                    </label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Area (Gedung)</Label>
+                                <Select value={formData.area} onValueChange={(val) => setFormData({ ...formData, area: val, tempatTemuan: '' })}>
+                                    <SelectTrigger className="bg-background">
+                                        <SelectValue placeholder="Pilih Area" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {AREAS.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Tempat Temuan</Label>
+                                <Select value={formData.tempatTemuan} onValueChange={(val) => setFormData({ ...formData, tempatTemuan: val })} disabled={!formData.area}>
+                                    <SelectTrigger className="bg-background">
+                                        <SelectValue placeholder="Pilih Tempat" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {formData.area && (TEMPAT_TEMUAN as any)[formData.area]?.map((t: string) => (
+                                            <SelectItem key={t} value={t}>{t}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Tanggal</Label>
+                                <div className="relative">
+                                    <Input type="date" className="bg-background pl-9" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} required />
+                                    <CalendarClock className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
                                 </div>
-                            ))}
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Jam</Label>
+                                <Input type="time" className="bg-background" value={formData.jam} onChange={e => setFormData({ ...formData, jam: e.target.value })} required />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label>Deskripsi Temuan</Label>
-                        <Textarea 
-                            rows={4} 
-                            placeholder="Jelaskan temuan secara rinci..." 
-                            value={formData.temuan}
-                            onChange={e => setFormData({ ...formData, temuan: e.target.value })}
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Upload Foto (Bisa pilih multiple file)</Label>
-                        <Input type="file" multiple accept="image/*" onChange={handleFileChange} />
-                        {fotoPreviews.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                                {fotoPreviews.map((src, idx) => (
-                                    <div key={idx} className="w-20 h-20 border rounded-md overflow-hidden relative bg-muted">
-                                        <img src={src} alt={`Preview ${idx}`} className="object-cover w-full h-full" />
+                    {/* SECTION 2: DETAIL TEMUAN */}
+                    <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/50">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-orange-600 dark:text-orange-400 mb-2">
+                            <Tags className="w-4 h-4" />
+                            <span>Kategori & Deskripsi Temuan</span>
+                        </div>
+                        <div className="space-y-3">
+                            <Label>Kategori 4M (Pilih 1 atau lebih)</Label>
+                            <div className="flex flex-wrap gap-4 p-3 bg-background border rounded-md">
+                                {KATEGORI_4M.map(cat => (
+                                    <div key={cat} className="flex items-center space-x-2">
+                                        <Checkbox 
+                                            id={cat} 
+                                            checked={formData.kategori4M.includes(cat)}
+                                            onCheckedChange={() => handleCheckboxChange(cat)}
+                                        />
+                                        <label htmlFor={cat} className="text-sm font-medium leading-none cursor-pointer">
+                                            {cat}
+                                        </label>
                                     </div>
                                 ))}
                             </div>
-                        )}
-                        {initialData?.fotoUrls && initialData.fotoUrls.length > 0 && (
-                            <div className="text-sm text-muted-foreground mt-2">
-                                * Data ini sudah memiliki {initialData.fotoUrls.length} foto sebelumnya. Upload file baru akan ditambahkan ke koleksi.
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label className="flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-muted-foreground" />
+                                Deskripsi Rinci
+                            </Label>
+                            <Textarea 
+                                className="bg-background resize-none"
+                                rows={4} 
+                                placeholder="Jelaskan temuan secara rinci di sini..." 
+                                value={formData.temuan}
+                                onChange={e => setFormData({ ...formData, temuan: e.target.value })}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    {/* SECTION 3: DOKUMENTASI */}
+                    <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/50">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400 mb-2">
+                            <Camera className="w-4 h-4" />
+                            <span>Dokumentasi Foto</span>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="relative">
+                                <Input type="file" multiple accept="image/*" onChange={handleFileChange} className="bg-background pl-9 cursor-pointer" />
+                                <UploadCloud className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                             </div>
-                        )}
+                            
+                            {fotoPreviews.length > 0 && (
+                                <div className="p-3 border rounded-md bg-background mt-3">
+                                    <Label className="text-xs text-muted-foreground mb-2 block">Foto yang akan diupload:</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {fotoPreviews.map((src, idx) => (
+                                            <div key={idx} className="w-20 h-20 border rounded-md overflow-hidden relative bg-muted shadow-sm group">
+                                                <img src={src} alt={`Preview ${idx}`} className="object-cover w-full h-full transition-transform group-hover:scale-110" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {initialData?.fotoUrls && initialData.fotoUrls.length > 0 && (
+                                <div className="text-xs text-amber-600 dark:text-amber-400 mt-2 p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
+                                    * Data ini sudah memiliki {initialData.fotoUrls.length} foto sebelumnya. Upload file baru akan menambah ke daftar foto.
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <DialogFooter className="mt-6">

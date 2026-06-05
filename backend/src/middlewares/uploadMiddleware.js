@@ -25,3 +25,27 @@ export const upload = multer({
         }
     }
 });
+
+const backupStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'src/uploads/');
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = crypto.randomBytes(8).toString('hex');
+        const ext = path.extname(file.originalname);
+        cb(null, `restore-${Date.now()}-${uniqueSuffix}${ext}`);
+    }
+});
+
+export const backupUpload = multer({
+    storage: backupStorage,
+    limits: { fileSize: 500 * 1024 * 1024 }, // 500 MB limit for backups
+    fileFilter: (req, file, cb) => {
+        const ext = path.extname(file.originalname).toLowerCase();
+        if (ext === '.dump' || ext === '.sql' || ext === '.backup') {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only .dump, .sql, and .backup files are allowed.'));
+        }
+    }
+});

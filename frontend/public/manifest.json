@@ -1,0 +1,16 @@
+{
+  "name": "GIS Portal Peduli Bersinergi",
+  "short_name": "GIS Portal",
+  "description": "Pusat kendali operasional GIS Portal dan Temuan Peduli Bersinergi.",
+  "start_url": "/admin/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

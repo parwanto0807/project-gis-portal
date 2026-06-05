@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyToken, roleMiddleware } from '../middlewares/authMiddleware.js';
-import { upload } from '../middlewares/uploadMiddleware.js';
+import { backupUpload } from '../middlewares/uploadMiddleware.js';
 import * as backupController from '../controllers/backupController.js';
 
 const router = express.Router();
@@ -14,6 +14,6 @@ router.get('/', backupController.listBackups);
 router.post('/', backupController.createBackup);
 router.get('/download/:filename', backupController.downloadBackup);
 router.delete('/:filename', backupController.deleteBackup);
-router.post('/restore', upload.single('file'), backupController.restoreBackup);
+router.post('/restore', backupUpload.single('file'), backupController.restoreBackup);
 
 export default router;

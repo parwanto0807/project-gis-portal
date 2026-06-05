@@ -25,3 +25,17 @@ const startServer = async () => {
 };
 
 startServer();
+
+// Graceful shutdown for Nodemon and PM2
+const shutdown = async () => {
+  console.log('Shutting down gracefully...');
+  await prisma.$disconnect();
+  process.exit(0);
+};
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+process.on('SIGUSR2', async () => {
+  await prisma.$disconnect();
+  process.kill(process.pid, 'SIGUSR2');
+});

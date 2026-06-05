@@ -19,6 +19,17 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
             // Redirect to the unified login page
             router.push('/portal/login');
+            return;
+        }
+
+        // Role-based redirect for STAFF
+        if (user.role?.toUpperCase() === 'STAFF') {
+            const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
+            if (pathname.startsWith('/admin') && !allowedPaths.includes(pathname)) {
+                console.log('AuthGuard: STAFF role restricted, redirecting to /admin/audit/temuan');
+                router.replace('/admin/audit/temuan');
+                return;
+            }
         }
     }, [isAuthenticated, user, hasHydrated, router, pathname]);
 
@@ -44,6 +55,21 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
                 </div>
             </div>
         );
+    }
+
+    // Block render if STAFF is accessing unauthorized path
+    if (user.role?.toUpperCase() === 'STAFF') {
+        const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
+        if (pathname.startsWith('/admin') && !allowedPaths.includes(pathname)) {
+            return (
+                <div className="flex min-h-screen items-center justify-center bg-gray-50">
+                    <div className="text-center">
+                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+                        <p className="mt-4 text-sm text-gray-600">Checking permissions...</p>
+                    </div>
+                </div>
+            );
+        }
     }
 
     return <>{children}</>;

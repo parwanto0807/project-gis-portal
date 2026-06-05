@@ -32,6 +32,9 @@ enum AppModule {
   FINANCE
   SALES
   HR
+  HR_DISCIPLINE
+  HR_EMPLOYEES
+  AUDIT_TEMUAN
   SETTINGS
   VENDOR_PORTAL
 }
@@ -72,6 +75,7 @@ model User {
   companies      UserCompany[]
   reports        DisciplineReport[] @relation("Reporter")
   handledReports DisciplineReport[] @relation("Handler")
+  temuanPeduli   TemuanPeduli[]     @relation("DiInputOleh")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -220,6 +224,25 @@ model DisciplineReport {
   updatedAt          DateTime  @updatedAt
 
   @@map("discipline_reports")
+}
+
+model TemuanPeduli {
+  id           Int      @id @default(autoincrement())
+  area         String // e.g. "GEDUNG 1 & 3" or "GEDUNG 2"
+  tanggal      DateTime @db.Date
+  jam          String // Format HH:mm
+  userId       Int // Relasi ke User
+  kategori4M   Json // Array ["Man", "Machine", ...]
+  temuan       String   @db.Text
+  tempatTemuan String // Area spesifik, e.g. "Area Resepsionis"
+  fotoUrls     Json? // Array ["url1.jpg", "url2.jpg"]
+
+  user User @relation("DiInputOleh", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("temuan_peduli")
 }
 
 model SavedDatabaseConnection {

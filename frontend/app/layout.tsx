@@ -12,9 +12,25 @@ const inter = Inter({
   display: "swap",
 });
 
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "GIS Portal - ERP System",
   description: "Grafindo Information System - Enterprise Resource Planning",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "GIS Portal",
+  },
 };
 
 export default function RootLayout({
