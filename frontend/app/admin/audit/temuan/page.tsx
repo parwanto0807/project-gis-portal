@@ -499,16 +499,16 @@ export default function TemuanPeduliPage() {
                         </div>
                     </div>
                     <div className="p-6 max-h-[75vh] overflow-y-auto">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className={`grid grid-cols-1 ${previewImages.length > 1 ? 'md:grid-cols-2' : ''} gap-6`}>
                             {previewImages.map((url, i) => (
                                 <div key={i} className="flex flex-col bg-white dark:bg-slate-950 p-2 rounded-lg border shadow-sm group">
-                                    <div className="relative aspect-[4/3] rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                    <div className="relative flex justify-center items-center rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 min-h-[200px]">
                                         <img 
-                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:5001'}${url}`} 
+                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
                                             alt={`Foto ${i+1}`} 
-                                            className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" 
+                                            className="max-w-full max-h-[60vh] w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105" 
                                         />
-                                        <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm font-medium">
+                                        <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm font-medium z-10">
                                             Foto {i+1} dari {previewImages.length}
                                         </div>
                                     </div>
