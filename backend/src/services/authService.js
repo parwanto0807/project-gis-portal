@@ -64,17 +64,9 @@ export const googleLogin = async (idToken) => {
   });
 
   if (!user) {
-    // Create new user from Google
-    user = await prisma.user.create({
-      data: {
-        email,
-        googleId,
-        firstName: given_name,
-        lastName: family_name,
-        picture,
-        isEmailVerified: true,
-      },
-    });
+    const error = new Error('Akun Google ini belum terdaftar. Silakan hubungi Administrator.');
+    error.statusCode = 401;
+    throw error;
   } else if (!user.googleId) {
     // Link Google account if not linked
     user = await prisma.user.update({

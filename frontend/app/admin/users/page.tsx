@@ -9,6 +9,7 @@ import HeaderCard from '@/components/ui/header-card';
 import { Users, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 export default function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
@@ -32,14 +33,18 @@ export default function UserManagementPage() {
     const handleDelete = async (id: number) => {
         if (!confirm('Are you sure you want to delete this user?')) return;
         try {
-            // Implement delete logic here
-            console.log('Delete user', id);
-            // await api.delete(`/users/${id}`);
-            // fetchUsers();
-        } catch (error) {
+            const res = await api.delete(`/users/${id}`);
+            if (res.data.success) {
+                toast.success('User deleted successfully');
+                fetchUsers();
+            } else {
+                toast.error(res.data.message || 'Failed to delete user');
+            }
+        } catch (error: any) {
             console.error('Failed to delete user', error);
+            toast.error(error.response?.data?.message || 'Failed to delete user');
         }
-    }
+    };
 
     useEffect(() => {
         fetchUsers();
