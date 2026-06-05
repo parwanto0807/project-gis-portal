@@ -106,7 +106,8 @@ export default function UnifiedLoginPage() {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="px-6 pb-6 pt-0 space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+                    <CardContent className="px-6 pb-6 pt-0 space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="username" className="text-sm font-medium">Username</Label>
                         <Input
@@ -145,7 +146,7 @@ export default function UnifiedLoginPage() {
 
                 <CardFooter className="flex flex-col gap-3 px-6 py-6 bg-muted/30 border-t border-border">
                     <Button
-                        onClick={handleLogin}
+                        type="submit"
                         disabled={loading}
                         className="w-full h-10 font-medium rounded-md"
                     >
@@ -169,6 +170,7 @@ export default function UnifiedLoginPage() {
                         />
                     </div>
                 </CardFooter>
+                </form>
             </Card>
 
             <div className="absolute bottom-6 text-muted-foreground/60 text-xs font-semibold tracking-widest uppercase">
