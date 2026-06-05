@@ -8,9 +8,9 @@
   "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "any",
-      "type": "image/x-icon"
+      "src": "/logo-md.png",
+      "sizes": "192x192 512x512 any",
+      "type": "image/png"
     }
   ]
 }

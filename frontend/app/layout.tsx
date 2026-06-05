@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   title: "GIS Portal - ERP System",
   description: "Grafindo Information System - Enterprise Resource Planning",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/logo-md.png",
+    shortcut: "/logo-md.png",
+    apple: "/logo-md.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
