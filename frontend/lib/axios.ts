@@ -20,6 +20,11 @@ api.interceptors.response.use(
 
         // If the error is 401 and we haven't retried yet
         if (error.response?.status === 401 && !originalRequest._retry) {
+            // Do not try to refresh token if the 401 came from login endpoints
+            if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/google')) {
+                return Promise.reject(error);
+            }
+
             originalRequest._retry = true;
 
             try {
