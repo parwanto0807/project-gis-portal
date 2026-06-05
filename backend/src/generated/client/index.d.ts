@@ -49,6 +49,11 @@ export type Supplier = $Result.DefaultSelection<Prisma.$SupplierPayload>
  */
 export type DisciplineReport = $Result.DefaultSelection<Prisma.$DisciplineReportPayload>
 /**
+ * Model TemuanPeduli
+ * 
+ */
+export type TemuanPeduli = $Result.DefaultSelection<Prisma.$TemuanPeduliPayload>
+/**
  * Model SavedDatabaseConnection
  * 
  */
@@ -341,6 +346,16 @@ export class PrismaClient<
     * ```
     */
   get disciplineReport(): Prisma.DisciplineReportDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.temuanPeduli`: Exposes CRUD operations for the **TemuanPeduli** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TemuanPedulis
+    * const temuanPedulis = await prisma.temuanPeduli.findMany()
+    * ```
+    */
+  get temuanPeduli(): Prisma.TemuanPeduliDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.savedDatabaseConnection`: Exposes CRUD operations for the **SavedDatabaseConnection** model.
@@ -859,6 +874,7 @@ export namespace Prisma {
     UserCompany: 'UserCompany',
     Supplier: 'Supplier',
     DisciplineReport: 'DisciplineReport',
+    TemuanPeduli: 'TemuanPeduli',
     SavedDatabaseConnection: 'SavedDatabaseConnection',
     Satuan: 'Satuan',
     TypeProduct: 'TypeProduct',
@@ -884,7 +900,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "permission" | "refreshToken" | "company" | "userCompany" | "supplier" | "disciplineReport" | "savedDatabaseConnection" | "satuan" | "typeProduct" | "jenisProduct" | "gudang" | "product" | "productSku"
+      modelProps: "user" | "permission" | "refreshToken" | "company" | "userCompany" | "supplier" | "disciplineReport" | "temuanPeduli" | "savedDatabaseConnection" | "satuan" | "typeProduct" | "jenisProduct" | "gudang" | "product" | "productSku"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1403,6 +1419,80 @@ export namespace Prisma {
           count: {
             args: Prisma.DisciplineReportCountArgs<ExtArgs>
             result: $Utils.Optional<DisciplineReportCountAggregateOutputType> | number
+          }
+        }
+      }
+      TemuanPeduli: {
+        payload: Prisma.$TemuanPeduliPayload<ExtArgs>
+        fields: Prisma.TemuanPeduliFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TemuanPeduliFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TemuanPeduliFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>
+          }
+          findFirst: {
+            args: Prisma.TemuanPeduliFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TemuanPeduliFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>
+          }
+          findMany: {
+            args: Prisma.TemuanPeduliFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>[]
+          }
+          create: {
+            args: Prisma.TemuanPeduliCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>
+          }
+          createMany: {
+            args: Prisma.TemuanPeduliCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TemuanPeduliCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>[]
+          }
+          delete: {
+            args: Prisma.TemuanPeduliDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>
+          }
+          update: {
+            args: Prisma.TemuanPeduliUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>
+          }
+          deleteMany: {
+            args: Prisma.TemuanPeduliDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TemuanPeduliUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TemuanPeduliUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>[]
+          }
+          upsert: {
+            args: Prisma.TemuanPeduliUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemuanPeduliPayload>
+          }
+          aggregate: {
+            args: Prisma.TemuanPeduliAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTemuanPeduli>
+          }
+          groupBy: {
+            args: Prisma.TemuanPeduliGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TemuanPeduliGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TemuanPeduliCountArgs<ExtArgs>
+            result: $Utils.Optional<TemuanPeduliCountAggregateOutputType> | number
           }
         }
       }
@@ -2027,6 +2117,7 @@ export namespace Prisma {
     userCompany?: UserCompanyOmit
     supplier?: SupplierOmit
     disciplineReport?: DisciplineReportOmit
+    temuanPeduli?: TemuanPeduliOmit
     savedDatabaseConnection?: SavedDatabaseConnectionOmit
     satuan?: SatuanOmit
     typeProduct?: TypeProductOmit
@@ -2119,6 +2210,7 @@ export namespace Prisma {
     companies: number
     reports: number
     handledReports: number
+    temuanPeduli: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2127,6 +2219,7 @@ export namespace Prisma {
     companies?: boolean | UserCountOutputTypeCountCompaniesArgs
     reports?: boolean | UserCountOutputTypeCountReportsArgs
     handledReports?: boolean | UserCountOutputTypeCountHandledReportsArgs
+    temuanPeduli?: boolean | UserCountOutputTypeCountTemuanPeduliArgs
   }
 
   // Custom InputTypes
@@ -2173,6 +2266,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountHandledReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DisciplineReportWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTemuanPeduliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemuanPeduliWhereInput
   }
 
 
@@ -2693,6 +2793,7 @@ export namespace Prisma {
     companies?: boolean | User$companiesArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
     handledReports?: boolean | User$handledReportsArgs<ExtArgs>
+    temuanPeduli?: boolean | User$temuanPeduliArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2757,6 +2858,7 @@ export namespace Prisma {
     companies?: boolean | User$companiesArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
     handledReports?: boolean | User$handledReportsArgs<ExtArgs>
+    temuanPeduli?: boolean | User$temuanPeduliArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2770,6 +2872,7 @@ export namespace Prisma {
       companies: Prisma.$UserCompanyPayload<ExtArgs>[]
       reports: Prisma.$DisciplineReportPayload<ExtArgs>[]
       handledReports: Prisma.$DisciplineReportPayload<ExtArgs>[]
+      temuanPeduli: Prisma.$TemuanPeduliPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3186,6 +3289,7 @@ export namespace Prisma {
     companies<T extends User$companiesArgs<ExtArgs> = {}>(args?: Subset<T, User$companiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reports<T extends User$reportsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisciplineReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     handledReports<T extends User$handledReportsArgs<ExtArgs> = {}>(args?: Subset<T, User$handledReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisciplineReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    temuanPeduli<T extends User$temuanPeduliArgs<ExtArgs> = {}>(args?: Subset<T, User$temuanPeduliArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3735,6 +3839,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DisciplineReportScalarFieldEnum | DisciplineReportScalarFieldEnum[]
+  }
+
+  /**
+   * User.temuanPeduli
+   */
+  export type User$temuanPeduliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    where?: TemuanPeduliWhereInput
+    orderBy?: TemuanPeduliOrderByWithRelationInput | TemuanPeduliOrderByWithRelationInput[]
+    cursor?: TemuanPeduliWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TemuanPeduliScalarFieldEnum | TemuanPeduliScalarFieldEnum[]
   }
 
   /**
@@ -10980,6 +11108,1172 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DisciplineReportInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TemuanPeduli
+   */
+
+  export type AggregateTemuanPeduli = {
+    _count: TemuanPeduliCountAggregateOutputType | null
+    _avg: TemuanPeduliAvgAggregateOutputType | null
+    _sum: TemuanPeduliSumAggregateOutputType | null
+    _min: TemuanPeduliMinAggregateOutputType | null
+    _max: TemuanPeduliMaxAggregateOutputType | null
+  }
+
+  export type TemuanPeduliAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type TemuanPeduliSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type TemuanPeduliMinAggregateOutputType = {
+    id: number | null
+    area: string | null
+    tanggal: Date | null
+    jam: string | null
+    userId: number | null
+    temuan: string | null
+    tempatTemuan: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TemuanPeduliMaxAggregateOutputType = {
+    id: number | null
+    area: string | null
+    tanggal: Date | null
+    jam: string | null
+    userId: number | null
+    temuan: string | null
+    tempatTemuan: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TemuanPeduliCountAggregateOutputType = {
+    id: number
+    area: number
+    tanggal: number
+    jam: number
+    userId: number
+    kategori4M: number
+    temuan: number
+    tempatTemuan: number
+    fotoUrls: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TemuanPeduliAvgAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type TemuanPeduliSumAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type TemuanPeduliMinAggregateInputType = {
+    id?: true
+    area?: true
+    tanggal?: true
+    jam?: true
+    userId?: true
+    temuan?: true
+    tempatTemuan?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TemuanPeduliMaxAggregateInputType = {
+    id?: true
+    area?: true
+    tanggal?: true
+    jam?: true
+    userId?: true
+    temuan?: true
+    tempatTemuan?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TemuanPeduliCountAggregateInputType = {
+    id?: true
+    area?: true
+    tanggal?: true
+    jam?: true
+    userId?: true
+    kategori4M?: true
+    temuan?: true
+    tempatTemuan?: true
+    fotoUrls?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TemuanPeduliAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TemuanPeduli to aggregate.
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemuanPedulis to fetch.
+     */
+    orderBy?: TemuanPeduliOrderByWithRelationInput | TemuanPeduliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TemuanPeduliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemuanPedulis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemuanPedulis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TemuanPedulis
+    **/
+    _count?: true | TemuanPeduliCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TemuanPeduliAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TemuanPeduliSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TemuanPeduliMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TemuanPeduliMaxAggregateInputType
+  }
+
+  export type GetTemuanPeduliAggregateType<T extends TemuanPeduliAggregateArgs> = {
+        [P in keyof T & keyof AggregateTemuanPeduli]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTemuanPeduli[P]>
+      : GetScalarType<T[P], AggregateTemuanPeduli[P]>
+  }
+
+
+
+
+  export type TemuanPeduliGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemuanPeduliWhereInput
+    orderBy?: TemuanPeduliOrderByWithAggregationInput | TemuanPeduliOrderByWithAggregationInput[]
+    by: TemuanPeduliScalarFieldEnum[] | TemuanPeduliScalarFieldEnum
+    having?: TemuanPeduliScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TemuanPeduliCountAggregateInputType | true
+    _avg?: TemuanPeduliAvgAggregateInputType
+    _sum?: TemuanPeduliSumAggregateInputType
+    _min?: TemuanPeduliMinAggregateInputType
+    _max?: TemuanPeduliMaxAggregateInputType
+  }
+
+  export type TemuanPeduliGroupByOutputType = {
+    id: number
+    area: string
+    tanggal: Date
+    jam: string
+    userId: number
+    kategori4M: JsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TemuanPeduliCountAggregateOutputType | null
+    _avg: TemuanPeduliAvgAggregateOutputType | null
+    _sum: TemuanPeduliSumAggregateOutputType | null
+    _min: TemuanPeduliMinAggregateOutputType | null
+    _max: TemuanPeduliMaxAggregateOutputType | null
+  }
+
+  type GetTemuanPeduliGroupByPayload<T extends TemuanPeduliGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TemuanPeduliGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TemuanPeduliGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TemuanPeduliGroupByOutputType[P]>
+            : GetScalarType<T[P], TemuanPeduliGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TemuanPeduliSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    area?: boolean
+    tanggal?: boolean
+    jam?: boolean
+    userId?: boolean
+    kategori4M?: boolean
+    temuan?: boolean
+    tempatTemuan?: boolean
+    fotoUrls?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["temuanPeduli"]>
+
+  export type TemuanPeduliSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    area?: boolean
+    tanggal?: boolean
+    jam?: boolean
+    userId?: boolean
+    kategori4M?: boolean
+    temuan?: boolean
+    tempatTemuan?: boolean
+    fotoUrls?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["temuanPeduli"]>
+
+  export type TemuanPeduliSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    area?: boolean
+    tanggal?: boolean
+    jam?: boolean
+    userId?: boolean
+    kategori4M?: boolean
+    temuan?: boolean
+    tempatTemuan?: boolean
+    fotoUrls?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["temuanPeduli"]>
+
+  export type TemuanPeduliSelectScalar = {
+    id?: boolean
+    area?: boolean
+    tanggal?: boolean
+    jam?: boolean
+    userId?: boolean
+    kategori4M?: boolean
+    temuan?: boolean
+    tempatTemuan?: boolean
+    fotoUrls?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TemuanPeduliOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "area" | "tanggal" | "jam" | "userId" | "kategori4M" | "temuan" | "tempatTemuan" | "fotoUrls" | "createdAt" | "updatedAt", ExtArgs["result"]["temuanPeduli"]>
+  export type TemuanPeduliInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TemuanPeduliIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TemuanPeduliIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TemuanPeduliPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TemuanPeduli"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      area: string
+      tanggal: Date
+      jam: string
+      userId: number
+      kategori4M: Prisma.JsonValue
+      temuan: string
+      tempatTemuan: string
+      fotoUrls: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["temuanPeduli"]>
+    composites: {}
+  }
+
+  type TemuanPeduliGetPayload<S extends boolean | null | undefined | TemuanPeduliDefaultArgs> = $Result.GetResult<Prisma.$TemuanPeduliPayload, S>
+
+  type TemuanPeduliCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TemuanPeduliFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TemuanPeduliCountAggregateInputType | true
+    }
+
+  export interface TemuanPeduliDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TemuanPeduli'], meta: { name: 'TemuanPeduli' } }
+    /**
+     * Find zero or one TemuanPeduli that matches the filter.
+     * @param {TemuanPeduliFindUniqueArgs} args - Arguments to find a TemuanPeduli
+     * @example
+     * // Get one TemuanPeduli
+     * const temuanPeduli = await prisma.temuanPeduli.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TemuanPeduliFindUniqueArgs>(args: SelectSubset<T, TemuanPeduliFindUniqueArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TemuanPeduli that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TemuanPeduliFindUniqueOrThrowArgs} args - Arguments to find a TemuanPeduli
+     * @example
+     * // Get one TemuanPeduli
+     * const temuanPeduli = await prisma.temuanPeduli.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TemuanPeduliFindUniqueOrThrowArgs>(args: SelectSubset<T, TemuanPeduliFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TemuanPeduli that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliFindFirstArgs} args - Arguments to find a TemuanPeduli
+     * @example
+     * // Get one TemuanPeduli
+     * const temuanPeduli = await prisma.temuanPeduli.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TemuanPeduliFindFirstArgs>(args?: SelectSubset<T, TemuanPeduliFindFirstArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TemuanPeduli that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliFindFirstOrThrowArgs} args - Arguments to find a TemuanPeduli
+     * @example
+     * // Get one TemuanPeduli
+     * const temuanPeduli = await prisma.temuanPeduli.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TemuanPeduliFindFirstOrThrowArgs>(args?: SelectSubset<T, TemuanPeduliFindFirstOrThrowArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TemuanPedulis that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TemuanPedulis
+     * const temuanPedulis = await prisma.temuanPeduli.findMany()
+     * 
+     * // Get first 10 TemuanPedulis
+     * const temuanPedulis = await prisma.temuanPeduli.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const temuanPeduliWithIdOnly = await prisma.temuanPeduli.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TemuanPeduliFindManyArgs>(args?: SelectSubset<T, TemuanPeduliFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TemuanPeduli.
+     * @param {TemuanPeduliCreateArgs} args - Arguments to create a TemuanPeduli.
+     * @example
+     * // Create one TemuanPeduli
+     * const TemuanPeduli = await prisma.temuanPeduli.create({
+     *   data: {
+     *     // ... data to create a TemuanPeduli
+     *   }
+     * })
+     * 
+     */
+    create<T extends TemuanPeduliCreateArgs>(args: SelectSubset<T, TemuanPeduliCreateArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TemuanPedulis.
+     * @param {TemuanPeduliCreateManyArgs} args - Arguments to create many TemuanPedulis.
+     * @example
+     * // Create many TemuanPedulis
+     * const temuanPeduli = await prisma.temuanPeduli.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TemuanPeduliCreateManyArgs>(args?: SelectSubset<T, TemuanPeduliCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TemuanPedulis and returns the data saved in the database.
+     * @param {TemuanPeduliCreateManyAndReturnArgs} args - Arguments to create many TemuanPedulis.
+     * @example
+     * // Create many TemuanPedulis
+     * const temuanPeduli = await prisma.temuanPeduli.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TemuanPedulis and only return the `id`
+     * const temuanPeduliWithIdOnly = await prisma.temuanPeduli.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TemuanPeduliCreateManyAndReturnArgs>(args?: SelectSubset<T, TemuanPeduliCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TemuanPeduli.
+     * @param {TemuanPeduliDeleteArgs} args - Arguments to delete one TemuanPeduli.
+     * @example
+     * // Delete one TemuanPeduli
+     * const TemuanPeduli = await prisma.temuanPeduli.delete({
+     *   where: {
+     *     // ... filter to delete one TemuanPeduli
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TemuanPeduliDeleteArgs>(args: SelectSubset<T, TemuanPeduliDeleteArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TemuanPeduli.
+     * @param {TemuanPeduliUpdateArgs} args - Arguments to update one TemuanPeduli.
+     * @example
+     * // Update one TemuanPeduli
+     * const temuanPeduli = await prisma.temuanPeduli.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TemuanPeduliUpdateArgs>(args: SelectSubset<T, TemuanPeduliUpdateArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TemuanPedulis.
+     * @param {TemuanPeduliDeleteManyArgs} args - Arguments to filter TemuanPedulis to delete.
+     * @example
+     * // Delete a few TemuanPedulis
+     * const { count } = await prisma.temuanPeduli.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TemuanPeduliDeleteManyArgs>(args?: SelectSubset<T, TemuanPeduliDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TemuanPedulis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TemuanPedulis
+     * const temuanPeduli = await prisma.temuanPeduli.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TemuanPeduliUpdateManyArgs>(args: SelectSubset<T, TemuanPeduliUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TemuanPedulis and returns the data updated in the database.
+     * @param {TemuanPeduliUpdateManyAndReturnArgs} args - Arguments to update many TemuanPedulis.
+     * @example
+     * // Update many TemuanPedulis
+     * const temuanPeduli = await prisma.temuanPeduli.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TemuanPedulis and only return the `id`
+     * const temuanPeduliWithIdOnly = await prisma.temuanPeduli.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TemuanPeduliUpdateManyAndReturnArgs>(args: SelectSubset<T, TemuanPeduliUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TemuanPeduli.
+     * @param {TemuanPeduliUpsertArgs} args - Arguments to update or create a TemuanPeduli.
+     * @example
+     * // Update or create a TemuanPeduli
+     * const temuanPeduli = await prisma.temuanPeduli.upsert({
+     *   create: {
+     *     // ... data to create a TemuanPeduli
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TemuanPeduli we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TemuanPeduliUpsertArgs>(args: SelectSubset<T, TemuanPeduliUpsertArgs<ExtArgs>>): Prisma__TemuanPeduliClient<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TemuanPedulis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliCountArgs} args - Arguments to filter TemuanPedulis to count.
+     * @example
+     * // Count the number of TemuanPedulis
+     * const count = await prisma.temuanPeduli.count({
+     *   where: {
+     *     // ... the filter for the TemuanPedulis we want to count
+     *   }
+     * })
+    **/
+    count<T extends TemuanPeduliCountArgs>(
+      args?: Subset<T, TemuanPeduliCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TemuanPeduliCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TemuanPeduli.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TemuanPeduliAggregateArgs>(args: Subset<T, TemuanPeduliAggregateArgs>): Prisma.PrismaPromise<GetTemuanPeduliAggregateType<T>>
+
+    /**
+     * Group by TemuanPeduli.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemuanPeduliGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TemuanPeduliGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TemuanPeduliGroupByArgs['orderBy'] }
+        : { orderBy?: TemuanPeduliGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TemuanPeduliGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTemuanPeduliGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TemuanPeduli model
+   */
+  readonly fields: TemuanPeduliFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TemuanPeduli.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TemuanPeduliClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TemuanPeduli model
+   */
+  interface TemuanPeduliFieldRefs {
+    readonly id: FieldRef<"TemuanPeduli", 'Int'>
+    readonly area: FieldRef<"TemuanPeduli", 'String'>
+    readonly tanggal: FieldRef<"TemuanPeduli", 'DateTime'>
+    readonly jam: FieldRef<"TemuanPeduli", 'String'>
+    readonly userId: FieldRef<"TemuanPeduli", 'Int'>
+    readonly kategori4M: FieldRef<"TemuanPeduli", 'Json'>
+    readonly temuan: FieldRef<"TemuanPeduli", 'String'>
+    readonly tempatTemuan: FieldRef<"TemuanPeduli", 'String'>
+    readonly fotoUrls: FieldRef<"TemuanPeduli", 'Json'>
+    readonly createdAt: FieldRef<"TemuanPeduli", 'DateTime'>
+    readonly updatedAt: FieldRef<"TemuanPeduli", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TemuanPeduli findUnique
+   */
+  export type TemuanPeduliFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * Filter, which TemuanPeduli to fetch.
+     */
+    where: TemuanPeduliWhereUniqueInput
+  }
+
+  /**
+   * TemuanPeduli findUniqueOrThrow
+   */
+  export type TemuanPeduliFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * Filter, which TemuanPeduli to fetch.
+     */
+    where: TemuanPeduliWhereUniqueInput
+  }
+
+  /**
+   * TemuanPeduli findFirst
+   */
+  export type TemuanPeduliFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * Filter, which TemuanPeduli to fetch.
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemuanPedulis to fetch.
+     */
+    orderBy?: TemuanPeduliOrderByWithRelationInput | TemuanPeduliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TemuanPedulis.
+     */
+    cursor?: TemuanPeduliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemuanPedulis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemuanPedulis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TemuanPedulis.
+     */
+    distinct?: TemuanPeduliScalarFieldEnum | TemuanPeduliScalarFieldEnum[]
+  }
+
+  /**
+   * TemuanPeduli findFirstOrThrow
+   */
+  export type TemuanPeduliFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * Filter, which TemuanPeduli to fetch.
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemuanPedulis to fetch.
+     */
+    orderBy?: TemuanPeduliOrderByWithRelationInput | TemuanPeduliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TemuanPedulis.
+     */
+    cursor?: TemuanPeduliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemuanPedulis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemuanPedulis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TemuanPedulis.
+     */
+    distinct?: TemuanPeduliScalarFieldEnum | TemuanPeduliScalarFieldEnum[]
+  }
+
+  /**
+   * TemuanPeduli findMany
+   */
+  export type TemuanPeduliFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * Filter, which TemuanPedulis to fetch.
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemuanPedulis to fetch.
+     */
+    orderBy?: TemuanPeduliOrderByWithRelationInput | TemuanPeduliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TemuanPedulis.
+     */
+    cursor?: TemuanPeduliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemuanPedulis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemuanPedulis.
+     */
+    skip?: number
+    distinct?: TemuanPeduliScalarFieldEnum | TemuanPeduliScalarFieldEnum[]
+  }
+
+  /**
+   * TemuanPeduli create
+   */
+  export type TemuanPeduliCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TemuanPeduli.
+     */
+    data: XOR<TemuanPeduliCreateInput, TemuanPeduliUncheckedCreateInput>
+  }
+
+  /**
+   * TemuanPeduli createMany
+   */
+  export type TemuanPeduliCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TemuanPedulis.
+     */
+    data: TemuanPeduliCreateManyInput | TemuanPeduliCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TemuanPeduli createManyAndReturn
+   */
+  export type TemuanPeduliCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * The data used to create many TemuanPedulis.
+     */
+    data: TemuanPeduliCreateManyInput | TemuanPeduliCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TemuanPeduli update
+   */
+  export type TemuanPeduliUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TemuanPeduli.
+     */
+    data: XOR<TemuanPeduliUpdateInput, TemuanPeduliUncheckedUpdateInput>
+    /**
+     * Choose, which TemuanPeduli to update.
+     */
+    where: TemuanPeduliWhereUniqueInput
+  }
+
+  /**
+   * TemuanPeduli updateMany
+   */
+  export type TemuanPeduliUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TemuanPedulis.
+     */
+    data: XOR<TemuanPeduliUpdateManyMutationInput, TemuanPeduliUncheckedUpdateManyInput>
+    /**
+     * Filter which TemuanPedulis to update
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * Limit how many TemuanPedulis to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TemuanPeduli updateManyAndReturn
+   */
+  export type TemuanPeduliUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * The data used to update TemuanPedulis.
+     */
+    data: XOR<TemuanPeduliUpdateManyMutationInput, TemuanPeduliUncheckedUpdateManyInput>
+    /**
+     * Filter which TemuanPedulis to update
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * Limit how many TemuanPedulis to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TemuanPeduli upsert
+   */
+  export type TemuanPeduliUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TemuanPeduli to update in case it exists.
+     */
+    where: TemuanPeduliWhereUniqueInput
+    /**
+     * In case the TemuanPeduli found by the `where` argument doesn't exist, create a new TemuanPeduli with this data.
+     */
+    create: XOR<TemuanPeduliCreateInput, TemuanPeduliUncheckedCreateInput>
+    /**
+     * In case the TemuanPeduli was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TemuanPeduliUpdateInput, TemuanPeduliUncheckedUpdateInput>
+  }
+
+  /**
+   * TemuanPeduli delete
+   */
+  export type TemuanPeduliDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
+    /**
+     * Filter which TemuanPeduli to delete.
+     */
+    where: TemuanPeduliWhereUniqueInput
+  }
+
+  /**
+   * TemuanPeduli deleteMany
+   */
+  export type TemuanPeduliDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TemuanPedulis to delete
+     */
+    where?: TemuanPeduliWhereInput
+    /**
+     * Limit how many TemuanPedulis to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TemuanPeduli without action
+   */
+  export type TemuanPeduliDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemuanPeduli
+     */
+    select?: TemuanPeduliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemuanPeduli
+     */
+    omit?: TemuanPeduliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemuanPeduliInclude<ExtArgs> | null
   }
 
 
@@ -19455,6 +20749,23 @@ export namespace Prisma {
   export type DisciplineReportScalarFieldEnum = (typeof DisciplineReportScalarFieldEnum)[keyof typeof DisciplineReportScalarFieldEnum]
 
 
+  export const TemuanPeduliScalarFieldEnum: {
+    id: 'id',
+    area: 'area',
+    tanggal: 'tanggal',
+    jam: 'jam',
+    userId: 'userId',
+    kategori4M: 'kategori4M',
+    temuan: 'temuan',
+    tempatTemuan: 'tempatTemuan',
+    fotoUrls: 'fotoUrls',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TemuanPeduliScalarFieldEnum = (typeof TemuanPeduliScalarFieldEnum)[keyof typeof TemuanPeduliScalarFieldEnum]
+
+
   export const SavedDatabaseConnectionScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -19591,6 +20902,21 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -19605,6 +20931,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -19732,6 +21067,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -19772,6 +21121,7 @@ export namespace Prisma {
     companies?: UserCompanyListRelationFilter
     reports?: DisciplineReportListRelationFilter
     handledReports?: DisciplineReportListRelationFilter
+    temuanPeduli?: TemuanPeduliListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -19795,6 +21145,7 @@ export namespace Prisma {
     companies?: UserCompanyOrderByRelationAggregateInput
     reports?: DisciplineReportOrderByRelationAggregateInput
     handledReports?: DisciplineReportOrderByRelationAggregateInput
+    temuanPeduli?: TemuanPeduliOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -19821,6 +21172,7 @@ export namespace Prisma {
     companies?: UserCompanyListRelationFilter
     reports?: DisciplineReportListRelationFilter
     handledReports?: DisciplineReportListRelationFilter
+    temuanPeduli?: TemuanPeduliListRelationFilter
   }, "id" | "email" | "username" | "googleId">
 
   export type UserOrderByWithAggregationInput = {
@@ -20420,6 +21772,93 @@ export namespace Prisma {
     handledAt?: DateTimeNullableWithAggregatesFilter<"DisciplineReport"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"DisciplineReport"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"DisciplineReport"> | Date | string
+  }
+
+  export type TemuanPeduliWhereInput = {
+    AND?: TemuanPeduliWhereInput | TemuanPeduliWhereInput[]
+    OR?: TemuanPeduliWhereInput[]
+    NOT?: TemuanPeduliWhereInput | TemuanPeduliWhereInput[]
+    id?: IntFilter<"TemuanPeduli"> | number
+    area?: StringFilter<"TemuanPeduli"> | string
+    tanggal?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    jam?: StringFilter<"TemuanPeduli"> | string
+    userId?: IntFilter<"TemuanPeduli"> | number
+    kategori4M?: JsonFilter<"TemuanPeduli">
+    temuan?: StringFilter<"TemuanPeduli"> | string
+    tempatTemuan?: StringFilter<"TemuanPeduli"> | string
+    fotoUrls?: JsonNullableFilter<"TemuanPeduli">
+    createdAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TemuanPeduliOrderByWithRelationInput = {
+    id?: SortOrder
+    area?: SortOrder
+    tanggal?: SortOrder
+    jam?: SortOrder
+    userId?: SortOrder
+    kategori4M?: SortOrder
+    temuan?: SortOrder
+    tempatTemuan?: SortOrder
+    fotoUrls?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type TemuanPeduliWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: TemuanPeduliWhereInput | TemuanPeduliWhereInput[]
+    OR?: TemuanPeduliWhereInput[]
+    NOT?: TemuanPeduliWhereInput | TemuanPeduliWhereInput[]
+    area?: StringFilter<"TemuanPeduli"> | string
+    tanggal?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    jam?: StringFilter<"TemuanPeduli"> | string
+    userId?: IntFilter<"TemuanPeduli"> | number
+    kategori4M?: JsonFilter<"TemuanPeduli">
+    temuan?: StringFilter<"TemuanPeduli"> | string
+    tempatTemuan?: StringFilter<"TemuanPeduli"> | string
+    fotoUrls?: JsonNullableFilter<"TemuanPeduli">
+    createdAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type TemuanPeduliOrderByWithAggregationInput = {
+    id?: SortOrder
+    area?: SortOrder
+    tanggal?: SortOrder
+    jam?: SortOrder
+    userId?: SortOrder
+    kategori4M?: SortOrder
+    temuan?: SortOrder
+    tempatTemuan?: SortOrder
+    fotoUrls?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TemuanPeduliCountOrderByAggregateInput
+    _avg?: TemuanPeduliAvgOrderByAggregateInput
+    _max?: TemuanPeduliMaxOrderByAggregateInput
+    _min?: TemuanPeduliMinOrderByAggregateInput
+    _sum?: TemuanPeduliSumOrderByAggregateInput
+  }
+
+  export type TemuanPeduliScalarWhereWithAggregatesInput = {
+    AND?: TemuanPeduliScalarWhereWithAggregatesInput | TemuanPeduliScalarWhereWithAggregatesInput[]
+    OR?: TemuanPeduliScalarWhereWithAggregatesInput[]
+    NOT?: TemuanPeduliScalarWhereWithAggregatesInput | TemuanPeduliScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"TemuanPeduli"> | number
+    area?: StringWithAggregatesFilter<"TemuanPeduli"> | string
+    tanggal?: DateTimeWithAggregatesFilter<"TemuanPeduli"> | Date | string
+    jam?: StringWithAggregatesFilter<"TemuanPeduli"> | string
+    userId?: IntWithAggregatesFilter<"TemuanPeduli"> | number
+    kategori4M?: JsonWithAggregatesFilter<"TemuanPeduli">
+    temuan?: StringWithAggregatesFilter<"TemuanPeduli"> | string
+    tempatTemuan?: StringWithAggregatesFilter<"TemuanPeduli"> | string
+    fotoUrls?: JsonNullableWithAggregatesFilter<"TemuanPeduli">
+    createdAt?: DateTimeWithAggregatesFilter<"TemuanPeduli"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TemuanPeduli"> | Date | string
   }
 
   export type SavedDatabaseConnectionWhereInput = {
@@ -21097,6 +22536,7 @@ export namespace Prisma {
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -21120,6 +22560,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -21142,6 +22583,7 @@ export namespace Prisma {
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -21165,6 +22607,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -21811,6 +23254,100 @@ export namespace Prisma {
     actionDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     handledById?: NullableIntFieldUpdateOperationsInput | number | null
     handledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemuanPeduliCreateInput = {
+    area: string
+    tanggal: Date | string
+    jam: string
+    kategori4M: JsonNullValueInput | InputJsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTemuanPeduliInput
+  }
+
+  export type TemuanPeduliUncheckedCreateInput = {
+    id?: number
+    area: string
+    tanggal: Date | string
+    jam: string
+    userId: number
+    kategori4M: JsonNullValueInput | InputJsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemuanPeduliUpdateInput = {
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTemuanPeduliNestedInput
+  }
+
+  export type TemuanPeduliUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    userId?: IntFieldUpdateOperationsInput | number
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemuanPeduliCreateManyInput = {
+    id?: number
+    area: string
+    tanggal: Date | string
+    jam: string
+    userId: number
+    kategori4M: JsonNullValueInput | InputJsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemuanPeduliUpdateManyMutationInput = {
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemuanPeduliUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    userId?: IntFieldUpdateOperationsInput | number
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22679,6 +24216,12 @@ export namespace Prisma {
     none?: DisciplineReportWhereInput
   }
 
+  export type TemuanPeduliListRelationFilter = {
+    every?: TemuanPeduliWhereInput
+    some?: TemuanPeduliWhereInput
+    none?: TemuanPeduliWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -22697,6 +24240,10 @@ export namespace Prisma {
   }
 
   export type DisciplineReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TemuanPeduliOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23322,6 +24869,152 @@ export namespace Prisma {
     reporterId?: SortOrder
     handledById?: SortOrder
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type TemuanPeduliCountOrderByAggregateInput = {
+    id?: SortOrder
+    area?: SortOrder
+    tanggal?: SortOrder
+    jam?: SortOrder
+    userId?: SortOrder
+    kategori4M?: SortOrder
+    temuan?: SortOrder
+    tempatTemuan?: SortOrder
+    fotoUrls?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TemuanPeduliAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type TemuanPeduliMaxOrderByAggregateInput = {
+    id?: SortOrder
+    area?: SortOrder
+    tanggal?: SortOrder
+    jam?: SortOrder
+    userId?: SortOrder
+    temuan?: SortOrder
+    tempatTemuan?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TemuanPeduliMinOrderByAggregateInput = {
+    id?: SortOrder
+    area?: SortOrder
+    tanggal?: SortOrder
+    jam?: SortOrder
+    userId?: SortOrder
+    temuan?: SortOrder
+    tempatTemuan?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TemuanPeduliSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
 
   export type SavedDatabaseConnectionCountOrderByAggregateInput = {
     id?: SortOrder
@@ -23793,6 +25486,13 @@ export namespace Prisma {
     connect?: DisciplineReportWhereUniqueInput | DisciplineReportWhereUniqueInput[]
   }
 
+  export type TemuanPeduliCreateNestedManyWithoutUserInput = {
+    create?: XOR<TemuanPeduliCreateWithoutUserInput, TemuanPeduliUncheckedCreateWithoutUserInput> | TemuanPeduliCreateWithoutUserInput[] | TemuanPeduliUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemuanPeduliCreateOrConnectWithoutUserInput | TemuanPeduliCreateOrConnectWithoutUserInput[]
+    createMany?: TemuanPeduliCreateManyUserInputEnvelope
+    connect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+  }
+
   export type PermissionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<PermissionCreateWithoutUserInput, PermissionUncheckedCreateWithoutUserInput> | PermissionCreateWithoutUserInput[] | PermissionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutUserInput | PermissionCreateOrConnectWithoutUserInput[]
@@ -23826,6 +25526,13 @@ export namespace Prisma {
     connectOrCreate?: DisciplineReportCreateOrConnectWithoutHandledByInput | DisciplineReportCreateOrConnectWithoutHandledByInput[]
     createMany?: DisciplineReportCreateManyHandledByInputEnvelope
     connect?: DisciplineReportWhereUniqueInput | DisciplineReportWhereUniqueInput[]
+  }
+
+  export type TemuanPeduliUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TemuanPeduliCreateWithoutUserInput, TemuanPeduliUncheckedCreateWithoutUserInput> | TemuanPeduliCreateWithoutUserInput[] | TemuanPeduliUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemuanPeduliCreateOrConnectWithoutUserInput | TemuanPeduliCreateOrConnectWithoutUserInput[]
+    createMany?: TemuanPeduliCreateManyUserInputEnvelope
+    connect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -23934,6 +25641,20 @@ export namespace Prisma {
     deleteMany?: DisciplineReportScalarWhereInput | DisciplineReportScalarWhereInput[]
   }
 
+  export type TemuanPeduliUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TemuanPeduliCreateWithoutUserInput, TemuanPeduliUncheckedCreateWithoutUserInput> | TemuanPeduliCreateWithoutUserInput[] | TemuanPeduliUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemuanPeduliCreateOrConnectWithoutUserInput | TemuanPeduliCreateOrConnectWithoutUserInput[]
+    upsert?: TemuanPeduliUpsertWithWhereUniqueWithoutUserInput | TemuanPeduliUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TemuanPeduliCreateManyUserInputEnvelope
+    set?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    disconnect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    delete?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    connect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    update?: TemuanPeduliUpdateWithWhereUniqueWithoutUserInput | TemuanPeduliUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TemuanPeduliUpdateManyWithWhereWithoutUserInput | TemuanPeduliUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TemuanPeduliScalarWhereInput | TemuanPeduliScalarWhereInput[]
+  }
+
   export type PermissionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<PermissionCreateWithoutUserInput, PermissionUncheckedCreateWithoutUserInput> | PermissionCreateWithoutUserInput[] | PermissionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutUserInput | PermissionCreateOrConnectWithoutUserInput[]
@@ -24002,6 +25723,20 @@ export namespace Prisma {
     update?: DisciplineReportUpdateWithWhereUniqueWithoutHandledByInput | DisciplineReportUpdateWithWhereUniqueWithoutHandledByInput[]
     updateMany?: DisciplineReportUpdateManyWithWhereWithoutHandledByInput | DisciplineReportUpdateManyWithWhereWithoutHandledByInput[]
     deleteMany?: DisciplineReportScalarWhereInput | DisciplineReportScalarWhereInput[]
+  }
+
+  export type TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TemuanPeduliCreateWithoutUserInput, TemuanPeduliUncheckedCreateWithoutUserInput> | TemuanPeduliCreateWithoutUserInput[] | TemuanPeduliUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemuanPeduliCreateOrConnectWithoutUserInput | TemuanPeduliCreateOrConnectWithoutUserInput[]
+    upsert?: TemuanPeduliUpsertWithWhereUniqueWithoutUserInput | TemuanPeduliUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TemuanPeduliCreateManyUserInputEnvelope
+    set?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    disconnect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    delete?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    connect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+    update?: TemuanPeduliUpdateWithWhereUniqueWithoutUserInput | TemuanPeduliUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TemuanPeduliUpdateManyWithWhereWithoutUserInput | TemuanPeduliUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TemuanPeduliScalarWhereInput | TemuanPeduliScalarWhereInput[]
   }
 
   export type PermissionCreateactionsInput = {
@@ -24273,6 +26008,20 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutHandledReportsInput, UserUpdateWithoutHandledReportsInput>, UserUncheckedUpdateWithoutHandledReportsInput>
+  }
+
+  export type UserCreateNestedOneWithoutTemuanPeduliInput = {
+    create?: XOR<UserCreateWithoutTemuanPeduliInput, UserUncheckedCreateWithoutTemuanPeduliInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTemuanPeduliInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTemuanPeduliNestedInput = {
+    create?: XOR<UserCreateWithoutTemuanPeduliInput, UserUncheckedCreateWithoutTemuanPeduliInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTemuanPeduliInput
+    upsert?: UserUpsertWithoutTemuanPeduliInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTemuanPeduliInput, UserUpdateWithoutTemuanPeduliInput>, UserUncheckedUpdateWithoutTemuanPeduliInput>
   }
 
   export type ProductSkuCreateNestedManyWithoutSatuanInput = {
@@ -24849,6 +26598,52 @@ export namespace Prisma {
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
@@ -25041,6 +26836,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TemuanPeduliCreateWithoutUserInput = {
+    area: string
+    tanggal: Date | string
+    jam: string
+    kategori4M: JsonNullValueInput | InputJsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemuanPeduliUncheckedCreateWithoutUserInput = {
+    id?: number
+    area: string
+    tanggal: Date | string
+    jam: string
+    kategori4M: JsonNullValueInput | InputJsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemuanPeduliCreateOrConnectWithoutUserInput = {
+    where: TemuanPeduliWhereUniqueInput
+    create: XOR<TemuanPeduliCreateWithoutUserInput, TemuanPeduliUncheckedCreateWithoutUserInput>
+  }
+
+  export type TemuanPeduliCreateManyUserInputEnvelope = {
+    data: TemuanPeduliCreateManyUserInput | TemuanPeduliCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PermissionUpsertWithWhereUniqueWithoutUserInput = {
     where: PermissionWhereUniqueInput
     update: XOR<PermissionUpdateWithoutUserInput, PermissionUncheckedUpdateWithoutUserInput>
@@ -25182,6 +27012,39 @@ export namespace Prisma {
     data: XOR<DisciplineReportUpdateManyMutationInput, DisciplineReportUncheckedUpdateManyWithoutHandledByInput>
   }
 
+  export type TemuanPeduliUpsertWithWhereUniqueWithoutUserInput = {
+    where: TemuanPeduliWhereUniqueInput
+    update: XOR<TemuanPeduliUpdateWithoutUserInput, TemuanPeduliUncheckedUpdateWithoutUserInput>
+    create: XOR<TemuanPeduliCreateWithoutUserInput, TemuanPeduliUncheckedCreateWithoutUserInput>
+  }
+
+  export type TemuanPeduliUpdateWithWhereUniqueWithoutUserInput = {
+    where: TemuanPeduliWhereUniqueInput
+    data: XOR<TemuanPeduliUpdateWithoutUserInput, TemuanPeduliUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TemuanPeduliUpdateManyWithWhereWithoutUserInput = {
+    where: TemuanPeduliScalarWhereInput
+    data: XOR<TemuanPeduliUpdateManyMutationInput, TemuanPeduliUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TemuanPeduliScalarWhereInput = {
+    AND?: TemuanPeduliScalarWhereInput | TemuanPeduliScalarWhereInput[]
+    OR?: TemuanPeduliScalarWhereInput[]
+    NOT?: TemuanPeduliScalarWhereInput | TemuanPeduliScalarWhereInput[]
+    id?: IntFilter<"TemuanPeduli"> | number
+    area?: StringFilter<"TemuanPeduli"> | string
+    tanggal?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    jam?: StringFilter<"TemuanPeduli"> | string
+    userId?: IntFilter<"TemuanPeduli"> | number
+    kategori4M?: JsonFilter<"TemuanPeduli">
+    temuan?: StringFilter<"TemuanPeduli"> | string
+    tempatTemuan?: StringFilter<"TemuanPeduli"> | string
+    fotoUrls?: JsonNullableFilter<"TemuanPeduli">
+    createdAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
+    updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
+  }
+
   export type UserCreateWithoutPermissionsInput = {
     email: string
     username?: string | null
@@ -25201,6 +27064,7 @@ export namespace Prisma {
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPermissionsInput = {
@@ -25223,6 +27087,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPermissionsInput = {
@@ -25260,6 +27125,7 @@ export namespace Prisma {
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPermissionsInput = {
@@ -25282,6 +27148,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -25303,6 +27170,7 @@ export namespace Prisma {
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -25325,6 +27193,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -25362,6 +27231,7 @@ export namespace Prisma {
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -25384,6 +27254,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCompanyCreateWithoutCompanyInput = {
@@ -25546,6 +27417,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompaniesInput = {
@@ -25568,6 +27440,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompaniesInput = {
@@ -25691,6 +27564,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompaniesInput = {
@@ -25713,6 +27587,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutUsersInput = {
@@ -25947,6 +27822,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -25969,6 +27845,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -25995,6 +27872,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutHandledReportsInput = {
@@ -26017,6 +27895,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutHandledReportsInput = {
@@ -26054,6 +27933,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -26076,6 +27956,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutHandledReportsInput = {
@@ -26108,6 +27989,7 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHandledReportsInput = {
@@ -26130,6 +28012,113 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutTemuanPeduliInput = {
+    email: string
+    username?: string | null
+    password?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    picture?: string | null
+    role?: $Enums.Role
+    status?: $Enums.Status
+    isEmailVerified?: boolean
+    googleId?: string | null
+    lastLoginAt?: Date | string | null
+    loginAttempts?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: PermissionCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    companies?: UserCompanyCreateNestedManyWithoutUserInput
+    reports?: DisciplineReportCreateNestedManyWithoutReporterInput
+    handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+  }
+
+  export type UserUncheckedCreateWithoutTemuanPeduliInput = {
+    id?: number
+    email: string
+    username?: string | null
+    password?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    picture?: string | null
+    role?: $Enums.Role
+    status?: $Enums.Status
+    isEmailVerified?: boolean
+    googleId?: string | null
+    lastLoginAt?: Date | string | null
+    loginAttempts?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: PermissionUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
+    reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
+    handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+  }
+
+  export type UserCreateOrConnectWithoutTemuanPeduliInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTemuanPeduliInput, UserUncheckedCreateWithoutTemuanPeduliInput>
+  }
+
+  export type UserUpsertWithoutTemuanPeduliInput = {
+    update: XOR<UserUpdateWithoutTemuanPeduliInput, UserUncheckedUpdateWithoutTemuanPeduliInput>
+    create: XOR<UserCreateWithoutTemuanPeduliInput, UserUncheckedCreateWithoutTemuanPeduliInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTemuanPeduliInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTemuanPeduliInput, UserUncheckedUpdateWithoutTemuanPeduliInput>
+  }
+
+  export type UserUpdateWithoutTemuanPeduliInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    isEmailVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loginAttempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: PermissionUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    companies?: UserCompanyUpdateManyWithoutUserNestedInput
+    reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
+    handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTemuanPeduliInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    isEmailVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loginAttempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: PermissionUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
+    reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
+    handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
   }
 
   export type ProductSkuCreateWithoutSatuanInput = {
@@ -27079,6 +29068,19 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TemuanPeduliCreateManyUserInput = {
+    id?: number
+    area: string
+    tanggal: Date | string
+    jam: string
+    kategori4M: JsonNullValueInput | InputJsonValue
+    temuan: string
+    tempatTemuan: string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type PermissionUpdateWithoutUserInput = {
     module?: EnumAppModuleFieldUpdateOperationsInput | $Enums.AppModule
     actions?: PermissionUpdateactionsInput | $Enums.Action[]
@@ -27265,6 +29267,44 @@ export namespace Prisma {
     resolutionSummary?: NullableStringFieldUpdateOperationsInput | string | null
     actionDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     handledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemuanPeduliUpdateWithoutUserInput = {
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemuanPeduliUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemuanPeduliUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    area?: StringFieldUpdateOperationsInput | string
+    tanggal?: DateTimeFieldUpdateOperationsInput | Date | string
+    jam?: StringFieldUpdateOperationsInput | string
+    kategori4M?: JsonNullValueInput | InputJsonValue
+    temuan?: StringFieldUpdateOperationsInput | string
+    tempatTemuan?: StringFieldUpdateOperationsInput | string
+    fotoUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

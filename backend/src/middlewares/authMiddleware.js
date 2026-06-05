@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 export const verifyToken = (req, res, next) => {
   // Dev-only bypass: skip auth entirely when not in production
   if (process.env.NODE_ENV !== 'production') {
-    req.user = { id: 'dev', role: 'admin' };
+    req.user = { id: 'dev', role: 'ADMIN' };
     return next();
   }
 

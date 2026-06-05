@@ -76,6 +76,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
                     submenus: [
                         { label: "Gis Discipline", href: "/admin/hr/discipline", icon: ClipboardCheck },
                         { label: "Employees", href: "/admin/hr/employees", icon: Users, disabled: true },
+                        { label: "Temuan Peduli Bersinergi", href: "/admin/audit/temuan", icon: ShieldCheck },
                     ]
                 }
             ]

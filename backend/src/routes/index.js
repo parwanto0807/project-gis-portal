@@ -14,6 +14,7 @@ import disciplineReportRoutes from './disciplineReportRoutes.js';
 import companyRoutes from './companyRoutes.js';
 import dbConnectionRoutes from './dbConnectionRoutes.js';
 import productRoutes from './productRoutes.js';
+import temuanPeduliRoutes from './temuanPeduliRoutes.js';
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -21,5 +22,6 @@ router.use('/discipline-reports', disciplineReportRoutes);
 router.use('/companies', companyRoutes);
 router.use('/database', dbConnectionRoutes);
 router.use('/products', productRoutes);
+router.use('/temuan-peduli', temuanPeduliRoutes);
 
 export default router;

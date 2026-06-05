@@ -226,6 +226,20 @@ exports.Prisma.DisciplineReportScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TemuanPeduliScalarFieldEnum = {
+  id: 'id',
+  area: 'area',
+  tanggal: 'tanggal',
+  jam: 'jam',
+  userId: 'userId',
+  kategori4M: 'kategori4M',
+  temuan: 'temuan',
+  tempatTemuan: 'tempatTemuan',
+  fotoUrls: 'fotoUrls',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SavedDatabaseConnectionScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -338,6 +352,15 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -346,6 +369,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
@@ -392,6 +421,7 @@ exports.Prisma.ModelName = {
   UserCompany: 'UserCompany',
   Supplier: 'Supplier',
   DisciplineReport: 'DisciplineReport',
+  TemuanPeduli: 'TemuanPeduli',
   SavedDatabaseConnection: 'SavedDatabaseConnection',
   Satuan: 'Satuan',
   TypeProduct: 'TypeProduct',
