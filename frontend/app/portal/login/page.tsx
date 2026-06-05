@@ -95,22 +95,22 @@ export default function UnifiedLoginPage() {
     };
 
     return (
-        <div className="relative flex min-h-[100dvh] w-full items-center justify-center p-4 sm:p-8 bg-slate-950">
+        <div className="relative flex min-h-dvh w-full items-center justify-center p-4 sm:p-8 bg-slate-950">
             {/* Premium Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 {/* Abstract gradients */}
-                <div className="absolute top-0 -left-1/4 w-full h-full bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-transparent blur-[120px] rounded-full" />
-                <div className="absolute bottom-0 -right-1/4 w-full h-full bg-gradient-to-tl from-blue-500/20 via-cyan-500/10 to-transparent blur-[120px] rounded-full" />
+                <div className="absolute top-0 -left-1/4 w-full h-full bg-linear-to-br from-indigo-500/20 via-purple-500/10 to-transparent blur-[120px] rounded-full" />
+                <div className="absolute bottom-0 -right-1/4 w-full h-full bg-linear-to-tl from-blue-500/20 via-cyan-500/10 to-transparent blur-[120px] rounded-full" />
                 {/* Subtle grid pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
             </div>
 
             <Card className="relative z-10 w-full max-w-[440px] shadow-2xl rounded-[1.5rem] sm:rounded-2xl border-white/10 overflow-hidden bg-background/85 sm:bg-background/80 backdrop-blur-xl dark:bg-slate-950/85 dark:sm:bg-slate-950/80 dark:border-slate-800/60 ring-1 ring-white/5 mx-auto">
                 <CardHeader className="flex flex-col space-y-1 sm:space-y-2 pb-6 pt-8 sm:pb-8 sm:pt-10 px-6 sm:px-8 text-center">
-                    <div className="mx-auto bg-gradient-to-tr from-primary to-blue-500 p-2.5 sm:p-3 rounded-2xl shadow-lg mb-2 sm:mb-4 ring-1 ring-white/20">
+                    <div className="mx-auto bg-linear-to-tr from-primary to-blue-500 p-2.5 sm:p-3 rounded-2xl shadow-lg mb-2 sm:mb-4 ring-1 ring-white/20">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 sm:w-8 sm:h-8 text-white"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     </div>
-                    <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
                         Welcome Back
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm font-medium text-muted-foreground/80">
@@ -156,7 +156,7 @@ export default function UnifiedLoginPage() {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-12 sm:h-11 mt-2 sm:mt-0 text-[15px] sm:text-sm font-bold tracking-wide rounded-xl shadow-md hover:shadow-lg transition-all bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:scale-[0.98]"
+                        className="w-full h-12 sm:h-11 mt-2 sm:mt-0 text-[15px] sm:text-sm font-bold tracking-wide rounded-xl shadow-md hover:shadow-lg transition-all bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:scale-[0.98]"
                     >
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Sign In

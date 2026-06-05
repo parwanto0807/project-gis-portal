@@ -9,8 +9,19 @@
   "icons": [
     {
       "src": "/logo-sm.png",
-      "sizes": "192x192 512x512 any",
+      "sizes": "192x192",
       "type": "image/png"
+    },
+    {
+      "src": "/logo-sm.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-sm.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

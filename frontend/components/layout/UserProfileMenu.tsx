@@ -75,7 +75,7 @@ export default function UserProfileMenu() {
                             referrerPolicy="no-referrer"
                         />
                     ) : (
-                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-gray-200">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-gray-200">
                             <span className="text-white font-semibold text-sm">
                                 {displayName.charAt(0).toUpperCase()}
                             </span>
@@ -114,7 +114,7 @@ export default function UserProfileMenu() {
                                     referrerPolicy="no-referrer"
                                 />
                             ) : (
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-gray-200">
+                                <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-gray-200">
                                     <span className="text-white font-bold text-lg">
                                         {displayName.charAt(0).toUpperCase()}
                                     </span>
