@@ -114,9 +114,10 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                                             <AvatarImage
                                                 src={
                                                     user.picture
-                                                        ? (user.picture.startsWith('http') ? user.picture : `http://localhost:5001/${user.picture.startsWith('/') ? user.picture.slice(1) : user.picture}`)
+                                                        ? (user.picture.startsWith('http') ? user.picture : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}/${user.picture.startsWith('/') ? user.picture.slice(1) : user.picture}`)
                                                         : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username || user.email}`
                                                 }
+                                                referrerPolicy="no-referrer"
                                             />
                                             <AvatarFallback className="bg-blue-100 text-blue-700 font-bold">
                                                 {user.firstName?.[0]}{user.lastName?.[0]}

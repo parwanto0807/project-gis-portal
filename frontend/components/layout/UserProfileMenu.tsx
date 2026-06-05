@@ -42,6 +42,13 @@ export default function UserProfileMenu() {
         return null;
     }
 
+    const getAvatarUrl = (picture: string | undefined | null) => {
+        if (!picture) return null;
+        if (picture.startsWith('http')) return picture;
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001';
+        return `${baseUrl}/${picture.startsWith('/') ? picture.slice(1) : picture}`;
+    };
+
     const displayName = user.firstName || user.username || user.email?.split('@')[0] || 'User';
     
     const formatRole = (role: string) => {
@@ -62,9 +69,10 @@ export default function UserProfileMenu() {
                 <div className="relative">
                     {user.picture ? (
                         <img
-                            src={user.picture}
+                            src={getAvatarUrl(user.picture) || ''}
                             alt={displayName}
                             className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover ring-2 ring-gray-200"
+                            referrerPolicy="no-referrer"
                         />
                     ) : (
                         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-gray-200">
@@ -100,9 +108,10 @@ export default function UserProfileMenu() {
                         <div className="flex items-center gap-3">
                             {user.picture ? (
                                 <img
-                                    src={user.picture}
+                                    src={getAvatarUrl(user.picture) || ''}
                                     alt={displayName}
                                     className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-200"
+                                    referrerPolicy="no-referrer"
                                 />
                             ) : (
                                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-gray-200">
