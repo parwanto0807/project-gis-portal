@@ -40,8 +40,8 @@ api.interceptors.response.use(
                 // Redirect to login if on client side
                 if (typeof window !== 'undefined') {
                     // Avoid redirect loop if already on login
-                    if (!window.location.pathname.startsWith('/login')) {
-                        window.location.href = '/login';
+                    if (!window.location.pathname.startsWith('/portal/login')) {
+                        window.location.href = '/portal/login';
                     }
                 }
                 return Promise.reject(refreshError);
