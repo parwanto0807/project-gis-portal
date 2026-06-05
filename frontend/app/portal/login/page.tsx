@@ -106,7 +106,7 @@ export default function UnifiedLoginPage() {
             </div>
 
             <Card className="relative z-10 w-full max-w-[440px] shadow-2xl rounded-[1.5rem] sm:rounded-2xl border-white/10 overflow-hidden bg-background/85 sm:bg-background/80 backdrop-blur-xl dark:bg-slate-950/85 dark:sm:bg-slate-950/80 dark:border-slate-800/60 ring-1 ring-white/5 mx-auto">
-                <CardHeader className="flex flex-col space-y-1 sm:space-y-2 pb-6 pt-8 sm:pb-8 sm:pt-10 px-6 sm:px-8 text-center">
+                <CardHeader className="flex flex-col space-y-1 sm:space-y-2 pb-4 pt-6 sm:pb-8 sm:pt-10 px-5 sm:px-8 text-center">
                     <div className="mx-auto bg-linear-to-tr from-primary to-blue-500 p-2.5 sm:p-3 rounded-2xl shadow-lg mb-2 sm:mb-4 ring-1 ring-white/20">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 sm:w-8 sm:h-8 text-white"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     </div>
@@ -119,12 +119,12 @@ export default function UnifiedLoginPage() {
                 </CardHeader>
 
                 <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
-                    <CardContent className="px-6 sm:px-8 pb-8 pt-0 space-y-4 sm:space-y-5">
+                    <CardContent className="px-5 sm:px-8 pb-5 sm:pb-8 pt-0 space-y-3 sm:space-y-5">
                     <div className="space-y-2">
                         <Label htmlFor="username" className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1">Username</Label>
                         <Input
                             id="username"
-                            className={`rounded-xl h-12 sm:h-11 px-4 text-[15px] sm:text-sm bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.username ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
+                            className={`rounded-xl h-11 sm:h-11 px-4 text-[15px] sm:text-sm bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.username ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
                             placeholder="Enter your username"
                             value={username}
                             onChange={(e) => {
@@ -143,7 +143,7 @@ export default function UnifiedLoginPage() {
                             id="password"
                             type="password"
                             placeholder="••••••••"
-                            className={`rounded-xl h-12 sm:h-11 px-4 text-[15px] sm:text-sm bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.password ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
+                            className={`rounded-xl h-11 sm:h-11 px-4 text-[15px] sm:text-sm bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.password ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
                             value={password}
                             onChange={(e) => {
                                 setPassword(e.target.value);
@@ -156,13 +156,13 @@ export default function UnifiedLoginPage() {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-12 sm:h-11 mt-2 sm:mt-0 text-[15px] sm:text-sm font-bold tracking-wide rounded-xl shadow-md hover:shadow-lg transition-all bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:scale-[0.98]"
+                        className="w-full h-11 sm:h-11 mt-2 sm:mt-0 text-[15px] sm:text-sm font-bold tracking-wide rounded-xl shadow-md hover:shadow-lg transition-all bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 active:scale-[0.98]"
                     >
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Sign In
                     </Button>
 
-                    <div className="relative my-5 sm:my-6">
+                    <div className="relative my-4 sm:my-6">
                         <div className="absolute inset-0 flex items-center">
                             <span className="w-full border-t border-border/50" />
                         </div>
@@ -173,7 +173,7 @@ export default function UnifiedLoginPage() {
                         </div>
                     </div>
 
-                    <div className="w-full flex justify-center pb-2">
+                    <div className="w-full grid place-items-center pb-2">
                         <GoogleLogin
                             onSuccess={(credentialResponse: CredentialResponse) => {
                                 if (credentialResponse.credential) {
@@ -181,7 +181,7 @@ export default function UnifiedLoginPage() {
                                 }
                             }}
                             onError={() => toast.error('Google Login Failed')}
-                            width="320"
+                            width="280"
                             theme="filled_blue"
                             shape="pill"
                             text="continue_with"
