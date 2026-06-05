@@ -28,9 +28,9 @@ export const metadata: Metadata = {
   description: "Grafindo Information System - Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/logo-md.png",
-    shortcut: "/logo-md.png",
-    apple: "/logo-md.png",
+    icon: "/logo-sm.png",
+    shortcut: "/logo-sm.png",
+    apple: "/logo-sm.png",
   },
   openGraph: {
     type: "website",

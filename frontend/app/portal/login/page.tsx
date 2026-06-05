@@ -173,7 +173,7 @@ export default function UnifiedLoginPage() {
                         </div>
                     </div>
 
-                    <div className="w-full flex justify-center pb-2 scale-[0.9] sm:scale-100 origin-center">
+                    <div className="w-full flex justify-center pb-2">
                         <GoogleLogin
                             onSuccess={(credentialResponse: CredentialResponse) => {
                                 if (credentialResponse.credential) {
