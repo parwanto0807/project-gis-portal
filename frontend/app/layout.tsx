@@ -23,13 +23,35 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://grafindo-app.com"),
   title: "GIS Portal - ERP System",
-  description: "Grafindo Information System - Enterprise Resource Planning",
+  description: "Grafindo Information System - Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
   manifest: "/manifest.json",
   icons: {
     icon: "/logo-md.png",
     shortcut: "/logo-md.png",
     apple: "/logo-md.png",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://grafindo-app.com",
+    title: "GIS Portal - ERP System",
+    description: "Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
+    siteName: "GIS Portal",
+    images: [
+      {
+        url: "/logo-md.png",
+        width: 800,
+        height: 600,
+        alt: "GIS Portal Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GIS Portal - ERP System",
+    description: "Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
+    images: ["/logo-md.png"],
   },
   appleWebApp: {
     capable: true,
