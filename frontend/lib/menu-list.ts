@@ -104,6 +104,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
                     submenus: [
                         { label: "User Management", href: "/admin/users", icon: Users },
                         { label: "Database Connection", href: "/admin/settings/database", icon: Database },
+                        { label: "Backup & Restore", href: "/admin/settings/backup", icon: Database },
                         // { label: "Roles & Permissions", href: "/settings/roles", icon: UserCog },
                         // { label: "Audit Logs", href: "/settings/audit", icon: ShieldCheck },
                     ]
