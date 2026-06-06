@@ -120,6 +120,10 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                 fd.append('fotos', file);
             });
 
+            if (initialData?.id && initialData?.fotoUrls) {
+                fd.append('existingFotos', JSON.stringify(initialData.fotoUrls));
+            }
+
             if (initialData?.id) {
                 await api.put(`/temuan-peduli/${initialData.id}`, fd, {
                     headers: { 'Content-Type': 'multipart/form-data' }
