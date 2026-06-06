@@ -80,34 +80,34 @@ export default function UserManagementPage() {
         <div className="space-y-6">
             {/* Simple Header with Breadcrumb */}
             <div className="flex flex-col gap-1.5 mb-4">
-                <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
                     <Breadcrumb>
                         <BreadcrumbList className="text-[10px] md:text-xs">
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">
+                                <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">
                                     Dashboard
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="scale-75" />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/admin/settings" className="text-slate-500 hover:text-slate-900">
+                                <BreadcrumbLink href="/admin/settings" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">
                                     Settings
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="scale-75" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="font-semibold text-slate-900">User Management</BreadcrumbPage>
+                                <BreadcrumbPage className="font-semibold text-slate-900 dark:text-slate-50">User Management</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </Badge>
                 
                 <div className="mt-1">
-                    <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-                        <Users className="h-5 w-5 text-slate-500" />
+                    <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                        <Users className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                         User Management
                     </h1>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         Manage employee access, roles, and platform permissions.
                     </p>
                 </div>
@@ -116,13 +116,13 @@ export default function UserManagementPage() {
             {/* Stats Section */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {userStats.map((stat, index) => (
-                    <Card key={index} className="bg-white border border-slate-200 shadow-sm rounded-lg">
+                    <Card key={index} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm rounded-lg">
                         <CardContent className="p-3 flex items-center justify-between">
                             <div className="flex flex-col">
-                                <p className="text-xs font-medium text-slate-500">
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                                     {stat.title}
                                 </p>
-                                <span className="text-xl font-bold text-slate-900 mt-0.5">
+                                <span className="text-xl font-bold text-slate-900 dark:text-slate-50 mt-0.5">
                                     {stat.value}
                                 </span>
                             </div>

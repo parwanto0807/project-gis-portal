@@ -483,23 +483,23 @@ export default function ProductsPage() {
         <div className="space-y-6">
             {/* Simple Header with Breadcrumb */}
             <div className="flex flex-col gap-1.5 mb-4">
-                <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
                     <Breadcrumb>
                         <BreadcrumbList className="text-[10px] md:text-xs">
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">
+                                <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">
                                     Dashboard
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="scale-75" />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="#" className="text-slate-500 hover:text-slate-900 pointer-events-none">
+                                <BreadcrumbLink href="#" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 pointer-events-none">
                                     Master Data
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="scale-75" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="font-semibold text-slate-900">Products & SKUs</BreadcrumbPage>
+                                <BreadcrumbPage className="font-semibold text-slate-900 dark:text-slate-50">Products & SKUs</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -507,11 +507,11 @@ export default function ProductsPage() {
 
                 <div className="mt-1 flex justify-between items-start">
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-                            <Package className="h-5 w-5 text-slate-500" />
+                        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                            <Package className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                             Products Hub
                         </h1>
-                        <p className="text-xs text-slate-500 mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             Manage parent products, normalized SKU variants, and inventory attributes.
                         </p>
                     </div>
@@ -525,7 +525,7 @@ export default function ProductsPage() {
 
             {/* Main Section Tabs */}
             <Tabs defaultValue="products" value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
-                <TabsList className="bg-slate-100 p-1">
+                <TabsList className="bg-slate-100 dark:bg-slate-800 p-1">
                     <TabsTrigger value="products" className="flex items-center gap-2 text-xs h-8"><Package className="w-3.5 h-3.5" /> Product & SKUs</TabsTrigger>
                     <TabsTrigger value="attributes" className="flex items-center gap-2 text-xs h-8"><Layers className="w-3.5 h-3.5" /> Master Attributes</TabsTrigger>
                 </TabsList>
@@ -534,7 +534,7 @@ export default function ProductsPage() {
                 <TabsContent value="products" className="space-y-6">
                     {/* Analytics Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <Card className="bg-gradient-to-br from-indigo-500/10 via-background to-background rounded-lg border-slate-200">
+                        <Card className="bg-gradient-to-br from-indigo-500/10 via-background to-background rounded-lg border-slate-200 dark:border-slate-800">
                             <CardHeader className="py-3 px-3">
                                 <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">Total Products</CardDescription>
                                 <CardTitle className="text-xl font-bold flex items-center justify-between">
@@ -542,7 +542,7 @@ export default function ProductsPage() {
                                 </CardTitle>
                             </CardHeader>
                         </Card>
-                        <Card className="bg-gradient-to-br from-blue-500/10 via-background to-background rounded-lg border-slate-200">
+                        <Card className="bg-gradient-to-br from-blue-500/10 via-background to-background rounded-lg border-slate-200 dark:border-slate-800">
                             <CardHeader className="py-3 px-3">
                                 <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-blue-400">Total SKU Variants</CardDescription>
                                 <CardTitle className="text-xl font-bold flex items-center justify-between">
@@ -550,7 +550,7 @@ export default function ProductsPage() {
                                 </CardTitle>
                             </CardHeader>
                         </Card>
-                        <Card className="bg-gradient-to-br from-amber-500/10 via-background to-background rounded-lg border-slate-200">
+                        <Card className="bg-gradient-to-br from-amber-500/10 via-background to-background rounded-lg border-slate-200 dark:border-slate-800">
                             <CardHeader className="py-3 px-3">
                                 <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-amber-400">Out of Stock SKUs</CardDescription>
                                 <CardTitle className="text-xl font-bold flex items-center justify-between text-amber-500">
@@ -558,7 +558,7 @@ export default function ProductsPage() {
                                 </CardTitle>
                             </CardHeader>
                         </Card>
-                        <Card className="bg-gradient-to-br from-emerald-500/10 via-background to-background rounded-lg border-slate-200">
+                        <Card className="bg-gradient-to-br from-emerald-500/10 via-background to-background rounded-lg border-slate-200 dark:border-slate-800">
                             <CardHeader className="py-3 px-3">
                                 <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Inventory Value</CardDescription>
                                 <CardTitle className="text-xl font-bold flex items-center justify-between">
@@ -597,7 +597,7 @@ export default function ProductsPage() {
                     {/* Product Grid / Table */}
                     <Card className="overflow-hidden">
                         <Table>
-                            <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
+                            <TableHeader className="bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm">
                                 <TableRow className="text-xs">
                                     <TableHead className="w-[30%] py-2 h-9">Product Name</TableHead>
                                     <TableHead className="py-2 h-9">Category</TableHead>
@@ -616,9 +616,9 @@ export default function ProductsPage() {
                                     </TableRow>
                                 ) : products.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-10 text-slate-500">
+                                        <TableCell colSpan={6} className="text-center py-10 text-slate-500 dark:text-slate-400">
                                             <div className="flex flex-col items-center justify-center space-y-2">
-                                                <div className="p-2.5 bg-slate-100 rounded-full">
+                                                <div className="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-full">
                                                     <Package className="w-5 h-5 text-slate-400" />
                                                 </div>
                                                 <p className="text-sm font-medium">No products found</p>
@@ -628,26 +628,26 @@ export default function ProductsPage() {
                                     </TableRow>
                                 ) : (
                                     products.map((prod) => (
-                                        <TableRow key={prod.id} className="group hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => handleViewDetail(prod)}>
-                                            <TableCell className="py-2 font-medium text-xs text-slate-900 group-hover:text-blue-600 transition-colors">
+                                        <TableRow key={prod.id} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors cursor-pointer" onClick={() => handleViewDetail(prod)}>
+                                            <TableCell className="py-2 font-medium text-xs text-slate-900 dark:text-slate-50 group-hover:text-blue-600 transition-colors">
                                                 <div>
                                                     <p>{prod.namaBarang}</p>
-                                                    {prod.namaPanggilan && <span className="text-[10px] font-normal text-slate-500">({prod.namaPanggilan})</span>}
+                                                    {prod.namaPanggilan && <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">({prod.namaPanggilan})</span>}
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 <Badge variant="secondary" className="px-1.5 py-0 shadow-sm text-[9px] font-medium tracking-wide uppercase">{prod.kategori || 'N/A'}</Badge>
                                             </TableCell>
-                                            <TableCell className="py-2 text-xs font-medium text-slate-700">{prod.supplier || 'N/A'}</TableCell>
-                                            <TableCell className="py-2 text-xs text-slate-500">{prod.customer || 'N/A'}</TableCell>
+                                            <TableCell className="py-2 text-xs font-medium text-slate-700 dark:text-slate-300">{prod.supplier || 'N/A'}</TableCell>
+                                            <TableCell className="py-2 text-xs text-slate-500 dark:text-slate-400">{prod.customer || 'N/A'}</TableCell>
                                             <TableCell className="py-2 text-center">
-                                                <Badge className="px-1.5 py-0 shadow-sm text-[9px] bg-indigo-50 text-indigo-700 font-bold border-indigo-200 uppercase">
+                                                <Badge className="px-1.5 py-0 shadow-sm text-[9px] bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 font-bold border-indigo-200 uppercase">
                                                     {prod.skus?.length || 0} variants
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="py-2 text-right" onClick={(e) => e.stopPropagation()}>
                                                 <div className="flex items-center justify-end gap-1">
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-500 hover:text-slate-900" onClick={() => handleViewDetail(prod)}>
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50" onClick={() => handleViewDetail(prod)}>
                                                         <Eye className="w-3.5 h-3.5" />
                                                     </Button>
                                                     <Button variant="ghost" size="icon" className="h-7 w-7 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700" onClick={() => openEditDialog(prod)}>
@@ -666,8 +666,8 @@ export default function ProductsPage() {
 
                         {/* Pagination Bar */}
                         {pagination.totalPages > 1 && (
-                            <div className="flex justify-between items-center p-3 border-t bg-slate-50/50">
-                                <span className="text-[10px] text-slate-500">Showing page {pagination.currentPage} of {pagination.totalPages}</span>
+                            <div className="flex justify-between items-center p-3 border-t bg-slate-50/50 dark:bg-slate-900/50">
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400">Showing page {pagination.currentPage} of {pagination.totalPages}</span>
                                 <div className="flex gap-1.5">
                                     <Button
                                         variant="outline"
@@ -738,7 +738,7 @@ export default function ProductsPage() {
                         <div className="lg:col-span-2 space-y-6">
                             {/* Fast Master Creator Form */}
                             <Card>
-                                <CardHeader className="py-3 px-4 bg-slate-50 border-b">
+                                <CardHeader className="py-3 px-4 bg-slate-50 dark:bg-slate-900 border-b">
                                     <CardTitle className="text-sm font-semibold">Add Master Entry: {activeMasterTab.toUpperCase()}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4">
@@ -787,7 +787,7 @@ export default function ProductsPage() {
                             {/* Master Entries List */}
                             <Card className="overflow-hidden">
                                 <Table>
-                                    <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
+                                    <TableHeader className="bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm">
                                         <TableRow className="text-xs">
                                             <TableHead className="py-2 h-9">Name / Code</TableHead>
                                             <TableHead className="py-2 h-9">Keterangan</TableHead>
@@ -797,10 +797,10 @@ export default function ProductsPage() {
                                     </TableHeader>
                                     <TableBody>
                                         {activeMasterTab === 'satuans' && satuans.map((s) => (
-                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
-                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.satuan}</TableCell>
-                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 dark:text-slate-50 group-hover:text-blue-600 transition-colors">{s.satuan}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500 dark:text-slate-400">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{s.oldId || '-'}</TableCell>
                                                 <TableCell className="py-2 text-right">
                                                     <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('satuan', s.id)}>
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -809,10 +809,10 @@ export default function ProductsPage() {
                                             </TableRow>
                                         ))}
                                         {activeMasterTab === 'types' && types.map((s) => (
-                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
-                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.typebarang}</TableCell>
-                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 dark:text-slate-50 group-hover:text-blue-600 transition-colors">{s.typebarang}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500 dark:text-slate-400">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{s.oldId || '-'}</TableCell>
                                                 <TableCell className="py-2 text-right">
                                                     <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('type', s.id)}>
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -821,10 +821,10 @@ export default function ProductsPage() {
                                             </TableRow>
                                         ))}
                                         {activeMasterTab === 'jenis' && jenisList.map((s) => (
-                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
-                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.namajenis}</TableCell>
-                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 dark:text-slate-50 group-hover:text-blue-600 transition-colors">{s.namajenis}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500 dark:text-slate-400">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{s.oldId || '-'}</TableCell>
                                                 <TableCell className="py-2 text-right">
                                                     <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('jenis', s.id)}>
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -833,10 +833,10 @@ export default function ProductsPage() {
                                             </TableRow>
                                         ))}
                                         {activeMasterTab === 'gudangs' && gudangs.map((s) => (
-                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
-                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.namaGudang}</TableCell>
-                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 dark:text-slate-50 group-hover:text-blue-600 transition-colors">{s.namaGudang}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500 dark:text-slate-400">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{s.oldId || '-'}</TableCell>
                                                 <TableCell className="py-2 text-right">
                                                     <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('gudang', s.id)}>
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -896,7 +896,7 @@ export default function ProductsPage() {
                                 </div>
 
                                 <Table className="border border-muted/50 rounded-lg overflow-hidden">
-                                    <TableHeader className="bg-slate-50/80 backdrop-blur-sm text-xs">
+                                    <TableHeader className="bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm text-xs">
                                         <TableRow>
                                             <TableHead className="py-2 h-9 w-[200px]">SKU / Part Code</TableHead>
                                             <TableHead className="py-2 h-9">Attributes (Color/Dim)</TableHead>
@@ -908,37 +908,37 @@ export default function ProductsPage() {
                                     <TableBody className="text-xs">
                                         {selectedProduct.skus?.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={5} className="text-center py-6 text-slate-500">
+                                                <TableCell colSpan={5} className="text-center py-6 text-slate-500 dark:text-slate-400">
                                                     No variants found. Add a variant SKU to start inventory logs.
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
                                             selectedProduct.skus.map((sku) => (
-                                                <TableRow key={sku.id} className="hover:bg-slate-50/50 transition-colors">
+                                                <TableRow key={sku.id} className="hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
                                                     <TableCell className="py-2">
                                                         <div>
-                                                            <p className="font-semibold text-slate-900">{sku.sku}</p>
-                                                            <span className="text-[10px] text-slate-500">Part: {sku.part}</span>
+                                                            <p className="font-semibold text-slate-900 dark:text-slate-50">{sku.sku}</p>
+                                                            <span className="text-[10px] text-slate-500 dark:text-slate-400">Part: {sku.part}</span>
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="py-2">
                                                         <div>
-                                                            <p className="font-medium text-slate-700">{sku.warna || 'No Color'}</p>
+                                                            <p className="font-medium text-slate-700 dark:text-slate-300">{sku.warna || 'No Color'}</p>
                                                             {(sku.lebar || sku.panjang) && (
-                                                                <span className="text-[10px] text-slate-500">Dim: {sku.lebar}x{sku.panjang} {sku.ukuran}</span>
+                                                                <span className="text-[10px] text-slate-500 dark:text-slate-400">Dim: {sku.lebar}x{sku.panjang} {sku.ukuran}</span>
                                                             )}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="py-2">
                                                         <div>
-                                                            <p className="font-medium text-slate-700">{sku.gudangRelation?.namaGudang || sku.gudang || 'KGD-01'}</p>
-                                                            {sku.rak && <span className="text-[10px] text-slate-500">Rak: {sku.rak} | Loc: {sku.lokasi}</span>}
+                                                            <p className="font-medium text-slate-700 dark:text-slate-300">{sku.gudangRelation?.namaGudang || sku.gudang || 'KGD-01'}</p>
+                                                            {sku.rak && <span className="text-[10px] text-slate-500 dark:text-slate-400">Rak: {sku.rak} | Loc: {sku.lokasi}</span>}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-right py-2">
                                                         <div>
                                                             <p className="font-semibold text-emerald-600">Rp {sku.hargaJual.toLocaleString()}</p>
-                                                            <span className="text-[10px] text-slate-500">Cost: Rp {sku.hargaBeli.toLocaleString()}</span>
+                                                            <span className="text-[10px] text-slate-500 dark:text-slate-400">Cost: Rp {sku.hargaBeli.toLocaleString()}</span>
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-center py-2">

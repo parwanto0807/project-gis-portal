@@ -378,29 +378,29 @@ export default function TemuanPeduliPage() {
             {/* Desktop Header Area */}
             <div className="hidden sm:flex justify-between items-start mb-4">
                 <div className="flex flex-col gap-1.5">
-                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
                         <Breadcrumb>
                             <BreadcrumbList className="text-[10px] md:text-xs">
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">Dashboard</BreadcrumbLink>
+                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">Dashboard</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin/audit" className="text-slate-500 hover:text-slate-900">Audit</BreadcrumbLink>
+                                    <BreadcrumbLink href="/admin/audit" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">Audit</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="text-slate-900 font-semibold">Temuan Peduli</BreadcrumbPage>
+                                    <BreadcrumbPage className="text-slate-900 dark:text-slate-50 font-semibold">Temuan Peduli</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </Badge>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight flex items-center gap-2">
                             <ListChecks className="w-5 h-5 text-indigo-600" />
                             Temuan Peduli Bersinergi
                         </h1>
-                        <p className="text-xs text-slate-500">Daftar temuan audit internal dari berbagai area gedung.</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Daftar temuan audit internal dari berbagai area gedung.</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -422,19 +422,19 @@ export default function TemuanPeduliPage() {
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                     <Input 
                         placeholder="Search by area, description, or pelapor..." 
-                        className="pl-8 h-8 text-xs bg-white border-slate-200 w-full shadow-sm"
+                        className="pl-8 h-8 text-xs bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 w-full shadow-sm"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
-                <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-white p-0.5 rounded-lg border border-slate-200 shadow-sm scrollbar-hide">
+                <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-white dark:bg-slate-950 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm scrollbar-hide">
                     {['', 'Man', 'Machine', 'Material', 'Method'].map(kat => (
                         <Button 
                             key={kat}
                             variant={filterKategori === kat ? 'default' : 'ghost'} 
                             onClick={() => setFilterKategori(kat)}
-                            className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider whitespace-nowrap ${filterKategori === kat ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
+                            className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider whitespace-nowrap ${filterKategori === kat ? 'bg-slate-900 dark:bg-slate-100 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900'}`}
                         >
                             {kat === '' ? 'Semua Kategori' : kat}
                         </Button>
@@ -442,21 +442,21 @@ export default function TemuanPeduliPage() {
                 </div>
             </div>
 
-            <Card className="bg-white shadow-sm border border-slate-200">
+            <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
                 <CardContent className="p-0">
                     {/* Desktop / Tablet View (Table) */}
                     <div className="hidden md:block overflow-x-auto min-h-[400px]">
                         <Table className="min-w-full">
-                            <TableHeader className="bg-slate-50 border-b border-slate-200">
+                            <TableHeader className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
                                 <TableRow className="hover:bg-transparent">
-                                    <TableHead className="w-[60px] font-semibold text-slate-500 text-xs h-9 py-2 pl-4">No</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[140px]">Tanggal & Jam</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[180px]">Area / Tempat</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[160px]">Kategori 4M</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2">Deskripsi Temuan</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[150px]">Diinput Oleh</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[120px]">Foto</TableHead>
-                                    <TableHead className="text-right font-semibold text-slate-500 text-xs h-9 py-2 pr-4 w-[100px]">Aksi</TableHead>
+                                    <TableHead className="w-[60px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pl-4">No</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[140px]">Tanggal & Jam</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[180px]">Area / Tempat</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[160px]">Kategori 4M</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Deskripsi Temuan</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[150px]">Diinput Oleh</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[120px]">Foto</TableHead>
+                                    <TableHead className="text-right font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pr-4 w-[100px]">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -470,18 +470,18 @@ export default function TemuanPeduliPage() {
                                     </TableRow>
                                 ) : (
                                     paginatedData.map((item, index) => (
-                                        <TableRow key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                                            <TableCell className="py-2 pl-4 text-xs font-medium text-slate-600">{(page - 1) * ITEMS_PER_PAGE + index + 1}</TableCell>
+                                        <TableRow key={item.id} className="hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                                            <TableCell className="py-2 pl-4 text-xs font-medium text-slate-600 dark:text-slate-400">{(page - 1) * ITEMS_PER_PAGE + index + 1}</TableCell>
                                             <TableCell className="py-2">
                                                 <div className="flex flex-col">
-                                                    <span className="font-semibold text-slate-900 text-xs">{formatDateDDMMM(item.tanggal)}</span>
-                                                    <span className="text-[10px] text-slate-500">{item.jam}</span>
+                                                    <span className="font-semibold text-slate-900 dark:text-slate-50 text-xs">{formatDateDDMMM(item.tanggal)}</span>
+                                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{item.jam}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 <div className="flex flex-col">
-                                                    <span className="font-semibold text-slate-900 text-xs">{item.area}</span>
-                                                    <span className="text-[10px] text-slate-500">{item.tempatTemuan}</span>
+                                                    <span className="font-semibold text-slate-900 dark:text-slate-50 text-xs">{item.area}</span>
+                                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{item.tempatTemuan}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
@@ -490,18 +490,18 @@ export default function TemuanPeduliPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
-                                                <div className="text-xs text-slate-700 max-w-[200px] truncate" title={item.temuan}>
+                                                <div className="text-xs text-slate-700 dark:text-slate-300 max-w-[200px] truncate" title={item.temuan}>
                                                     {item.temuan}
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
-                                                <span className="text-xs font-medium text-slate-700">
+                                                <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
                                                     {item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 {item.fotoUrls && item.fotoUrls.length > 0 ? (
-                                                    <Button variant="ghost" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-6 px-2 text-[10px] gap-1 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
+                                                    <Button variant="ghost" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-6 px-2 text-[10px] gap-1 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:bg-indigo-950/40">
                                                         <ImageIcon className="w-3 h-3" /> {item.fotoUrls.length} Foto
                                                     </Button>
                                                 ) : <span className="text-slate-400 text-xs">-</span>}
@@ -527,21 +527,21 @@ export default function TemuanPeduliPage() {
                     </div>
 
                     {/* Pagination Footer */}
-                    <div className="flex flex-col md:flex-row items-center justify-between p-4 border-t border-slate-200 gap-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between p-4 border-t border-slate-200 dark:border-slate-800 gap-4">
                         <div className="space-y-0.5">
-                            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                                Total Result: <span className="text-slate-900">{filteredData.length} Temuan</span>
+                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                Total Result: <span className="text-slate-900 dark:text-slate-50">{filteredData.length} Temuan</span>
                             </p>
                             <p className="text-[9px] text-slate-400">Page {page} of {totalPages}</p>
                         </div>
                         
-                        <div className="flex items-center gap-1 bg-slate-50 p-0.5 rounded-lg border border-slate-200">
+                        <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-900 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800">
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 disabled={page === 1 || loading}
                                 onClick={() => setPage(p => p - 1)}
-                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white hover:shadow-sm transition-all text-slate-500"
+                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white dark:bg-slate-950 hover:shadow-sm transition-all text-slate-500 dark:text-slate-400"
                             >
                                 <ArrowLeft className="w-3.5 h-3.5" />
                             </Button>
@@ -557,7 +557,7 @@ export default function TemuanPeduliPage() {
                                             variant={page === pageNum ? 'default' : 'ghost'}
                                             size="sm"
                                             onClick={() => setPage(pageNum)}
-                                            className={`rounded-md h-7 w-7 font-semibold text-[10px] min-w-[28px] p-0 ${page === pageNum ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:bg-white hover:text-slate-700'}`}
+                                            className={`rounded-md h-7 w-7 font-semibold text-[10px] min-w-[28px] p-0 ${page === pageNum ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 shadow-sm border border-slate-200/50' : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:bg-slate-950 hover:text-slate-700 dark:text-slate-300'}`}
                                         >
                                             {pageNum}
                                         </Button>
@@ -570,7 +570,7 @@ export default function TemuanPeduliPage() {
                                 size="sm"
                                 disabled={page === totalPages || loading}
                                 onClick={() => setPage(p => p + 1)}
-                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white hover:shadow-sm transition-all text-slate-500"
+                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white dark:bg-slate-950 hover:shadow-sm transition-all text-slate-500 dark:text-slate-400"
                             >
                                 <ArrowRight className="w-3.5 h-3.5" />
                             </Button>
@@ -580,44 +580,44 @@ export default function TemuanPeduliPage() {
                     {/* Mobile View (Cards) */}
                     <div className="block md:hidden space-y-3 p-3">
                         {loading ? (
-                            <div className="text-center py-10 text-slate-400 text-xs border rounded-lg border-slate-200">Memuat data...</div>
+                            <div className="text-center py-10 text-slate-400 text-xs border rounded-lg border-slate-200 dark:border-slate-800">Memuat data...</div>
                         ) : paginatedData.length === 0 ? (
-                            <div className="text-center py-10 text-slate-400 text-xs border rounded-lg border-slate-200">Belum ada data temuan.</div>
+                            <div className="text-center py-10 text-slate-400 text-xs border rounded-lg border-slate-200 dark:border-slate-800">Belum ada data temuan.</div>
                         ) : (
                             <div className="space-y-3">
                                 {paginatedData.map((item, index) => (
-                                    <div key={item.id} className="bg-white rounded-xl p-3 shadow-sm border border-slate-200 flex flex-col gap-2">
+                                    <div key={item.id} className="bg-white dark:bg-slate-950 rounded-xl p-3 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col gap-2">
                                         <div className="flex justify-between items-start gap-2">
                                             <div className="flex-1">
-                                                <Badge variant="outline" className="mb-1 bg-slate-50 text-[9px] px-1.5 py-0">#{((page - 1) * ITEMS_PER_PAGE) + index + 1}</Badge>
-                                                <h3 className="font-semibold text-slate-900 text-xs leading-tight">{item.area}</h3>
-                                                <p className="text-[10px] text-slate-500 mt-0.5">{item.tempatTemuan}</p>
+                                                <Badge variant="outline" className="mb-1 bg-slate-50 dark:bg-slate-900 text-[9px] px-1.5 py-0">#{((page - 1) * ITEMS_PER_PAGE) + index + 1}</Badge>
+                                                <h3 className="font-semibold text-slate-900 dark:text-slate-50 text-xs leading-tight">{item.area}</h3>
+                                                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{item.tempatTemuan}</p>
                                             </div>
                                             <div className="text-right shrink-0">
-                                                <div className="text-[11px] font-semibold text-slate-700">{formatDateDDMMM(item.tanggal)}</div>
-                                                <div className="text-[10px] text-slate-500">{item.jam}</div>
+                                                <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{formatDateDDMMM(item.tanggal)}</div>
+                                                <div className="text-[10px] text-slate-500 dark:text-slate-400">{item.jam}</div>
                                             </div>
                                         </div>
                                         
-                                        <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col gap-1.5 mt-1">
+                                        <div className="bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-100 flex flex-col gap-1.5 mt-1">
                                             <div>
                                                 <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Kategori 4M</div>
                                                 <div className="flex flex-wrap gap-1">{formatKategori(item.kategori4M)}</div>
                                             </div>
                                             <div>
                                                 <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-1 mt-1">Deskripsi</div>
-                                                <p className="text-xs text-slate-700 leading-relaxed">{item.temuan}</p>
+                                                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{item.temuan}</p>
                                             </div>
                                         </div>
 
                                         <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                                            <div className="text-[10px] text-slate-500">
-                                                <span className="font-medium text-slate-700">{item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}</span>
+                                            <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                                                <span className="font-medium text-slate-700 dark:text-slate-300">{item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}</span>
                                             </div>
                                             
                                             <div className="flex items-center gap-1">
                                                 {item.fotoUrls && item.fotoUrls.length > 0 && (
-                                                    <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-[10px] gap-1.5 text-indigo-600 bg-indigo-50 border-indigo-100 hover:bg-indigo-100 mr-1 px-2">
+                                                    <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-[10px] gap-1.5 text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-100 dark:border-indigo-900/50 hover:bg-indigo-100 mr-1 px-2">
                                                         <ImageIcon className="w-3 h-3" /> {item.fotoUrls.length} Foto
                                                     </Button>
                                                 )}
@@ -648,13 +648,13 @@ export default function TemuanPeduliPage() {
             />
 
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                <DialogContent className="max-w-3xl p-0 overflow-hidden bg-white border-slate-200 shadow-xl rounded-xl">
-                    <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10">
+                <DialogContent className="max-w-3xl p-0 overflow-hidden bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-xl rounded-xl">
+                    <div className="p-4 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between sticky top-0 z-10">
                         <div>
-                            <DialogTitle className="text-sm font-bold flex items-center gap-2 text-slate-900">
+                            <DialogTitle className="text-sm font-bold flex items-center gap-2 text-slate-900 dark:text-slate-50">
                                 <ImageIcon className="w-4 h-4 text-indigo-500" /> Dokumentasi Temuan
                             </DialogTitle>
-                            <p className="text-[10px] text-slate-500 mt-0.5">
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
                                 Terdapat {previewImages.length} foto dokumentasi untuk temuan ini.
                             </p>
                         </div>
@@ -662,8 +662,8 @@ export default function TemuanPeduliPage() {
                     <div className="p-4 max-h-[75vh] overflow-y-auto">
                         <div className={`grid grid-cols-1 ${previewImages.length > 1 ? 'md:grid-cols-2' : ''} gap-4`}>
                             {previewImages.map((url, i) => (
-                                <div key={i} className="flex flex-col bg-white p-2 rounded-lg border border-slate-100 shadow-sm group">
-                                    <div className="relative flex justify-center items-center rounded-md overflow-hidden bg-slate-100 min-h-[200px]">
+                                <div key={i} className="flex flex-col bg-white dark:bg-slate-950 p-2 rounded-lg border border-slate-100 shadow-sm group">
+                                    <div className="relative flex justify-center items-center rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 min-h-[200px]">
                                         <img 
                                             src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
                                             alt={`Foto ${i+1}`} 
@@ -682,14 +682,14 @@ export default function TemuanPeduliPage() {
 
             {/* View Detail Dialog */}
             <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-                <DialogContent className="max-w-[95vw] sm:max-w-4xl rounded-xl border border-slate-200 shadow-xl p-0 overflow-hidden bg-white">
+                <DialogContent className="max-w-[95vw] sm:max-w-4xl rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl p-0 overflow-hidden bg-white dark:bg-slate-950">
                     {selectedDetail && (
                         <div className="flex flex-col sm:flex-row w-full h-full max-h-[85vh] overflow-y-auto sm:overflow-hidden">
                             {/* Left: Photos */}
-                            <div className="w-full sm:w-2/5 min-h-[200px] sm:min-h-full bg-slate-100 flex flex-col relative overflow-hidden border-r border-slate-200">
+                            <div className="w-full sm:w-2/5 min-h-[200px] sm:min-h-full bg-slate-100 dark:bg-slate-800 flex flex-col relative overflow-hidden border-r border-slate-200 dark:border-slate-800">
                                 {selectedDetail.fotoUrls && selectedDetail.fotoUrls.length > 0 ? (
                                     <>
-                                        <div className="flex-1 w-full bg-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group" onClick={() => viewPhotos(selectedDetail.fotoUrls)}>
+                                        <div className="flex-1 w-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden cursor-pointer group" onClick={() => viewPhotos(selectedDetail.fotoUrls)}>
                                             <img 
                                                 src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${selectedDetail.fotoUrls[0]}`} 
                                                 alt="Dokumentasi Temuan Utama" 
@@ -698,11 +698,11 @@ export default function TemuanPeduliPage() {
                                             <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors" />
                                         </div>
                                         {selectedDetail.fotoUrls.length > 1 && (
-                                            <div className="h-24 bg-white border-t border-slate-200 p-2 flex gap-2 overflow-x-auto shrink-0">
+                                            <div className="h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 p-2 flex gap-2 overflow-x-auto shrink-0">
                                                 {selectedDetail.fotoUrls.slice(1).map((url: string, i: number) => (
                                                     <div 
                                                         key={i} 
-                                                        className="h-full w-20 shrink-0 rounded-md overflow-hidden border border-slate-200 cursor-pointer hover:border-indigo-400"
+                                                        className="h-full w-20 shrink-0 rounded-md overflow-hidden border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-indigo-400"
                                                         onClick={() => viewPhotos(selectedDetail.fotoUrls)}
                                                     >
                                                         <img 
@@ -721,7 +721,7 @@ export default function TemuanPeduliPage() {
                                     </div>
                                 )}
                                 <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5 pointer-events-none">
-                                    <Badge className="bg-indigo-500 text-white font-semibold uppercase text-[9px] border-0 shadow-sm px-1.5 py-0">
+                                    <Badge className="bg-indigo-500 dark:bg-indigo-600 text-white font-semibold uppercase text-[9px] border-0 shadow-sm px-1.5 py-0">
                                         {selectedDetail.area}
                                     </Badge>
                                 </div>
@@ -732,61 +732,61 @@ export default function TemuanPeduliPage() {
                                 <div className="space-y-5 flex-1">
                                     <div className="flex justify-between items-start">
                                         <div className="space-y-0.5">
-                                            <DialogTitle className="text-xl font-black text-slate-900 tracking-tight uppercase">
+                                            <DialogTitle className="text-xl font-black text-slate-900 dark:text-slate-50 tracking-tight uppercase">
                                                 {selectedDetail.area}
                                             </DialogTitle>
                                             <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Detail Temuan Peduli Bersinergi</p>
                                         </div>
-                                        <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500 border border-indigo-100">
+                                        <div className="w-8 h-8 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg flex items-center justify-center text-indigo-500 border border-indigo-100 dark:border-indigo-900/50">
                                             <ListChecks className="w-4 h-4" />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-3 bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                                    <div className="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg">
                                         <div className="space-y-0.5">
-                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
                                                 <MapPin className="w-2.5 h-2.5 mr-1" /> Tempat Temuan
                                             </Label>
-                                            <p className="text-xs font-semibold text-slate-900">{selectedDetail.tempatTemuan || "N/A"}</p>
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{selectedDetail.tempatTemuan || "N/A"}</p>
                                         </div>
                                         <div className="space-y-0.5">
-                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
                                                 <Calendar className="w-2.5 h-2.5 mr-1" /> Waktu Temuan
                                             </Label>
-                                            <p className="text-xs font-semibold text-slate-900">{formatDateDDMMM(selectedDetail.tanggal)} {selectedDetail.jam}</p>
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{formatDateDDMMM(selectedDetail.tanggal)} {selectedDetail.jam}</p>
                                         </div>
                                         <div className="space-y-0.5">
-                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
                                                 <User className="w-2.5 h-2.5 mr-1" /> Pelapor
                                             </Label>
-                                            <p className="text-xs font-semibold text-slate-900">
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">
                                                 {selectedDetail.user ? `${selectedDetail.user.firstName} ${selectedDetail.user.lastName}` : selectedDetail.diInputOleh}
                                             </p>
                                         </div>
                                         <div className="space-y-0.5">
-                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
                                                 <Tags className="w-2.5 h-2.5 mr-1" /> Kategori 4M
                                             </Label>
                                             <div className="flex flex-wrap gap-1 mt-0.5">
                                                 {Array.isArray(selectedDetail.kategori4M) 
                                                     ? selectedDetail.kategori4M.map((c: string) => (
-                                                        <Badge key={c} variant="secondary" className="bg-slate-200 text-slate-700 border-slate-300 text-[9px] px-1.5 py-0">
+                                                        <Badge key={c} variant="secondary" className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 text-[9px] px-1.5 py-0">
                                                             {c}
                                                         </Badge>
                                                     ))
-                                                    : <Badge variant="secondary" className="bg-slate-200 text-slate-700 border-slate-300 text-[9px] px-1.5 py-0">{selectedDetail.kategori4M}</Badge>
+                                                    : <Badge variant="secondary" className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 text-[9px] px-1.5 py-0">{selectedDetail.kategori4M}</Badge>
                                                 }
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2 relative">
-                                        <Label className="text-[10px] font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-1.5 relative z-10">
+                                        <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5 relative z-10">
                                             <Info className="w-3.5 h-3.5" /> Deskripsi Temuan
                                         </Label>
-                                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative overflow-hidden min-h-[120px]">
+                                        <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 relative overflow-hidden min-h-[120px]">
                                             <Info className="w-24 h-24 absolute -left-4 -top-4 text-slate-200/50 -rotate-12 pointer-events-none" />
-                                            <p className="text-xs text-slate-700 font-medium leading-relaxed italic relative z-10">
+                                            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed italic relative z-10">
                                                 "{selectedDetail.temuan}"
                                             </p>
                                         </div>

@@ -49,27 +49,27 @@ const SummaryCard = ({ title, value, icon: Icon, colorClass, delay = 0 }: any) =
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay }}
     >
-        <Card className="bg-white shadow-sm border border-slate-200">
+        <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
             <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{title}</p>
+                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{title}</p>
                     <Icon className={`w-4 h-4 ${colorClass.split(' ')[1] || 'text-slate-400'}`} />
                 </div>
-                <h4 className={`text-2xl font-bold ${colorClass.split(' ')[1]?.replace('500', '600') || 'text-slate-900'}`}>{value.toLocaleString()}</h4>
+                <h4 className={`text-2xl font-bold ${colorClass.split(' ')[1]?.replace('500', '600') || 'text-slate-900 dark:text-slate-50'}`}>{value.toLocaleString()}</h4>
             </CardContent>
         </Card>
     </motion.div>
 );
 
 const DeptMiniCard = ({ name, count }: any) => (
-    <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200 hover:bg-white hover:shadow-sm transition-all group">
+    <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-white dark:bg-slate-950 hover:shadow-sm transition-all group">
         <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:border-slate-900 transition-colors">
+            <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-sm group-hover:bg-slate-900 dark:bg-slate-100 group-hover:border-slate-900 transition-colors">
                 <Briefcase className="w-3 h-3 text-slate-400 group-hover:text-white transition-colors" />
             </div>
-            <span className="text-[10px] font-semibold text-slate-600 uppercase tracking-tight truncate max-w-[100px]">{name}</span>
+            <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-tight truncate max-w-[100px]">{name}</span>
         </div>
-        <span className="font-bold text-slate-900 text-xs">{count}</span>
+        <span className="font-bold text-slate-900 dark:text-slate-50 text-xs">{count}</span>
     </div>
 );
 
@@ -127,9 +127,9 @@ export default function EmployeesMasterPage() {
             {/* Mobile Native App Bar */}
             <div className="sm:hidden flex items-center justify-between bg-zinc-50 border-b border-slate-200/60 pb-3 mt-1 mb-2 px-1 sticky top-0 z-50">
                 <div className="flex flex-col">
-                    <h1 className="text-xl font-bold text-slate-900 tracking-tight leading-none">Employees</h1>
+                    <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight leading-none">Employees</h1>
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-[0.2em] mt-1.5 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> Master Directory
+                        <span className="w-1.5 h-1.5 bg-indigo-500 dark:bg-indigo-600 rounded-full"></span> Master Directory
                     </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -137,7 +137,7 @@ export default function EmployeesMasterPage() {
                         variant="ghost" 
                         size="icon" 
                         onClick={fetchEmployees}
-                        className="rounded-full bg-white border border-slate-200 shadow-sm h-9 w-9 active:scale-95 transition-all text-slate-600 outline-none"
+                        className="rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm h-9 w-9 active:scale-95 transition-all text-slate-600 dark:text-slate-400 outline-none"
                     >
                         <RefreshCw className={loading ? "animate-spin w-4 h-4 text-indigo-500" : "w-4 h-4"} />
                     </Button>
@@ -147,29 +147,29 @@ export default function EmployeesMasterPage() {
             {/* Desktop Header Area */}
             <div className="hidden sm:flex justify-between items-start mb-4">
                 <div className="flex flex-col gap-1.5">
-                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
                         <Breadcrumb>
                             <BreadcrumbList className="text-[10px] md:text-xs">
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">Dashboard</BreadcrumbLink>
+                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">Dashboard</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin/hr" className="text-slate-500 hover:text-slate-900">HR</BreadcrumbLink>
+                                    <BreadcrumbLink href="/admin/hr" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">HR</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="text-slate-900 font-semibold">Employees</BreadcrumbPage>
+                                    <BreadcrumbPage className="text-slate-900 dark:text-slate-50 font-semibold">Employees</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </Badge>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight flex items-center gap-2">
                             <Users className="w-5 h-5 text-indigo-600" />
                             Employee Master
                         </h1>
-                        <p className="text-xs text-slate-500">Personnel Directory from HRM System.</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Personnel Directory from HRM System.</p>
                     </div>
                 </div>
 
@@ -178,7 +178,7 @@ export default function EmployeesMasterPage() {
                         variant="outline" 
                         size="icon" 
                         onClick={fetchEmployees} 
-                        className="h-8 w-8 text-slate-600"
+                        className="h-8 w-8 text-slate-600 dark:text-slate-400"
                     >
                         <RefreshCw className={loading ? "animate-spin w-3.5 h-3.5" : "w-3.5 h-3.5"} />
                     </Button>
@@ -191,9 +191,9 @@ export default function EmployeesMasterPage() {
                     variant="ghost" 
                     size="sm"
                     onClick={() => setShowInsights(!showInsights)}
-                    className="group flex items-center gap-2 hover:bg-slate-100 rounded-md px-3 h-8 border border-slate-200 transition-all font-semibold text-xs text-slate-500 hover:text-slate-900 w-full md:w-auto bg-white shadow-sm"
+                    className="group flex items-center gap-2 hover:bg-slate-100 dark:bg-slate-800 rounded-md px-3 h-8 border border-slate-200 dark:border-slate-800 transition-all font-semibold text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 w-full md:w-auto bg-white dark:bg-slate-950 shadow-sm"
                 >
-                    <Filter className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600" />
+                    <Filter className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:text-slate-400" />
                     {showInsights ? 'Hide Insights' : 'Show Insights'}
                     {showInsights ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 </Button>
@@ -214,7 +214,7 @@ export default function EmployeesMasterPage() {
                                         title="Total Personnel" 
                                         value={stats.total} 
                                         icon={Users2} 
-                                        colorClass="bg-indigo-50 text-indigo-500" 
+                                        colorClass="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500" 
                                         delay={0.1}
                                     />
                                     <SummaryCard 
@@ -234,11 +234,11 @@ export default function EmployeesMasterPage() {
                                 </div>
 
                                 {/* Department Breakdown */}
-                                <Card className="bg-white shadow-sm border border-slate-200">
+                                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
                                     <CardContent className="p-4">
                                         <div className="flex items-center gap-2 mb-3">
                                             <Building2 className="w-4 h-4 text-slate-400" />
-                                            <h4 className="font-semibold text-xs uppercase tracking-wider text-slate-500">Total Per Department (Active Only)</h4>
+                                            <h4 className="font-semibold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Per Department (Active Only)</h4>
                                         </div>
                                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                                             {deptStats.map((dept) => (
@@ -259,31 +259,31 @@ export default function EmployeesMasterPage() {
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                     <Input 
                         placeholder="Search by name, nik, or id..." 
-                        className="pl-8 h-8 text-xs bg-slate-50 border-slate-200 w-full"
+                        className="pl-8 h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
                         value={search}
                         onChange={(e) => handleSearch(e.target.value)}
                     />
                 </div>
 
-                <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-slate-50 p-0.5 rounded-lg border border-slate-200 scrollbar-hide">
+                <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-slate-50 dark:bg-slate-900 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800 scrollbar-hide">
                     <Button 
                         variant={statusFilter === '' ? 'default' : 'ghost'} 
                         onClick={() => handleStatusFilter('')}
-                        className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider ${statusFilter === '' ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider ${statusFilter === '' ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 shadow-sm border border-slate-200/50' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
                     >
                         All
                     </Button>
                     <Button 
                         variant={statusFilter === 'AKTIF' ? 'default' : 'ghost'} 
                         onClick={() => handleStatusFilter('AKTIF')}
-                        className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider ${statusFilter === 'AKTIF' ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider ${statusFilter === 'AKTIF' ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 shadow-sm border border-slate-200/50' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
                     >
                         Active
                     </Button>
                     <Button 
                         variant={statusFilter === 'TIDAK_AKTIF' ? 'default' : 'ghost'} 
                         onClick={() => handleStatusFilter('TIDAK_AKTIF')}
-                        className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider ${statusFilter === 'TIDAK_AKTIF' ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider ${statusFilter === 'TIDAK_AKTIF' ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 shadow-sm border border-slate-200/50' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
                     >
                         Inactive
                     </Button>
@@ -291,18 +291,18 @@ export default function EmployeesMasterPage() {
             </div>
 
             {/* Desktop Table View */}
-            <Card className="hidden lg:block bg-white shadow-sm border border-slate-200">
+            <Card className="hidden lg:block bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
                 <CardContent className="p-0">
                     <div className="overflow-x-auto min-h-[400px]">
                         <Table>
-                            <TableHeader className="bg-slate-50 border-b border-slate-200">
+                            <TableHeader className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
                                 <TableRow className="hover:bg-transparent">
-                                    <TableHead className="w-[120px] font-semibold text-slate-500 text-xs h-9 py-2 pl-4">Emp ID</TableHead>
-                                    <TableHead className="w-[250px] font-semibold text-slate-500 text-xs h-9 py-2">Personnel Details</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2">Organization</TableHead>
-                                    <TableHead className="w-[150px] font-semibold text-slate-500 text-xs h-9 py-2">Join Date</TableHead>
-                                    <TableHead className="w-[120px] font-semibold text-slate-500 text-xs h-9 py-2">Status</TableHead>
-                                    <TableHead className="text-right font-semibold text-slate-500 text-xs h-9 py-2 pr-4">Actions</TableHead>
+                                    <TableHead className="w-[120px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pl-4">Emp ID</TableHead>
+                                    <TableHead className="w-[250px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Personnel Details</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Organization</TableHead>
+                                    <TableHead className="w-[150px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Join Date</TableHead>
+                                    <TableHead className="w-[120px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Status</TableHead>
+                                    <TableHead className="text-right font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pr-4">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -311,7 +311,7 @@ export default function EmployeesMasterPage() {
                                         <TableRow key={i} className="animate-pulse">
                                             {Array(6).fill(0).map((_, j) => (
                                                 <TableCell key={j} className="py-2">
-                                                    <div className="h-4 bg-slate-100 rounded w-full opacity-40" />
+                                                    <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-full opacity-40" />
                                                 </TableCell>
                                             ))}
                                         </TableRow>
@@ -327,30 +327,30 @@ export default function EmployeesMasterPage() {
                                     </TableRow>
                                 ) : (
                                     employees.map((employee) => (
-                                        <TableRow key={employee.EMPL_ID} className="group hover:bg-slate-50/50 transition-colors">
+                                        <TableRow key={employee.EMPL_ID} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
                                             <TableCell className="pl-4 py-2">
-                                                <span className="font-medium text-slate-600 text-xs">{employee.EMPL_ID}</span>
+                                                <span className="font-medium text-slate-600 dark:text-slate-400 text-xs">{employee.EMPL_ID}</span>
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 <div className="flex flex-col">
-                                                    <span className="font-semibold text-slate-900 text-xs">{employee.NAMA}</span>
-                                                    <span className="text-[10px] text-slate-500">{employee.NIK}</span>
+                                                    <span className="font-semibold text-slate-900 dark:text-slate-50 text-xs">{employee.NAMA}</span>
+                                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{employee.NIK}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 <div className="flex flex-col gap-0.5">
                                                     <div className="flex items-center gap-1.5">
                                                         <Building2 className="w-3 h-3 text-slate-400" />
-                                                        <span className="font-medium text-slate-700 text-[11px] lowercase first-letter:uppercase">{employee.mstdept?.CNM_DEPT || "Unknown Dept"}</span>
+                                                        <span className="font-medium text-slate-700 dark:text-slate-300 text-[11px] lowercase first-letter:uppercase">{employee.mstdept?.CNM_DEPT || "Unknown Dept"}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <UserCheck className="w-3 h-3 text-slate-300" />
-                                                        <span className="font-medium text-slate-500 text-[10px] uppercase">{employee.mstjab?.CNM_JAB || "-"}</span>
+                                                        <span className="font-medium text-slate-500 dark:text-slate-400 text-[10px] uppercase">{employee.mstjab?.CNM_JAB || "-"}</span>
                                                     </div>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
-                                                <div className="flex items-center gap-1.5 text-slate-600">
+                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                                                     <Calendar className="w-3 h-3 text-slate-400" />
                                                     <span className="text-xs font-medium">
                                                         {employee.TGL_MSK ? format(new Date(employee.TGL_MSK), 'MMM dd, yyyy') : "-"}
@@ -369,7 +369,7 @@ export default function EmployeesMasterPage() {
                                                 <Button 
                                                     variant="ghost" 
                                                     size="sm" 
-                                                    className="w-7 h-7 p-0 rounded-md text-slate-400 hover:text-slate-900 hover:bg-slate-100"
+                                                    className="w-7 h-7 p-0 rounded-md text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800"
                                                 >
                                                     <ChevronRight className="w-4 h-4" />
                                                 </Button>
@@ -382,21 +382,21 @@ export default function EmployeesMasterPage() {
                     </div>
 
                     {/* Pagination Footer */}
-                    <div className="flex flex-col md:flex-row items-center justify-between p-4 border-t border-slate-200 gap-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between p-4 border-t border-slate-200 dark:border-slate-800 gap-4">
                         <div className="space-y-0.5">
-                            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                                Total Result: <span className="text-slate-900">{pagination.totalItems} Personnel</span>
+                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                Total Result: <span className="text-slate-900 dark:text-slate-50">{pagination.totalItems} Personnel</span>
                             </p>
                             <p className="text-[9px] text-slate-400">Page {page} of {pagination.totalPages}</p>
                         </div>
                         
-                        <div className="flex items-center gap-1 bg-slate-50 p-0.5 rounded-lg border border-slate-200">
+                        <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-900 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800">
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 disabled={page === 1 || loading}
                                 onClick={() => setPage(p => p - 1)}
-                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white hover:shadow-sm transition-all text-slate-500"
+                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white dark:bg-slate-950 hover:shadow-sm transition-all text-slate-500 dark:text-slate-400"
                             >
                                 <ArrowLeft className="w-3.5 h-3.5" />
                             </Button>
@@ -412,7 +412,7 @@ export default function EmployeesMasterPage() {
                                             variant={page === pageNum ? 'default' : 'ghost'}
                                             size="sm"
                                             onClick={() => setPage(pageNum)}
-                                            className={`rounded-md h-7 w-7 font-semibold text-[10px] min-w-[28px] p-0 ${page === pageNum ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:bg-white hover:text-slate-700'}`}
+                                            className={`rounded-md h-7 w-7 font-semibold text-[10px] min-w-[28px] p-0 ${page === pageNum ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 shadow-sm border border-slate-200/50' : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:bg-slate-950 hover:text-slate-700 dark:text-slate-300'}`}
                                         >
                                             {pageNum}
                                         </Button>
@@ -425,7 +425,7 @@ export default function EmployeesMasterPage() {
                                 size="sm"
                                 disabled={page === pagination.totalPages || loading}
                                 onClick={() => setPage(p => p + 1)}
-                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white hover:shadow-sm transition-all text-slate-500"
+                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white dark:bg-slate-950 hover:shadow-sm transition-all text-slate-500 dark:text-slate-400"
                             >
                                 <ArrowRight className="w-3.5 h-3.5" />
                             </Button>
@@ -438,7 +438,7 @@ export default function EmployeesMasterPage() {
             <div className="lg:hidden flex flex-col gap-3 pb-8">
                 {loading ? (
                     Array(5).fill(0).map((_, i) => (
-                        <div key={i} className="animate-pulse bg-white p-4 rounded-[1.5rem] h-28 border border-slate-100/60 shadow-sm" />
+                        <div key={i} className="animate-pulse bg-white dark:bg-slate-950 p-4 rounded-[1.5rem] h-28 border border-slate-100/60 shadow-sm" />
                     ))
                 ) : employees.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-8 text-slate-300">
@@ -447,16 +447,16 @@ export default function EmployeesMasterPage() {
                     </div>
                 ) : (
                     employees.map((employee) => (
-                        <div key={employee.EMPL_ID} className="bg-white rounded-xl p-3 shadow-sm border border-slate-200 active:scale-[0.98] transition-all flex flex-col gap-2">
+                        <div key={employee.EMPL_ID} className="bg-white dark:bg-slate-950 rounded-xl p-3 shadow-sm border border-slate-200 dark:border-slate-800 active:scale-[0.98] transition-all flex flex-col gap-2">
                             {/* Card Header: Avatar & Name */}
                             <div className="flex justify-between items-start gap-2">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-semibold text-xs text-slate-700 uppercase border border-slate-200 shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-semibold text-xs text-slate-700 dark:text-slate-300 uppercase border border-slate-200 dark:border-slate-800 shrink-0">
                                         {employee.NAMA.charAt(0)}
                                     </div>
                                     <div className="flex flex-col">
-                                        <h4 className="font-semibold text-slate-900 text-xs leading-tight line-clamp-1">{employee.NAMA}</h4>
-                                        <span className="text-[9px] text-slate-500 mt-0.5">
+                                        <h4 className="font-semibold text-slate-900 dark:text-slate-50 text-xs leading-tight line-clamp-1">{employee.NAMA}</h4>
+                                        <span className="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5">
                                             {employee.NIK} • {employee.EMPL_ID}
                                         </span>
                                     </div>
@@ -470,19 +470,19 @@ export default function EmployeesMasterPage() {
                             </div>
                             
                             {/* Roles & Dept */}
-                            <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 flex flex-col gap-1.5">
+                            <div className="bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
                                     <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
-                                    <span className="font-medium text-slate-600 text-[10px] truncate">{employee.mstdept?.CNM_DEPT || "Unknown Dept"}</span>
+                                    <span className="font-medium text-slate-600 dark:text-slate-400 text-[10px] truncate">{employee.mstdept?.CNM_DEPT || "Unknown Dept"}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <UserCheck className="w-3 h-3 text-slate-300 shrink-0" />
-                                    <span className="font-medium text-slate-500 text-[10px] uppercase truncate">{employee.mstjab?.CNM_JAB || "-"}</span>
+                                    <span className="font-medium text-slate-500 dark:text-slate-400 text-[10px] uppercase truncate">{employee.mstjab?.CNM_JAB || "-"}</span>
                                 </div>
                             </div>
                             
                             {/* Footer: Date & Arrow */}
-                            <div className="flex justify-between items-center text-[9px] text-slate-500 pt-1 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-[9px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100">
                                 <div className="flex items-center gap-1">
                                     <Calendar className="w-2.5 h-2.5" />
                                     <span className="uppercase tracking-wider">
@@ -507,7 +507,7 @@ export default function EmployeesMasterPage() {
                                 size="sm"
                                 disabled={page === 1 || loading}
                                 onClick={() => setPage(p => p - 1)}
-                                className="h-8 w-8 p-0 rounded-full bg-white border-slate-200"
+                                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"
                             >
                                 <ArrowLeft className="w-3.5 h-3.5" />
                             </Button>
@@ -516,7 +516,7 @@ export default function EmployeesMasterPage() {
                                 size="sm"
                                 disabled={page === pagination.totalPages || loading}
                                 onClick={() => setPage(p => p + 1)}
-                                className="h-8 w-8 p-0 rounded-full bg-white border-slate-200"
+                                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"
                             >
                                 <ArrowRight className="w-3.5 h-3.5" />
                             </Button>
