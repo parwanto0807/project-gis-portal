@@ -34,6 +34,14 @@ import {
 import api from '@/lib/axios';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 type ProductSku = {
     id?: string | number;
@@ -473,82 +481,88 @@ export default function ProductsPage() {
 
     return (
         <div className="space-y-6">
-            {/* Breadcrumb */}
-            <nav className="flex" aria-label="Breadcrumb">
-                <ol className="inline-flex items-center space-x-1 md:space-x-2 text-[11px] font-medium text-muted-foreground">
-                    <li className="inline-flex items-center">
-                        <Link href="/admin/dashboard" className="inline-flex items-center hover:text-primary transition-colors gap-1">
-                            <Home className="w-3 h-3 text-muted-foreground" /> Dashboard
-                        </Link>
-                    </li>
-                    <li>
-                        <div className="flex items-center">
-                            <ChevronRight className="w-3.5 h-3.5 mx-1" />
-                            <span className="hover:text-primary transition-colors cursor-pointer">Master Data</span>
-                        </div>
-                    </li>
-                    <li aria-current="page">
-                        <div className="flex items-center">
-                            <ChevronRight className="w-3.5 h-3.5 mx-1" />
-                            <span className="text-foreground font-semibold">Products & SKUs</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
+            {/* Simple Header with Breadcrumb */}
+            <div className="flex flex-col gap-1.5 mb-4">
+                <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                    <Breadcrumb>
+                        <BreadcrumbList className="text-[10px] md:text-xs">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">
+                                    Dashboard
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="scale-75" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="#" className="text-slate-500 hover:text-slate-900 pointer-events-none">
+                                    Master Data
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="scale-75" />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="font-semibold text-slate-900">Products & SKUs</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </Badge>
 
-            {/* Top Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Products Hub</h1>
-                    <p className="text-muted-foreground mt-2">Manage parent products, normalized SKU variants, and inventory attributes.</p>
-                </div>
-                <div className="flex gap-3">
-                    <Button onClick={openCreateDialog} className="flex items-center gap-2">
-                        <Plus className="w-4 h-4" /> Add Product
-                    </Button>
+                <div className="mt-1 flex justify-between items-start">
+                    <div>
+                        <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                            <Package className="h-5 w-5 text-slate-500" />
+                            Products Hub
+                        </h1>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                            Manage parent products, normalized SKU variants, and inventory attributes.
+                        </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button size="sm" onClick={openCreateDialog} className="flex items-center gap-1.5 h-8 text-xs">
+                            <Plus className="w-3.5 h-3.5" /> Add Product
+                        </Button>
+                    </div>
                 </div>
             </div>
 
             {/* Main Section Tabs */}
             <Tabs defaultValue="products" value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
-                <TabsList className="bg-muted/60 p-1">
-                    <TabsTrigger value="products" className="flex items-center gap-2"><Package className="w-4 h-4" /> Product & SKUs</TabsTrigger>
-                    <TabsTrigger value="attributes" className="flex items-center gap-2"><Layers className="w-4 h-4" /> Master Attributes</TabsTrigger>
+                <TabsList className="bg-slate-100 p-1">
+                    <TabsTrigger value="products" className="flex items-center gap-2 text-xs h-8"><Package className="w-3.5 h-3.5" /> Product & SKUs</TabsTrigger>
+                    <TabsTrigger value="attributes" className="flex items-center gap-2 text-xs h-8"><Layers className="w-3.5 h-3.5" /> Master Attributes</TabsTrigger>
                 </TabsList>
 
                 {/* TAB 1: PRODUCT CATALOG & SKUs */}
                 <TabsContent value="products" className="space-y-6">
                     {/* Analytics Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <Card className="bg-gradient-to-br from-indigo-500/10 via-background to-background">
-                            <CardHeader className="py-3 px-4">
-                                <CardDescription className="text-[11px] font-semibold uppercase tracking-wider text-indigo-400">Total Products</CardDescription>
-                                <CardTitle className="text-2xl font-bold flex items-center justify-between">
-                                    {stats.totalProducts} <Boxes className="w-5 h-5 text-indigo-500 opacity-60" />
-                                </CardTitle>
-                            </CardHeader>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-blue-500/10 via-background to-background">
-                            <CardHeader className="py-3 px-4">
-                                <CardDescription className="text-[11px] font-semibold uppercase tracking-wider text-blue-400">Total SKU Variants</CardDescription>
-                                <CardTitle className="text-2xl font-bold flex items-center justify-between">
-                                    {stats.totalSkus} <Tag className="w-5 h-5 text-blue-500 opacity-60" />
-                                </CardTitle>
-                            </CardHeader>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-amber-500/10 via-background to-background">
-                            <CardHeader className="py-3 px-4">
-                                <CardDescription className="text-[11px] font-semibold uppercase tracking-wider text-amber-400">Out of Stock SKUs</CardDescription>
-                                <CardTitle className="text-2xl font-bold flex items-center justify-between text-amber-500">
-                                    {stats.outOfStock} <AlertTriangle className="w-5 h-5 text-amber-500 opacity-80" />
-                                </CardTitle>
-                            </CardHeader>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-emerald-500/10 via-background to-background">
-                            <CardHeader className="py-2 px-4">
-                                <CardDescription className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">Inventory Value (Assets)</CardDescription>
+                        <Card className="bg-gradient-to-br from-indigo-500/10 via-background to-background rounded-lg border-slate-200">
+                            <CardHeader className="py-3 px-3">
+                                <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">Total Products</CardDescription>
                                 <CardTitle className="text-xl font-bold flex items-center justify-between">
-                                    Rp {stats.totalAssetValue.toLocaleString('id-ID')} <DollarSign className="w-5 h-5 text-emerald-500 opacity-60" />
+                                    {stats.totalProducts} <Boxes className="w-4 h-4 text-indigo-500 opacity-60" />
+                                </CardTitle>
+                            </CardHeader>
+                        </Card>
+                        <Card className="bg-gradient-to-br from-blue-500/10 via-background to-background rounded-lg border-slate-200">
+                            <CardHeader className="py-3 px-3">
+                                <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-blue-400">Total SKU Variants</CardDescription>
+                                <CardTitle className="text-xl font-bold flex items-center justify-between">
+                                    {stats.totalSkus} <Tag className="w-4 h-4 text-blue-500 opacity-60" />
+                                </CardTitle>
+                            </CardHeader>
+                        </Card>
+                        <Card className="bg-gradient-to-br from-amber-500/10 via-background to-background rounded-lg border-slate-200">
+                            <CardHeader className="py-3 px-3">
+                                <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-amber-400">Out of Stock SKUs</CardDescription>
+                                <CardTitle className="text-xl font-bold flex items-center justify-between text-amber-500">
+                                    {stats.outOfStock} <AlertTriangle className="w-4 h-4 text-amber-500 opacity-80" />
+                                </CardTitle>
+                            </CardHeader>
+                        </Card>
+                        <Card className="bg-gradient-to-br from-emerald-500/10 via-background to-background rounded-lg border-slate-200">
+                            <CardHeader className="py-3 px-3">
+                                <CardDescription className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Inventory Value</CardDescription>
+                                <CardTitle className="text-xl font-bold flex items-center justify-between">
+                                    Rp {stats.totalAssetValue.toLocaleString('id-ID')} <DollarSign className="w-4 h-4 text-emerald-500 opacity-60" />
                                 </CardTitle>
                             </CardHeader>
                         </Card>
@@ -583,58 +597,64 @@ export default function ProductsPage() {
                     {/* Product Grid / Table */}
                     <Card className="overflow-hidden">
                         <Table>
-                            <TableHeader className="bg-muted/40">
-                                <TableRow>
-                                    <TableHead className="w-[30%]">Product Name</TableHead>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead>Supplier</TableHead>
-                                    <TableHead>Customer</TableHead>
-                                    <TableHead className="text-center">Variants (SKU)</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
+                            <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
+                                <TableRow className="text-xs">
+                                    <TableHead className="w-[30%] py-2 h-9">Product Name</TableHead>
+                                    <TableHead className="py-2 h-9">Category</TableHead>
+                                    <TableHead className="py-2 h-9">Supplier</TableHead>
+                                    <TableHead className="py-2 h-9">Customer</TableHead>
+                                    <TableHead className="text-center py-2 h-9">Variants (SKU)</TableHead>
+                                    <TableHead className="text-right py-2 h-9">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loadingProducts ? (
                                     <TableRow>
                                         <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
-                                            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-primary" /> Loading products catalogue...
+                                            <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-primary" /> Loading products...
                                         </TableCell>
                                     </TableRow>
                                 ) : products.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
-                                            <Package className="w-10 h-10 mx-auto mb-2 opacity-20" /> No products matches found.
+                                        <TableCell colSpan={6} className="text-center py-10 text-slate-500">
+                                            <div className="flex flex-col items-center justify-center space-y-2">
+                                                <div className="p-2.5 bg-slate-100 rounded-full">
+                                                    <Package className="w-5 h-5 text-slate-400" />
+                                                </div>
+                                                <p className="text-sm font-medium">No products found</p>
+                                                <p className="text-xs">Try adjusting your search or add a new product.</p>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     products.map((prod) => (
-                                        <TableRow key={prod.id} className="hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => handleViewDetail(prod)}>
-                                            <TableCell className="font-semibold text-primary">
+                                        <TableRow key={prod.id} className="group hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => handleViewDetail(prod)}>
+                                            <TableCell className="py-2 font-medium text-xs text-slate-900 group-hover:text-blue-600 transition-colors">
                                                 <div>
                                                     <p>{prod.namaBarang}</p>
-                                                    {prod.namaPanggilan && <span className="text-xs font-normal text-muted-foreground">({prod.namaPanggilan})</span>}
+                                                    {prod.namaPanggilan && <span className="text-[10px] font-normal text-slate-500">({prod.namaPanggilan})</span>}
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
-                                                <Badge variant="secondary">{prod.kategori || 'N/A'}</Badge>
+                                            <TableCell className="py-2">
+                                                <Badge variant="secondary" className="px-1.5 py-0 shadow-sm text-[9px] font-medium tracking-wide uppercase">{prod.kategori || 'N/A'}</Badge>
                                             </TableCell>
-                                            <TableCell className="text-sm font-medium">{prod.supplier || 'N/A'}</TableCell>
-                                            <TableCell className="text-sm text-muted-foreground">{prod.customer || 'N/A'}</TableCell>
-                                            <TableCell className="text-center">
-                                                <Badge className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 font-bold border-indigo-200">
-                                                    {prod.skus?.length || 0}
+                                            <TableCell className="py-2 text-xs font-medium text-slate-700">{prod.supplier || 'N/A'}</TableCell>
+                                            <TableCell className="py-2 text-xs text-slate-500">{prod.customer || 'N/A'}</TableCell>
+                                            <TableCell className="py-2 text-center">
+                                                <Badge className="px-1.5 py-0 shadow-sm text-[9px] bg-indigo-50 text-indigo-700 font-bold border-indigo-200 uppercase">
+                                                    {prod.skus?.length || 0} variants
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                                                <div className="flex justify-end gap-2">
-                                                    <Button variant="ghost" size="icon" onClick={() => handleViewDetail(prod)}>
-                                                        <Eye className="w-4 h-4 text-muted-foreground" />
+                                            <TableCell className="py-2 text-right" onClick={(e) => e.stopPropagation()}>
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-500 hover:text-slate-900" onClick={() => handleViewDetail(prod)}>
+                                                        <Eye className="w-3.5 h-3.5" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" onClick={() => openEditDialog(prod)}>
-                                                        <Edit2 className="w-4 h-4 text-muted-foreground" />
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700" onClick={() => openEditDialog(prod)}>
+                                                        <Edit2 className="w-3.5 h-3.5" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteProduct(String(prod.id))}>
-                                                        <Trash2 className="w-4 h-4" />
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteProduct(String(prod.id))}>
+                                                        <Trash2 className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </div>
                                             </TableCell>
@@ -646,24 +666,26 @@ export default function ProductsPage() {
 
                         {/* Pagination Bar */}
                         {pagination.totalPages > 1 && (
-                            <div className="flex justify-between items-center p-4 border-t bg-muted/20">
-                                <span className="text-xs text-muted-foreground">Showing page {pagination.currentPage} of {pagination.totalPages}</span>
-                                <div className="flex gap-2">
+                            <div className="flex justify-between items-center p-3 border-t bg-slate-50/50">
+                                <span className="text-[10px] text-slate-500">Showing page {pagination.currentPage} of {pagination.totalPages}</span>
+                                <div className="flex gap-1.5">
                                     <Button
                                         variant="outline"
                                         size="sm"
+                                        className="h-7 text-xs px-2"
                                         disabled={pagination.currentPage === 1}
                                         onClick={() => setPagination(p => ({ ...p, currentPage: p.currentPage - 1 }))}
                                     >
-                                        <ChevronLeft className="w-4 h-4" /> Previous
+                                        <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Previous
                                     </Button>
                                     <Button
                                         variant="outline"
                                         size="sm"
+                                        className="h-7 text-xs px-2"
                                         disabled={pagination.currentPage === pagination.totalPages}
                                         onClick={() => setPagination(p => ({ ...p, currentPage: p.currentPage + 1 }))}
                                     >
-                                        Next <ChevronRight className="w-4 h-4" />
+                                        Next <ChevronRight className="w-3.5 h-3.5 ml-1" />
                                     </Button>
                                 </div>
                             </div>
@@ -716,108 +738,108 @@ export default function ProductsPage() {
                         <div className="lg:col-span-2 space-y-6">
                             {/* Fast Master Creator Form */}
                             <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-base">Add Master Entry: {activeMasterTab.toUpperCase()}</CardTitle>
+                                <CardHeader className="py-3 px-4 bg-slate-50 border-b">
+                                    <CardTitle className="text-sm font-semibold">Add Master Entry: {activeMasterTab.toUpperCase()}</CardTitle>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="p-4">
                                     <form onSubmit={handleAddMasterData} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                                         {activeMasterTab === 'satuans' && (
-                                            <div className="space-y-2">
-                                                <Label>Unit (Satuan)</Label>
-                                                <Input required placeholder="e.g. Roll or Kg" value={masterForm.satuan} onChange={(e) => setMasterForm({ ...masterForm, satuan: e.target.value })} />
+                                            <div className="space-y-1.5">
+                                                <Label className="text-xs">Unit (Satuan)</Label>
+                                                <Input className="h-8 text-xs" required placeholder="e.g. Roll or Kg" value={masterForm.satuan} onChange={(e) => setMasterForm({ ...masterForm, satuan: e.target.value })} />
                                             </div>
                                         )}
                                         {activeMasterTab === 'types' && (
-                                            <div className="space-y-2">
-                                                <Label>Type Name</Label>
-                                                <Input required placeholder="e.g. Besi Hollow" value={masterForm.typebarang} onChange={(e) => setMasterForm({ ...masterForm, typebarang: e.target.value })} />
+                                            <div className="space-y-1.5">
+                                                <Label className="text-xs">Type Name</Label>
+                                                <Input className="h-8 text-xs" required placeholder="e.g. Besi Hollow" value={masterForm.typebarang} onChange={(e) => setMasterForm({ ...masterForm, typebarang: e.target.value })} />
                                             </div>
                                         )}
                                         {activeMasterTab === 'jenis' && (
-                                            <div className="space-y-2">
-                                                <Label>Category (Jenis)</Label>
-                                                <Input required placeholder="e.g. Plat Lembaran" value={masterForm.namajenis} onChange={(e) => setMasterForm({ ...masterForm, namajenis: e.target.value })} />
+                                            <div className="space-y-1.5">
+                                                <Label className="text-xs">Category (Jenis)</Label>
+                                                <Input className="h-8 text-xs" required placeholder="e.g. Plat Lembaran" value={masterForm.namajenis} onChange={(e) => setMasterForm({ ...masterForm, namajenis: e.target.value })} />
                                             </div>
                                         )}
                                         {activeMasterTab === 'gudangs' && (
-                                            <div className="space-y-2">
-                                                <Label>Warehouse Name</Label>
-                                                <Input required placeholder="e.g. Gudang A-01" value={masterForm.namaGudang} onChange={(e) => setMasterForm({ ...masterForm, namaGudang: e.target.value })} />
+                                            <div className="space-y-1.5">
+                                                <Label className="text-xs">Warehouse Name</Label>
+                                                <Input className="h-8 text-xs" required placeholder="e.g. Gudang A-01" value={masterForm.namaGudang} onChange={(e) => setMasterForm({ ...masterForm, namaGudang: e.target.value })} />
                                             </div>
                                         )}
 
-                                        <div className="space-y-2">
-                                            <Label>Description (Optional)</Label>
-                                            <Input placeholder="Description details..." value={masterForm.keterangan} onChange={(e) => setMasterForm({ ...masterForm, keterangan: e.target.value })} />
+                                        <div className="space-y-1.5">
+                                            <Label className="text-xs">Description (Optional)</Label>
+                                            <Input className="h-8 text-xs" placeholder="Description details..." value={masterForm.keterangan} onChange={(e) => setMasterForm({ ...masterForm, keterangan: e.target.value })} />
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label>Old ID (Legacy)</Label>
-                                            <Input placeholder="Optional old DB ID link" value={masterForm.oldId} onChange={(e) => setMasterForm({ ...masterForm, oldId: e.target.value })} />
+                                        <div className="space-y-1.5">
+                                            <Label className="text-xs">Old ID (Legacy)</Label>
+                                            <Input className="h-8 text-xs" placeholder="Optional old DB ID link" value={masterForm.oldId} onChange={(e) => setMasterForm({ ...masterForm, oldId: e.target.value })} />
                                         </div>
 
-                                        <Button type="submit" className="md:col-span-2 w-full flex justify-center items-center gap-2">
-                                            <PlusCircle className="w-4 h-4" /> Save Attribute Entry
+                                        <Button type="submit" size="sm" className="md:col-span-2 w-full flex justify-center items-center gap-1.5 h-8 text-xs">
+                                            <PlusCircle className="w-3.5 h-3.5" /> Save Attribute Entry
                                         </Button>
                                     </form>
                                 </CardContent>
                             </Card>
 
                             {/* Master Entries List */}
-                            <Card>
+                            <Card className="overflow-hidden">
                                 <Table>
-                                    <TableHeader className="bg-muted/30">
-                                        <TableRow>
-                                            <TableHead>Name / Code</TableHead>
-                                            <TableHead>Keterangan</TableHead>
-                                            <TableHead>Legacy ID</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
+                                    <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
+                                        <TableRow className="text-xs">
+                                            <TableHead className="py-2 h-9">Name / Code</TableHead>
+                                            <TableHead className="py-2 h-9">Keterangan</TableHead>
+                                            <TableHead className="py-2 h-9">Legacy ID</TableHead>
+                                            <TableHead className="text-right py-2 h-9">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {activeMasterTab === 'satuans' && satuans.map((s) => (
-                                            <TableRow key={s.id}>
-                                                <TableCell className="font-semibold text-primary">{s.satuan}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="text-xs">{s.oldId || '-'}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteMasterData('satuan', s.id)}>
-                                                        <Trash2 className="w-4 h-4" />
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.satuan}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                                <TableCell className="py-2 text-right">
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('satuan', s.id)}>
+                                                        <Trash2 className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                         {activeMasterTab === 'types' && types.map((s) => (
-                                            <TableRow key={s.id}>
-                                                <TableCell className="font-semibold text-primary">{s.typebarang}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="text-xs">{s.oldId || '-'}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteMasterData('type', s.id)}>
-                                                        <Trash2 className="w-4 h-4" />
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.typebarang}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                                <TableCell className="py-2 text-right">
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('type', s.id)}>
+                                                        <Trash2 className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                         {activeMasterTab === 'jenis' && jenisList.map((s) => (
-                                            <TableRow key={s.id}>
-                                                <TableCell className="font-semibold text-primary">{s.namajenis}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="text-xs">{s.oldId || '-'}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteMasterData('jenis', s.id)}>
-                                                        <Trash2 className="w-4 h-4" />
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.namajenis}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                                <TableCell className="py-2 text-right">
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('jenis', s.id)}>
+                                                        <Trash2 className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                         {activeMasterTab === 'gudangs' && gudangs.map((s) => (
-                                            <TableRow key={s.id}>
-                                                <TableCell className="font-semibold text-primary">{s.namaGudang}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{s.keterangan || '-'}</TableCell>
-                                                <TableCell className="text-xs">{s.oldId || '-'}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteMasterData('gudang', s.id)}>
-                                                        <Trash2 className="w-4 h-4" />
+                                            <TableRow key={s.id} className="group hover:bg-slate-50/50 transition-colors">
+                                                <TableCell className="py-2 font-semibold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{s.namaGudang}</TableCell>
+                                                <TableCell className="py-2 text-[10px] text-slate-500">{s.keterangan || '-'}</TableCell>
+                                                <TableCell className="py-2 text-[10px] font-mono text-slate-500">{s.oldId || '-'}</TableCell>
+                                                <TableCell className="py-2 text-right">
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" onClick={() => handleDeleteMasterData('gudang', s.id)}>
+                                                        <Trash2 className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
@@ -874,53 +896,53 @@ export default function ProductsPage() {
                                 </div>
 
                                 <Table className="border border-muted/50 rounded-lg overflow-hidden">
-                                    <TableHeader className="bg-muted/40 text-xs">
+                                    <TableHeader className="bg-slate-50/80 backdrop-blur-sm text-xs">
                                         <TableRow>
-                                            <TableHead>SKU / Part Code</TableHead>
-                                            <TableHead>Attributes (Color/Dim)</TableHead>
-                                            <TableHead>Warehouse</TableHead>
-                                            <TableHead className="text-right">Price (Beli / Jual)</TableHead>
-                                            <TableHead className="text-center">Stock Balance</TableHead>
+                                            <TableHead className="py-2 h-9 w-[200px]">SKU / Part Code</TableHead>
+                                            <TableHead className="py-2 h-9">Attributes (Color/Dim)</TableHead>
+                                            <TableHead className="py-2 h-9">Warehouse</TableHead>
+                                            <TableHead className="text-right py-2 h-9">Price (Beli / Jual)</TableHead>
+                                            <TableHead className="text-center py-2 h-9">Stock Balance</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody className="text-xs">
                                         {selectedProduct.skus?.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                                                <TableCell colSpan={5} className="text-center py-6 text-slate-500">
                                                     No variants found. Add a variant SKU to start inventory logs.
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
                                             selectedProduct.skus.map((sku) => (
-                                                <TableRow key={sku.id} className="hover:bg-muted/20">
-                                                    <TableCell>
+                                                <TableRow key={sku.id} className="hover:bg-slate-50/50 transition-colors">
+                                                    <TableCell className="py-2">
                                                         <div>
-                                                            <p className="font-semibold text-primary">{sku.sku}</p>
-                                                            <span className="text-[10px] text-muted-foreground">Part: {sku.part}</span>
+                                                            <p className="font-semibold text-slate-900">{sku.sku}</p>
+                                                            <span className="text-[10px] text-slate-500">Part: {sku.part}</span>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="py-2">
                                                         <div>
-                                                            <p className="font-medium">{sku.warna || 'No Color'}</p>
+                                                            <p className="font-medium text-slate-700">{sku.warna || 'No Color'}</p>
                                                             {(sku.lebar || sku.panjang) && (
-                                                                <span className="text-[10px] text-muted-foreground">Dim: {sku.lebar}x{sku.panjang} {sku.ukuran}</span>
+                                                                <span className="text-[10px] text-slate-500">Dim: {sku.lebar}x{sku.panjang} {sku.ukuran}</span>
                                                             )}
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="py-2">
                                                         <div>
-                                                            <p className="font-medium">{sku.gudangRelation?.namaGudang || sku.gudang || 'KGD-01'}</p>
-                                                            {sku.rak && <span className="text-[10px] text-muted-foreground">Rak: {sku.rak} | Loc: {sku.lokasi}</span>}
+                                                            <p className="font-medium text-slate-700">{sku.gudangRelation?.namaGudang || sku.gudang || 'KGD-01'}</p>
+                                                            {sku.rak && <span className="text-[10px] text-slate-500">Rak: {sku.rak} | Loc: {sku.lokasi}</span>}
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="text-right">
+                                                    <TableCell className="text-right py-2">
                                                         <div>
                                                             <p className="font-semibold text-emerald-600">Rp {sku.hargaJual.toLocaleString()}</p>
-                                                            <span className="text-[10px] text-muted-foreground">Cost: Rp {sku.hargaBeli.toLocaleString()}</span>
+                                                            <span className="text-[10px] text-slate-500">Cost: Rp {sku.hargaBeli.toLocaleString()}</span>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <Badge variant={sku.balance <= 0 ? 'destructive' : (sku.balance < 10 ? 'outline' : 'secondary')} className="font-bold">
+                                                    <TableCell className="text-center py-2">
+                                                        <Badge variant={sku.balance <= 0 ? 'destructive' : (sku.balance < 10 ? 'outline' : 'secondary')} className="font-bold px-1.5 py-0 shadow-sm text-[9px] uppercase">
                                                             {sku.balance} {sku.satuan?.satuan || sku.sat || 'Pcs'}
                                                         </Badge>
                                                     </TableCell>

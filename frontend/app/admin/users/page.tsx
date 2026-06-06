@@ -5,11 +5,19 @@ import api from '@/lib/axios';
 import { useRouter } from 'next/navigation';
 import AddUserDialog from '@/components/users/AddUserDialog';
 import UserTable from '@/components/users/UserTable';
-import HeaderCard from '@/components/ui/header-card';
 import { Users, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
 
 export default function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
@@ -69,49 +77,75 @@ export default function UserManagementPage() {
     ];
 
     return (
-        <div className="space-y-8 pt-6 px-2 sm:px-4 w-full mx-auto">
-            <HeaderCard
-                title="User Management"
-                description="Manage employee access, roles, and platform permissions."
-                icon={<Users className="text-white" />}
-                variant="elegant"
-                backgroundStyle="pattern"
-                gradientFrom="from-blue-700"
-                gradientTo="to-blue-800"
-                className="mb-8 shadow-blue-900/20"
-            />
+        <div className="space-y-6">
+            {/* Simple Header with Breadcrumb */}
+            <div className="flex flex-col gap-1.5 mb-4">
+                <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                    <Breadcrumb>
+                        <BreadcrumbList className="text-[10px] md:text-xs">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">
+                                    Dashboard
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="scale-75" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/admin/settings" className="text-slate-500 hover:text-slate-900">
+                                    Settings
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="scale-75" />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="font-semibold text-slate-900">User Management</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </Badge>
+                
+                <div className="mt-1">
+                    <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                        <Users className="h-5 w-5 text-slate-500" />
+                        User Management
+                    </h1>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                        Manage employee access, roles, and platform permissions.
+                    </p>
+                </div>
+            </div>
 
             {/* Stats Section */}
-            {/* Stats Section */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {userStats.map((stat, index) => (
-                    <Card key={index} className="bg-white border-slate-200 shadow-sm">
-                        <CardContent className="px-3 py-2 flex items-center justify-between">
-                            <div className="flex flex-col gap-0.5">
-                                <p className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+                    <Card key={index} className="bg-white border border-slate-200 shadow-sm rounded-lg">
+                        <CardContent className="p-3 flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <p className="text-xs font-medium text-slate-500">
                                     {stat.title}
                                 </p>
-                                <p className="text-[9px] text-slate-400 truncate max-w-[120px]">
+                                <span className="text-xl font-bold text-slate-900 mt-0.5">
+                                    {stat.value}
+                                </span>
+                            </div>
+                            <div className="text-right flex flex-col justify-end">
+                                <p className="text-[10px] text-slate-400 max-w-[90px] leading-tight">
                                     {stat.description}
                                 </p>
                             </div>
-                            <span className="text-xl font-bold text-slate-900">
-                                {stat.value}
-                            </span>
                         </CardContent>
                     </Card>
                 ))}
             </div>
 
             {/* Actions Toolbar */}
-            <div className="flex items-center justify-end gap-3 mb-4">
+            <div className="flex items-center justify-end gap-2 mb-2">
                 <Button
                     variant="outline"
-                    className="hidden sm:flex"
+                    size="sm"
+                    className="hidden sm:flex h-8 text-xs"
                     onClick={() => fetchUsers()}
                 >
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Refresh List
+                    <RefreshCw className="mr-1.5 h-3 w-3" />
+                    Refresh
                 </Button>
                 <AddUserDialog onUserAdded={fetchUsers} />
             </div>

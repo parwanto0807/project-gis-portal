@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PlusCircle, Edit, Trash2, Image as ImageIcon, FileSpreadsheet, FileText } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { PlusCircle, Edit, Trash2, Image as ImageIcon, FileSpreadsheet, FileText, Search, ArrowLeft, ArrowRight, Eye, MapPin, Calendar, User, Clock } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -13,7 +14,17 @@ import api from '@/lib/axios';
 import { TemuanForm } from '@/components/temuan/TemuanForm';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { ListChecks, Info, Tags } from 'lucide-react';
 
 const formatDateDDMMM = (dateStr: string | Date) => {
     if (!dateStr) return '-';
@@ -49,6 +60,16 @@ export default function TemuanPeduliPage() {
     // For Image Preview
     const [previewImages, setPreviewImages] = useState<string[]>([]);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+    // Detail Dialog
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [selectedDetail, setSelectedDetail] = useState<any>(null);
+
+    // Search, Filter, Pagination
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filterKategori, setFilterKategori] = useState('');
+    const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     const fetchData = async () => {
         try {
@@ -87,6 +108,11 @@ export default function TemuanPeduliPage() {
     const handleCreate = () => {
         setSelectedItem(null);
         setIsFormOpen(true);
+    };
+
+    const handleViewDetail = (item: any) => {
+        setSelectedDetail(item);
+        setIsDetailOpen(true);
     };
 
     const viewPhotos = (urls: string[]) => {
@@ -326,89 +352,170 @@ export default function TemuanPeduliPage() {
         window.open(pdfUrl, '_blank');
     };
 
+    useEffect(() => {
+        setPage(1);
+    }, [searchQuery, filterKategori]);
+
+    const filteredData = data.filter(item => {
+        const searchLower = searchQuery.toLowerCase();
+        const pelapor = item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh;
+        const matchesSearch = 
+            item.area?.toLowerCase().includes(searchLower) ||
+            item.tempatTemuan?.toLowerCase().includes(searchLower) ||
+            item.temuan?.toLowerCase().includes(searchLower) ||
+            pelapor?.toLowerCase().includes(searchLower);
+        
+        const matchesKategori = filterKategori === '' || (Array.isArray(item.kategori4M) ? item.kategori4M.includes(filterKategori) : item.kategori4M === filterKategori);
+
+        return matchesSearch && matchesKategori;
+    });
+
+    const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE) || 1;
+    const paginatedData = filteredData.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Temuan Peduli Bersinergi</h1>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Daftar temuan audit internal dari berbagai area gedung.</p>
+            {/* Desktop Header Area */}
+            <div className="hidden sm:flex justify-between items-start mb-4">
+                <div className="flex flex-col gap-1.5">
+                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 hover:bg-slate-100 border-slate-200">
+                        <Breadcrumb>
+                            <BreadcrumbList className="text-[10px] md:text-xs">
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 hover:text-slate-900">Dashboard</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/admin/audit" className="text-slate-500 hover:text-slate-900">Audit</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="text-slate-900 font-semibold">Temuan Peduli</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                    </Badge>
+                    <div>
+                        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                            <ListChecks className="w-5 h-5 text-indigo-600" />
+                            Temuan Peduli Bersinergi
+                        </h1>
+                        <p className="text-xs text-slate-500">Daftar temuan audit internal dari berbagai area gedung.</p>
+                    </div>
                 </div>
-                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <Button onClick={exportToExcel} variant="outline" className="gap-2 flex-1 sm:flex-none bg-green-50 text-green-700 hover:bg-green-100 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
-                        <FileSpreadsheet className="w-4 h-4" /> Excel
+                <div className="flex items-center gap-2">
+                    <Button onClick={exportToExcel} variant="outline" size="sm" className="h-8 gap-2 bg-green-50 text-green-700 hover:bg-green-100 border-green-200">
+                        <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
                     </Button>
-                    <Button onClick={exportToPDF} variant="outline" className="gap-2 flex-1 sm:flex-none bg-red-50 text-red-700 hover:bg-red-100 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800">
-                        <FileText className="w-4 h-4" /> PDF
+                    <Button onClick={exportToPDF} variant="outline" size="sm" className="h-8 gap-2 bg-red-50 text-red-700 hover:bg-red-100 border-red-200">
+                        <FileText className="w-3.5 h-3.5" /> PDF
                     </Button>
-                    <Button onClick={handleCreate} className="gap-2 w-full sm:w-auto">
-                        <PlusCircle className="w-4 h-4" /> Tambah Temuan
+                    <Button onClick={handleCreate} size="sm" className="h-8 gap-2">
+                        <PlusCircle className="w-3.5 h-3.5" /> Tambah Temuan
                     </Button>
                 </div>
             </div>
 
-            <Card className="border-0 sm:border rounded-none sm:rounded-xl shadow-none sm:shadow-sm bg-transparent sm:bg-card -mx-4 sm:mx-0">
-                <CardHeader className="px-4 sm:px-6">
-                    <CardTitle>Data Temuan</CardTitle>
-                    <CardDescription>Menampilkan semua temuan yang telah diinput.</CardDescription>
-                </CardHeader>
-                <CardContent className="px-2 sm:px-6">
+            {/* Controls */}
+            <div className="flex flex-col md:flex-row gap-3 items-center justify-between pb-2">
+                <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                    <Input 
+                        placeholder="Search by area, description, or pelapor..." 
+                        className="pl-8 h-8 text-xs bg-white border-slate-200 w-full shadow-sm"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+
+                <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-white p-0.5 rounded-lg border border-slate-200 shadow-sm scrollbar-hide">
+                    {['', 'Man', 'Machine', 'Material', 'Method'].map(kat => (
+                        <Button 
+                            key={kat}
+                            variant={filterKategori === kat ? 'default' : 'ghost'} 
+                            onClick={() => setFilterKategori(kat)}
+                            className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider whitespace-nowrap ${filterKategori === kat ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
+                        >
+                            {kat === '' ? 'Semua Kategori' : kat}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+
+            <Card className="bg-white shadow-sm border border-slate-200">
+                <CardContent className="p-0">
                     {/* Desktop / Tablet View (Table) */}
-                    <div className="hidden md:block rounded-md border overflow-x-auto">
+                    <div className="hidden md:block overflow-x-auto min-h-[400px]">
                         <Table className="min-w-full">
-                            <TableHeader>
-                                <TableRow className="text-xs">
-                                    <TableHead className="py-2">No</TableHead>
-                                    <TableHead className="py-2">Tanggal & Jam</TableHead>
-                                    <TableHead className="py-2">Area / Tempat</TableHead>
-                                    <TableHead className="py-2">Kategori 4M</TableHead>
-                                    <TableHead className="py-2">Deskripsi Temuan</TableHead>
-                                    <TableHead className="py-2">Diinput Oleh</TableHead>
-                                    <TableHead className="py-2">Foto</TableHead>
-                                    <TableHead className="text-right py-2">Aksi</TableHead>
+                            <TableHeader className="bg-slate-50 border-b border-slate-200">
+                                <TableRow className="hover:bg-transparent">
+                                    <TableHead className="w-[60px] font-semibold text-slate-500 text-xs h-9 py-2 pl-4">No</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[140px]">Tanggal & Jam</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[180px]">Area / Tempat</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[160px]">Kategori 4M</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2">Deskripsi Temuan</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[150px]">Diinput Oleh</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 text-xs h-9 py-2 w-[120px]">Foto</TableHead>
+                                    <TableHead className="text-right font-semibold text-slate-500 text-xs h-9 py-2 pr-4 w-[100px]">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody className="text-xs">
+                            <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">Memuat data...</TableCell>
+                                        <TableCell colSpan={8} className="text-center py-8 text-slate-400 font-medium text-xs">Memuat data...</TableCell>
                                     </TableRow>
-                                ) : data.length === 0 ? (
+                                ) : paginatedData.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">Belum ada data temuan peduli bersinergi.</TableCell>
+                                        <TableCell colSpan={8} className="text-center py-8 text-slate-400 font-medium text-xs">Belum ada data temuan peduli bersinergi.</TableCell>
                                     </TableRow>
                                 ) : (
-                                    data.map((item, index) => (
-                                        <TableRow key={item.id}>
-                                            <TableCell className="py-2">{index + 1}</TableCell>
+                                    paginatedData.map((item, index) => (
+                                        <TableRow key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                                            <TableCell className="py-2 pl-4 text-xs font-medium text-slate-600">{(page - 1) * ITEMS_PER_PAGE + index + 1}</TableCell>
                                             <TableCell className="py-2">
-                                                {formatDateDDMMM(item.tanggal)}<br/>
-                                                <span className="text-[10px] text-muted-foreground">{item.jam}</span>
+                                                <div className="flex flex-col">
+                                                    <span className="font-semibold text-slate-900 text-xs">{formatDateDDMMM(item.tanggal)}</span>
+                                                    <span className="text-[10px] text-slate-500">{item.jam}</span>
+                                                </div>
                                             </TableCell>
                                             <TableCell className="py-2">
-                                                <span className="font-medium">{item.area}</span><br/>
-                                                <span className="text-[10px] text-muted-foreground">{item.tempatTemuan}</span>
-                                            </TableCell>
-                                            <TableCell className="py-2">{formatKategori(item.kategori4M)}</TableCell>
-                                            <TableCell className="py-2 max-w-[200px] truncate" title={item.temuan}>
-                                                {item.temuan}
+                                                <div className="flex flex-col">
+                                                    <span className="font-semibold text-slate-900 text-xs">{item.area}</span>
+                                                    <span className="text-[10px] text-slate-500">{item.tempatTemuan}</span>
+                                                </div>
                                             </TableCell>
                                             <TableCell className="py-2">
-                                                {item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}
+                                                <div className="flex flex-wrap gap-1">
+                                                    {formatKategori(item.kategori4M)}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-2">
+                                                <div className="text-xs text-slate-700 max-w-[200px] truncate" title={item.temuan}>
+                                                    {item.temuan}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-2">
+                                                <span className="text-xs font-medium text-slate-700">
+                                                    {item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}
+                                                </span>
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 {item.fotoUrls && item.fotoUrls.length > 0 ? (
-                                                    <Button variant="ghost" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-xs gap-1 text-primary">
+                                                    <Button variant="ghost" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-6 px-2 text-[10px] gap-1 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
                                                         <ImageIcon className="w-3 h-3" /> {item.fotoUrls.length} Foto
                                                     </Button>
-                                                ) : '-'}
+                                                ) : <span className="text-slate-400 text-xs">-</span>}
                                             </TableCell>
-                                            <TableCell className="text-right py-2">
+                                            <TableCell className="text-right py-2 pr-4">
                                                 <div className="flex justify-end gap-1">
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEdit(item)}>
-                                                        <Edit className="w-3 h-3 text-blue-500" />
+                                                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600" onClick={() => handleViewDetail(item)}>
+                                                        <Eye className="w-3.5 h-3.5" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDelete(item.id)}>
-                                                        <Trash2 className="w-3 h-3 text-red-500" />
+                                                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md text-blue-500 hover:bg-blue-50 hover:text-blue-600" onClick={() => handleEdit(item)}>
+                                                        <Edit className="w-3.5 h-3.5" />
+                                                    </Button>
+                                                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => handleDelete(item.id)}>
+                                                        <Trash2 className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </div>
                                             </TableCell>
@@ -419,55 +526,109 @@ export default function TemuanPeduliPage() {
                         </Table>
                     </div>
 
+                    {/* Pagination Footer */}
+                    <div className="flex flex-col md:flex-row items-center justify-between p-4 border-t border-slate-200 gap-4">
+                        <div className="space-y-0.5">
+                            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                                Total Result: <span className="text-slate-900">{filteredData.length} Temuan</span>
+                            </p>
+                            <p className="text-[9px] text-slate-400">Page {page} of {totalPages}</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-1 bg-slate-50 p-0.5 rounded-lg border border-slate-200">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                disabled={page === 1 || loading}
+                                onClick={() => setPage(p => p - 1)}
+                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white hover:shadow-sm transition-all text-slate-500"
+                            >
+                                <ArrowLeft className="w-3.5 h-3.5" />
+                            </Button>
+                            
+                            <div className="flex items-center">
+                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                    let pageNum = page <= 3 ? i + 1 : page - 2 + i;
+                                    if (pageNum > totalPages) return null;
+                                    
+                                    return (
+                                        <Button
+                                            key={i}
+                                            variant={page === pageNum ? 'default' : 'ghost'}
+                                            size="sm"
+                                            onClick={() => setPage(pageNum)}
+                                            className={`rounded-md h-7 w-7 font-semibold text-[10px] min-w-[28px] p-0 ${page === pageNum ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:bg-white hover:text-slate-700'}`}
+                                        >
+                                            {pageNum}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                disabled={page === totalPages || loading}
+                                onClick={() => setPage(p => p + 1)}
+                                className="rounded-md h-7 w-7 p-0 disabled:opacity-20 hover:bg-white hover:shadow-sm transition-all text-slate-500"
+                            >
+                                <ArrowRight className="w-3.5 h-3.5" />
+                            </Button>
+                        </div>
+                    </div>
+
                     {/* Mobile View (Cards) */}
-                    <div className="block md:hidden space-y-4">
+                    <div className="block md:hidden space-y-3 p-3">
                         {loading ? (
-                            <div className="text-center py-10 text-muted-foreground border rounded-md mx-2">Memuat data...</div>
-                        ) : data.length === 0 ? (
-                            <div className="text-center py-10 text-muted-foreground border rounded-md mx-2">Belum ada data temuan.</div>
+                            <div className="text-center py-10 text-slate-400 text-xs border rounded-lg border-slate-200">Memuat data...</div>
+                        ) : paginatedData.length === 0 ? (
+                            <div className="text-center py-10 text-slate-400 text-xs border rounded-lg border-slate-200">Belum ada data temuan.</div>
                         ) : (
-                            <div className="divide-y border-y sm:border sm:rounded-md bg-card">
-                                {data.map((item, index) => (
-                                    <div key={item.id} className="p-4 space-y-4">
+                            <div className="space-y-3">
+                                {paginatedData.map((item, index) => (
+                                    <div key={item.id} className="bg-white rounded-xl p-3 shadow-sm border border-slate-200 flex flex-col gap-2">
                                         <div className="flex justify-between items-start gap-2">
                                             <div className="flex-1">
-                                                <Badge variant="outline" className="mb-2 bg-slate-50 dark:bg-slate-900">#{index + 1}</Badge>
-                                                <h3 className="font-semibold text-base leading-tight">{item.area}</h3>
-                                                <p className="text-sm text-muted-foreground mt-0.5">{item.tempatTemuan}</p>
+                                                <Badge variant="outline" className="mb-1 bg-slate-50 text-[9px] px-1.5 py-0">#{((page - 1) * ITEMS_PER_PAGE) + index + 1}</Badge>
+                                                <h3 className="font-semibold text-slate-900 text-xs leading-tight">{item.area}</h3>
+                                                <p className="text-[10px] text-slate-500 mt-0.5">{item.tempatTemuan}</p>
                                             </div>
                                             <div className="text-right shrink-0">
-                                                <div className="text-sm font-medium">{formatDateDDMMM(item.tanggal)}</div>
-                                                <div className="text-xs text-muted-foreground">{item.jam}</div>
+                                                <div className="text-[11px] font-semibold text-slate-700">{formatDateDDMMM(item.tanggal)}</div>
+                                                <div className="text-[10px] text-slate-500">{item.jam}</div>
                                             </div>
                                         </div>
                                         
-                                        <div>
-                                            <div className="text-xs text-muted-foreground font-medium mb-1 uppercase tracking-wider">Kategori 4M</div>
-                                            <div className="flex flex-wrap">{formatKategori(item.kategori4M)}</div>
+                                        <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col gap-1.5 mt-1">
+                                            <div>
+                                                <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Kategori 4M</div>
+                                                <div className="flex flex-wrap gap-1">{formatKategori(item.kategori4M)}</div>
+                                            </div>
+                                            <div>
+                                                <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-1 mt-1">Deskripsi</div>
+                                                <p className="text-xs text-slate-700 leading-relaxed">{item.temuan}</p>
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <div className="text-xs text-muted-foreground font-medium mb-1 uppercase tracking-wider">Deskripsi</div>
-                                            <p className="text-sm text-foreground bg-muted/50 p-2.5 rounded-md leading-relaxed">{item.temuan}</p>
-                                        </div>
-
-                                        <div className="flex justify-between items-center pt-3 border-t">
-                                            <div className="text-xs">
-                                                <span className="text-muted-foreground">Pelapor: </span>
-                                                <span className="font-medium">{item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}</span>
+                                        <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                                            <div className="text-[10px] text-slate-500">
+                                                <span className="font-medium text-slate-700">{item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}</span>
                                             </div>
                                             
                                             <div className="flex items-center gap-1">
                                                 {item.fotoUrls && item.fotoUrls.length > 0 && (
-                                                    <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-8 text-xs gap-1.5 text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 mr-2">
-                                                        <ImageIcon className="w-3.5 h-3.5" /> Lihat {item.fotoUrls.length} Foto
+                                                    <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-[10px] gap-1.5 text-indigo-600 bg-indigo-50 border-indigo-100 hover:bg-indigo-100 mr-1 px-2">
+                                                        <ImageIcon className="w-3 h-3" /> {item.fotoUrls.length} Foto
                                                     </Button>
                                                 )}
-                                                <Button variant="secondary" size="icon" onClick={() => handleEdit(item)} className="h-8 w-8 text-blue-600 dark:text-blue-400">
-                                                    <Edit className="w-4 h-4" />
+                                                <Button variant="ghost" size="icon" onClick={() => handleViewDetail(item)} className="h-7 w-7 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50">
+                                                    <Eye className="w-3.5 h-3.5" />
                                                 </Button>
-                                                <Button variant="secondary" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-red-600 dark:text-red-400">
-                                                    <Trash2 className="w-4 h-4" />
+                                                <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="h-7 w-7 text-blue-500 hover:text-blue-600 hover:bg-blue-50">
+                                                    <Edit className="w-3.5 h-3.5" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50">
+                                                    <Trash2 className="w-3.5 h-3.5" />
                                                 </Button>
                                             </div>
                                         </div>
@@ -487,28 +648,28 @@ export default function TemuanPeduliPage() {
             />
 
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                <DialogContent className="max-w-4xl p-0 overflow-hidden bg-slate-50 dark:bg-slate-900 border-none shadow-2xl rounded-xl">
-                    <div className="p-6 bg-white dark:bg-slate-950 border-b flex items-center justify-between sticky top-0 z-10 shadow-sm">
+                <DialogContent className="max-w-3xl p-0 overflow-hidden bg-white border-slate-200 shadow-xl rounded-xl">
+                    <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10">
                         <div>
-                            <DialogTitle className="text-xl font-bold flex items-center gap-2 text-primary">
-                                <ImageIcon className="w-5 h-5" /> Dokumentasi Temuan
+                            <DialogTitle className="text-sm font-bold flex items-center gap-2 text-slate-900">
+                                <ImageIcon className="w-4 h-4 text-indigo-500" /> Dokumentasi Temuan
                             </DialogTitle>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-[10px] text-slate-500 mt-0.5">
                                 Terdapat {previewImages.length} foto dokumentasi untuk temuan ini.
                             </p>
                         </div>
                     </div>
-                    <div className="p-6 max-h-[75vh] overflow-y-auto">
-                        <div className={`grid grid-cols-1 ${previewImages.length > 1 ? 'md:grid-cols-2' : ''} gap-6`}>
+                    <div className="p-4 max-h-[75vh] overflow-y-auto">
+                        <div className={`grid grid-cols-1 ${previewImages.length > 1 ? 'md:grid-cols-2' : ''} gap-4`}>
                             {previewImages.map((url, i) => (
-                                <div key={i} className="flex flex-col bg-white dark:bg-slate-950 p-2 rounded-lg border shadow-sm group">
-                                    <div className="relative flex justify-center items-center rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 min-h-[200px]">
+                                <div key={i} className="flex flex-col bg-white p-2 rounded-lg border border-slate-100 shadow-sm group">
+                                    <div className="relative flex justify-center items-center rounded-md overflow-hidden bg-slate-100 min-h-[200px]">
                                         <img 
                                             src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
                                             alt={`Foto ${i+1}`} 
                                             className="max-w-full max-h-[60vh] w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105" 
                                         />
-                                        <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm font-medium z-10">
+                                        <div className="absolute top-2 right-2 bg-slate-900/60 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm font-medium z-10">
                                             Foto {i+1} dari {previewImages.length}
                                         </div>
                                     </div>
@@ -516,6 +677,124 @@ export default function TemuanPeduliPage() {
                             ))}
                         </div>
                     </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* View Detail Dialog */}
+            <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+                <DialogContent className="max-w-[95vw] sm:max-w-4xl rounded-xl border border-slate-200 shadow-xl p-0 overflow-hidden bg-white">
+                    {selectedDetail && (
+                        <div className="flex flex-col sm:flex-row w-full h-full max-h-[85vh] overflow-y-auto sm:overflow-hidden">
+                            {/* Left: Photos */}
+                            <div className="w-full sm:w-2/5 min-h-[200px] sm:min-h-full bg-slate-100 flex flex-col relative overflow-hidden border-r border-slate-200">
+                                {selectedDetail.fotoUrls && selectedDetail.fotoUrls.length > 0 ? (
+                                    <>
+                                        <div className="flex-1 w-full bg-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group" onClick={() => viewPhotos(selectedDetail.fotoUrls)}>
+                                            <img 
+                                                src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${selectedDetail.fotoUrls[0]}`} 
+                                                alt="Dokumentasi Temuan Utama" 
+                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors" />
+                                        </div>
+                                        {selectedDetail.fotoUrls.length > 1 && (
+                                            <div className="h-24 bg-white border-t border-slate-200 p-2 flex gap-2 overflow-x-auto shrink-0">
+                                                {selectedDetail.fotoUrls.slice(1).map((url: string, i: number) => (
+                                                    <div 
+                                                        key={i} 
+                                                        className="h-full w-20 shrink-0 rounded-md overflow-hidden border border-slate-200 cursor-pointer hover:border-indigo-400"
+                                                        onClick={() => viewPhotos(selectedDetail.fotoUrls)}
+                                                    >
+                                                        <img 
+                                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
+                                                            className="w-full h-full object-cover" 
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+                                        <ImageIcon className="w-10 h-10 mb-2 opacity-50" />
+                                        <span className="text-[10px] font-semibold tracking-wider uppercase">Tidak ada dokumentasi foto</span>
+                                    </div>
+                                )}
+                                <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5 pointer-events-none">
+                                    <Badge className="bg-indigo-500 text-white font-semibold uppercase text-[9px] border-0 shadow-sm px-1.5 py-0">
+                                        {selectedDetail.area}
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            {/* Right: Details */}
+                            <div className="w-full sm:w-3/5 p-4 sm:p-6 flex flex-col overflow-y-auto">
+                                <div className="space-y-5 flex-1">
+                                    <div className="flex justify-between items-start">
+                                        <div className="space-y-0.5">
+                                            <DialogTitle className="text-xl font-black text-slate-900 tracking-tight uppercase">
+                                                {selectedDetail.area}
+                                            </DialogTitle>
+                                            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Detail Temuan Peduli Bersinergi</p>
+                                        </div>
+                                        <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500 border border-indigo-100">
+                                            <ListChecks className="w-4 h-4" />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                                <MapPin className="w-2.5 h-2.5 mr-1" /> Tempat Temuan
+                                            </Label>
+                                            <p className="text-xs font-semibold text-slate-900">{selectedDetail.tempatTemuan || "N/A"}</p>
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                                <Calendar className="w-2.5 h-2.5 mr-1" /> Waktu Temuan
+                                            </Label>
+                                            <p className="text-xs font-semibold text-slate-900">{formatDateDDMMM(selectedDetail.tanggal)} {selectedDetail.jam}</p>
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                                <User className="w-2.5 h-2.5 mr-1" /> Pelapor
+                                            </Label>
+                                            <p className="text-xs font-semibold text-slate-900">
+                                                {selectedDetail.user ? `${selectedDetail.user.firstName} ${selectedDetail.user.lastName}` : selectedDetail.diInputOleh}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider flex items-center">
+                                                <Tags className="w-2.5 h-2.5 mr-1" /> Kategori 4M
+                                            </Label>
+                                            <div className="flex flex-wrap gap-1 mt-0.5">
+                                                {Array.isArray(selectedDetail.kategori4M) 
+                                                    ? selectedDetail.kategori4M.map((c: string) => (
+                                                        <Badge key={c} variant="secondary" className="bg-slate-200 text-slate-700 border-slate-300 text-[9px] px-1.5 py-0">
+                                                            {c}
+                                                        </Badge>
+                                                    ))
+                                                    : <Badge variant="secondary" className="bg-slate-200 text-slate-700 border-slate-300 text-[9px] px-1.5 py-0">{selectedDetail.kategori4M}</Badge>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2 relative">
+                                        <Label className="text-[10px] font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-1.5 relative z-10">
+                                            <Info className="w-3.5 h-3.5" /> Deskripsi Temuan
+                                        </Label>
+                                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative overflow-hidden min-h-[120px]">
+                                            <Info className="w-24 h-24 absolute -left-4 -top-4 text-slate-200/50 -rotate-12 pointer-events-none" />
+                                            <p className="text-xs text-slate-700 font-medium leading-relaxed italic relative z-10">
+                                                "{selectedDetail.temuan}"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </DialogContent>
             </Dialog>
         </div>

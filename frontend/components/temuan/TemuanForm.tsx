@@ -144,26 +144,26 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-xl flex items-center gap-2">
+                    <DialogTitle className="text-lg flex items-center gap-2">
                         {initialData ? 'Edit Temuan Peduli' : 'Tambah Temuan Peduli'}
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-xs">
                         Mohon isi form di bawah ini dengan data yang valid dan sesuai dengan fakta di lapangan.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={onSubmit} className="space-y-6 mt-4">
+                <form onSubmit={onSubmit} className="space-y-4 mt-2">
                     
                     {/* SECTION 1: LOKASI & WAKTU */}
-                    <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/50">
-                        <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2">
-                            <MapPin className="w-4 h-4" />
+                    <div className="space-y-3 border border-slate-200 rounded-xl p-3 bg-slate-50/50">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-blue-600 mb-1">
+                            <MapPin className="w-3.5 h-3.5" />
                             <span>Lokasi & Waktu Temuan</span>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Area (Gedung)</Label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-1.5">
+                                <Label className="text-xs text-slate-600">Area (Gedung)</Label>
                                 <Select value={formData.area} onValueChange={(val) => setFormData({ ...formData, area: val, tempatTemuan: '' })}>
-                                    <SelectTrigger className="bg-background">
+                                    <SelectTrigger className="bg-white h-8 text-xs">
                                         <SelectValue placeholder="Pilih Area" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -171,10 +171,10 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="space-y-2">
-                                <Label>Tempat Temuan</Label>
+                            <div className="space-y-1.5">
+                                <Label className="text-xs text-slate-600">Tempat Temuan</Label>
                                 <Select value={formData.tempatTemuan} onValueChange={(val) => setFormData({ ...formData, tempatTemuan: val })} disabled={!formData.area}>
-                                    <SelectTrigger className="bg-background">
+                                    <SelectTrigger className="bg-white h-8 text-xs">
                                         <SelectValue placeholder="Pilih Tempat" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -184,29 +184,29 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="space-y-2">
-                                <Label>Tanggal</Label>
+                            <div className="space-y-1.5">
+                                <Label className="text-xs text-slate-600">Tanggal</Label>
                                 <div className="relative">
-                                    <Input type="date" className="bg-background pl-9" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} required />
-                                    <CalendarClock className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
+                                    <Input type="date" className="bg-white pl-8 h-8 text-xs" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} required />
+                                    <CalendarClock className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label>Jam</Label>
-                                <Input type="time" className="bg-background" value={formData.jam} onChange={e => setFormData({ ...formData, jam: e.target.value })} required />
+                            <div className="space-y-1.5">
+                                <Label className="text-xs text-slate-600">Jam</Label>
+                                <Input type="time" className="bg-white h-8 text-xs" value={formData.jam} onChange={e => setFormData({ ...formData, jam: e.target.value })} required />
                             </div>
                         </div>
                     </div>
 
                     {/* SECTION 2: DETAIL TEMUAN */}
-                    <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/50">
-                        <div className="flex items-center gap-2 text-sm font-semibold text-orange-600 dark:text-orange-400 mb-2">
-                            <Tags className="w-4 h-4" />
+                    <div className="space-y-3 border border-slate-200 rounded-xl p-3 bg-slate-50/50">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-orange-600 mb-1">
+                            <Tags className="w-3.5 h-3.5" />
                             <span>Kategori & Deskripsi Temuan</span>
                         </div>
-                        <div className="space-y-3">
-                            <Label>Kategori 4M (Pilih 1 atau lebih)</Label>
-                            <div className="flex flex-wrap gap-4 p-3 bg-background border rounded-md">
+                        <div className="space-y-2">
+                            <Label className="text-xs text-slate-600">Kategori 4M (Pilih 1 atau lebih)</Label>
+                            <div className="flex flex-wrap gap-3 p-2.5 bg-white border border-slate-200 rounded-md">
                                 {KATEGORI_4M.map(cat => (
                                     <div key={cat} className="flex items-center space-x-2">
                                         <Checkbox 
@@ -214,7 +214,7 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                             checked={formData.kategori4M.includes(cat)}
                                             onCheckedChange={() => handleCheckboxChange(cat)}
                                         />
-                                        <label htmlFor={cat} className="text-sm font-medium leading-none cursor-pointer">
+                                        <label htmlFor={cat} className="text-xs font-medium leading-none cursor-pointer text-slate-700">
                                             {cat}
                                         </label>
                                     </div>
@@ -222,14 +222,13 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label className="flex items-center gap-2">
-                                <FileText className="w-4 h-4 text-muted-foreground" />
+                        <div className="space-y-1.5 pt-1">
+                            <Label className="flex items-center gap-1.5 text-xs text-slate-600">
+                                <FileText className="w-3.5 h-3.5 text-slate-400" />
                                 Deskripsi Rinci
                             </Label>
                             <Textarea 
-                                className="bg-background resize-none"
-                                rows={4} 
+                                className="bg-white resize-none text-xs min-h-[80px]"
                                 placeholder="Jelaskan temuan secara rinci di sini..." 
                                 value={formData.temuan}
                                 onChange={e => setFormData({ ...formData, temuan: e.target.value })}
@@ -239,23 +238,24 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                     </div>
 
                     {/* SECTION 3: DOKUMENTASI */}
-                    <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/50">
-                        <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400 mb-2">
-                            <Camera className="w-4 h-4" />
+                    <div className="space-y-3 border border-slate-200 rounded-xl p-3 bg-slate-50/50">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 mb-1">
+                            <Camera className="w-3.5 h-3.5" />
                             <span>Dokumentasi Foto</span>
                         </div>
                         <div className="space-y-2">
                             <div className="relative">
-                                <Input type="file" multiple accept="image/*" onChange={handleFileChange} className="bg-background pl-9 cursor-pointer" />
-                                <UploadCloud className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                <Input type="file" multiple accept="image/*" onChange={handleFileChange} className="bg-white pl-8 cursor-pointer h-8 text-xs pt-1.5" />
+                                <UploadCloud className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                             </div>
                             
+                            
                             {fotoPreviews.length > 0 && (
-                                <div className="p-3 border rounded-md bg-background mt-3">
-                                    <Label className="text-xs text-muted-foreground mb-2 block">Foto yang akan diupload:</Label>
+                                <div className="p-2.5 border border-slate-200 rounded-md bg-white mt-2">
+                                    <Label className="text-[10px] text-slate-500 mb-1.5 block uppercase tracking-wider">Foto yang akan diupload:</Label>
                                     <div className="flex flex-wrap gap-2">
                                         {fotoPreviews.map((src, idx) => (
-                                            <div key={idx} className="w-20 h-20 border rounded-md overflow-hidden relative bg-muted shadow-sm group">
+                                            <div key={idx} className="w-16 h-16 border border-slate-200 rounded-md overflow-hidden relative bg-slate-100 shadow-sm group">
                                                 <img src={src} alt={`Preview ${idx}`} className="object-cover w-full h-full transition-transform group-hover:scale-110" />
                                             </div>
                                         ))}
@@ -264,16 +264,16 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                             )}
                             
                             {initialData?.fotoUrls && initialData.fotoUrls.length > 0 && (
-                                <div className="text-xs text-amber-600 dark:text-amber-400 mt-2 p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
+                                <div className="text-[10px] text-amber-600 mt-2 p-2 bg-amber-50 rounded-md border border-amber-200 font-medium">
                                     * Data ini sudah memiliki {initialData.fotoUrls.length} foto sebelumnya. Upload file baru akan menambah ke daftar foto.
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    <DialogFooter className="mt-6">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Batal</Button>
-                        <Button type="submit" disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan'}</Button>
+                    <DialogFooter className="mt-4 pt-2">
+                        <Button type="button" variant="outline" size="sm" className="h-8 text-xs" onClick={() => onOpenChange(false)}>Batal</Button>
+                        <Button type="submit" size="sm" className="h-8 text-xs px-6" disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan Temuan'}</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

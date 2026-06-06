@@ -1,0 +1,26 @@
+
+Invalid `tx.permission.createMany()` invocation in
+C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\controllers\userController.js:111:33
+
+  108 
+  109 // Insert new
+  110 if (permissions.length > 0) {
+→ 111     await tx.permission.createMany(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "22P02", message: "invalid input value for enum \"AppModule\": \"HR_DISCIPLINE\"", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })\nPrismaClientUnknownRequestError: 
+Invalid `tx.permission.createMany()` invocation in
+C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\controllers\userController.js:111:33
+
+  108 
+  109 // Insert new
+  110 if (permissions.length > 0) {
+→ 111     await tx.permission.createMany(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "22P02", message: "invalid input value for enum \"AppModule\": \"HR_DISCIPLINE\"", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+    at ei.handleRequestError (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\generated\client\runtime\library.js:125:7458)
+    at ei.handleAndLogRequestError (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\generated\client\runtime\library.js:125:6593)
+    at ei.request (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\generated\client\runtime\library.js:125:6300)
+    at async a (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\generated\client\runtime\library.js:134:9551)
+    at async <anonymous> (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\controllers\userController.js:111:13)
+    at async Proxy._transactionWithCallback (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\generated\client\runtime\library.js:134:8120)
+    at async updateUserPermissions (C:\Penyimpanan Utama\Documents\DATA PARWANTO\PROJECT WEBAPP\project-gis-portal\backend\src\controllers\userController.js:91:25)
