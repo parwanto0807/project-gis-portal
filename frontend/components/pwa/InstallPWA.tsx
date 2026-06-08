@@ -8,16 +8,35 @@ export default function InstallPWA() {
     const [promptInstall, setPromptInstall] = useState<any>(null);
     const [isDismissed, setIsDismissed] = useState(false);
 
+    const [isInstalled, setIsInstalled] = useState(false);
+
     useEffect(() => {
+        // Deteksi apakah aplikasi sudah diinstall (berjalan di mode standalone)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+        if (isStandalone) {
+            setIsInstalled(true);
+            return;
+        }
+
         const handler = (e: any) => {
+            // Mencegah Chrome memunculkan mini-infobar bawaan
             e.preventDefault();
             setSupportsPWA(true);
             setPromptInstall(e);
         };
 
-        window.addEventListener("beforeinstallprompt", handler);
+        const onAppInstalled = () => {
+            setIsInstalled(true);
+            setSupportsPWA(false);
+        };
 
-        return () => window.removeEventListener("transitionend", handler);
+        window.addEventListener("beforeinstallprompt", handler);
+        window.addEventListener("appinstalled", onAppInstalled);
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handler);
+            window.removeEventListener("appinstalled", onAppInstalled);
+        };
     }, []);
 
     const onClickInstall = (e: React.MouseEvent) => {
@@ -28,7 +47,7 @@ export default function InstallPWA() {
         promptInstall.prompt();
     };
 
-    if (!supportsPWA || isDismissed) {
+    if (!supportsPWA || isDismissed || isInstalled) {
         return null;
     }
 

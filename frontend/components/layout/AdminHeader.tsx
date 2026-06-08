@@ -195,6 +195,7 @@ export default function AdminHeader() {
                     </button>
                 )}
 
+                {/* Temporarily hidden as they are not used yet 
                 <button className="rounded-lg p-2 text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hidden sm:block">
                     <Globe className="h-5 w-5" />
                 </button>
@@ -205,6 +206,7 @@ export default function AdminHeader() {
                     <Bell className="h-5 w-5" />
                     <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>
                 </button>
+                */}
 
                 {/* User Profile Menu */}
                 <UserProfileMenu />
