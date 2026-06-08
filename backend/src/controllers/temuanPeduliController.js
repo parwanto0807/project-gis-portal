@@ -15,8 +15,8 @@ export const getAllTemuan = async (req, res, next) => {
 
 export const createTemuan = async (req, res, next) => {
     try {
-        const { area, tanggal, jam, kategori4M, temuan, tempatTemuan } = req.body;
-        const userId = req.user.id;
+        const { area, tanggal, jam, kategori4M, temuan, tempatTemuan, status, tindakanPerbaikan } = req.body;
+        const userId = req.user.userId || req.user.id;
         
         let kategoriArray = [];
         if (typeof kategori4M === 'string') {
@@ -29,7 +29,8 @@ export const createTemuan = async (req, res, next) => {
             kategoriArray = kategori4M;
         }
 
-        const fotoUrls = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+        const fotoUrls = req.files && req.files['fotos'] ? req.files['fotos'].map(file => `/uploads/${file.filename}`) : [];
+        const fotoPerbaikanUrls = req.files && req.files['fotoPerbaikan'] ? req.files['fotoPerbaikan'].map(file => `/uploads/${file.filename}`) : [];
 
         const newTemuan = await prisma.temuanPeduli.create({
             data: {
@@ -40,7 +41,10 @@ export const createTemuan = async (req, res, next) => {
                 kategori4M: kategoriArray,
                 temuan,
                 tempatTemuan,
-                fotoUrls
+                fotoUrls,
+                ...(status && { status }),
+                ...(tindakanPerbaikan && { tindakanPerbaikan }),
+                ...(fotoPerbaikanUrls.length > 0 && { fotoPerbaikanUrls })
             }
         });
 
@@ -53,7 +57,7 @@ export const createTemuan = async (req, res, next) => {
 export const updateTemuan = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { area, tanggal, jam, kategori4M, temuan, tempatTemuan, existingFotos } = req.body;
+        const { area, tanggal, jam, kategori4M, temuan, tempatTemuan, existingFotos, status, tindakanPerbaikan, existingFotoPerbaikan } = req.body;
         
         let kategoriArray = [];
         if (kategori4M) {
@@ -81,8 +85,24 @@ export const updateTemuan = async (req, res, next) => {
             }
         }
 
-        const newFotoUrls = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+        let parsedExistingFotoPerbaikan = [];
+        if (existingFotoPerbaikan) {
+            if (typeof existingFotoPerbaikan === 'string') {
+                try {
+                    parsedExistingFotoPerbaikan = JSON.parse(existingFotoPerbaikan);
+                } catch (e) {
+                    parsedExistingFotoPerbaikan = [existingFotoPerbaikan];
+                }
+            } else if (Array.isArray(existingFotoPerbaikan)) {
+                parsedExistingFotoPerbaikan = existingFotoPerbaikan;
+            }
+        }
+
+        const newFotoUrls = req.files && req.files['fotos'] ? req.files['fotos'].map(file => `/uploads/${file.filename}`) : [];
         const finalFotoUrls = [...parsedExistingFotos, ...newFotoUrls];
+
+        const newFotoPerbaikanUrls = req.files && req.files['fotoPerbaikan'] ? req.files['fotoPerbaikan'].map(file => `/uploads/${file.filename}`) : [];
+        const finalFotoPerbaikanUrls = [...parsedExistingFotoPerbaikan, ...newFotoPerbaikanUrls];
 
         const updatedTemuan = await prisma.temuanPeduli.update({
             where: { id: parseInt(id) },
@@ -93,7 +113,10 @@ export const updateTemuan = async (req, res, next) => {
                 ...(kategoriArray.length > 0 && { kategori4M: kategoriArray }),
                 ...(temuan && { temuan }),
                 ...(tempatTemuan && { tempatTemuan }),
-                fotoUrls: finalFotoUrls
+                fotoUrls: finalFotoUrls,
+                ...(status && { status }),
+                ...(tindakanPerbaikan !== undefined && { tindakanPerbaikan }),
+                fotoPerbaikanUrls: finalFotoPerbaikanUrls
             }
         });
 

@@ -9,8 +9,8 @@ const router = express.Router();
 router.use(verifyToken);
 
 router.get('/', temuanPeduliController.getAllTemuan);
-router.post('/', upload.array('fotos', 5), temuanPeduliController.createTemuan);
-router.put('/:id', upload.array('fotos', 5), temuanPeduliController.updateTemuan);
+router.post('/', upload.fields([{ name: 'fotos', maxCount: 5 }, { name: 'fotoPerbaikan', maxCount: 5 }]), temuanPeduliController.createTemuan);
+router.put('/:id', upload.fields([{ name: 'fotos', maxCount: 5 }, { name: 'fotoPerbaikan', maxCount: 5 }]), temuanPeduliController.updateTemuan);
 router.delete('/:id', temuanPeduliController.deleteTemuan);
 
 export default router;

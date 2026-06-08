@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud } from 'lucide-react';
+import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 
@@ -48,10 +48,15 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
         tanggal: new Date().toISOString().split('T')[0],
         jam: new Date().toTimeString().substring(0, 5),
         kategori4M: [] as string[],
-        temuan: ''
+        temuan: '',
+        status: 'OPEN',
+        tindakanPerbaikan: ''
     });
     const [fotos, setFotos] = useState<File[]>([]);
     const [fotoPreviews, setFotoPreviews] = useState<string[]>([]);
+
+    const [fotoPerbaikan, setFotoPerbaikan] = useState<File[]>([]);
+    const [fotoPerbaikanPreviews, setFotoPerbaikanPreviews] = useState<string[]>([]);
 
     useEffect(() => {
         const urls = fotos.map(f => URL.createObjectURL(f));
@@ -62,6 +67,14 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
     }, [fotos]);
 
     useEffect(() => {
+        const urls = fotoPerbaikan.map(f => URL.createObjectURL(f));
+        setFotoPerbaikanPreviews(urls);
+        return () => {
+            urls.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [fotoPerbaikan]);
+
+    useEffect(() => {
         if (initialData) {
             setFormData({
                 area: initialData.area || '',
@@ -69,7 +82,9 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                 tanggal: initialData.tanggal ? new Date(initialData.tanggal).toISOString().split('T')[0] : '',
                 jam: initialData.jam || '',
                 kategori4M: Array.isArray(initialData.kategori4M) ? initialData.kategori4M : [],
-                temuan: initialData.temuan || ''
+                temuan: initialData.temuan || '',
+                status: initialData.status || 'OPEN',
+                tindakanPerbaikan: initialData.tindakanPerbaikan || ''
             });
         } else {
             setFormData({
@@ -78,10 +93,13 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                 tanggal: new Date().toISOString().split('T')[0],
                 jam: new Date().toTimeString().substring(0, 5),
                 kategori4M: [],
-                temuan: ''
+                temuan: '',
+                status: 'OPEN',
+                tindakanPerbaikan: ''
             });
         }
         setFotos([]);
+        setFotoPerbaikan([]);
     }, [initialData, open]);
 
     const handleCheckboxChange = (cat: string) => {
@@ -96,6 +114,12 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setFotos(Array.from(e.target.files));
+        }
+    };
+
+    const handleFotoPerbaikanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFotoPerbaikan(Array.from(e.target.files));
         }
     };
 
@@ -116,12 +140,25 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
             fd.append('kategori4M', JSON.stringify(formData.kategori4M));
             fd.append('temuan', formData.temuan);
             
+            if (initialData) {
+                fd.append('status', formData.status);
+                fd.append('tindakanPerbaikan', formData.tindakanPerbaikan);
+            }
+            
             fotos.forEach(file => {
                 fd.append('fotos', file);
             });
 
+            fotoPerbaikan.forEach(file => {
+                fd.append('fotoPerbaikan', file);
+            });
+
             if (initialData?.id && initialData?.fotoUrls) {
                 fd.append('existingFotos', JSON.stringify(initialData.fotoUrls));
+            }
+
+            if (initialData?.id && initialData?.fotoPerbaikanUrls) {
+                fd.append('existingFotoPerbaikan', JSON.stringify(initialData.fotoPerbaikanUrls));
             }
 
             if (initialData?.id) {
@@ -149,7 +186,7 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-lg flex items-center gap-2">
-                        {initialData ? 'Edit Temuan Peduli' : 'Tambah Temuan Peduli'}
+                        {initialData ? 'Improve Temuan Peduli' : 'Tambah Temuan Peduli'}
                     </DialogTitle>
                     <DialogDescription className="text-xs">
                         Mohon isi form di bawah ini dengan data yang valid dan sesuai dengan fakta di lapangan.
@@ -275,9 +312,72 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                         </div>
                     </div>
 
+                    {/* SECTION 4: TINDAK LANJUT & PERBAIKAN (Only shown when editing/improving) */}
+                    {initialData && (
+                        <div className="space-y-3 border border-slate-200 rounded-xl p-3 bg-slate-50/50">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-blue-600 mb-1">
+                                <CheckCircle className="w-3.5 h-3.5" />
+                                <span>Tindak Lanjut & Perbaikan</span>
+                            </div>
+                            
+                            <div className="space-y-1.5">
+                                <Label className="text-xs text-slate-600">Status Perbaikan</Label>
+                                <Select value={formData.status} onValueChange={(val) => setFormData({ ...formData, status: val })}>
+                                    <SelectTrigger className="bg-white h-8 text-xs">
+                                        <SelectValue placeholder="Pilih Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="OPEN">Open</SelectItem>
+                                        <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                                        <SelectItem value="CLOSED">Closed</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-1.5 pt-1">
+                                <Label className="flex items-center gap-1.5 text-xs text-slate-600">
+                                    Tindakan Perbaikan
+                                </Label>
+                                <Textarea 
+                                    className="bg-white resize-none text-xs min-h-[80px]"
+                                    placeholder="Jelaskan tindakan perbaikan yang telah dilakukan..." 
+                                    value={formData.tindakanPerbaikan}
+                                    onChange={e => setFormData({ ...formData, tindakanPerbaikan: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-xs text-slate-600">Dokumentasi Foto Perbaikan</Label>
+                                <div className="relative">
+                                    <Input type="file" multiple accept="image/*" onChange={handleFotoPerbaikanChange} className="bg-white pl-8 cursor-pointer h-8 text-xs pt-1.5" />
+                                    <UploadCloud className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                </div>
+                                
+                                {fotoPerbaikanPreviews.length > 0 && (
+                                    <div className="p-2.5 border border-slate-200 rounded-md bg-white mt-2">
+                                        <Label className="text-[10px] text-slate-500 mb-1.5 block uppercase tracking-wider">Foto Perbaikan yang akan diupload:</Label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {fotoPerbaikanPreviews.map((src, idx) => (
+                                                <div key={idx} className="w-16 h-16 border border-slate-200 rounded-md overflow-hidden relative bg-slate-100 shadow-sm group">
+                                                    <img src={src} alt={`Preview Perbaikan ${idx}`} className="object-cover w-full h-full transition-transform group-hover:scale-110" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                {initialData?.fotoPerbaikanUrls && initialData.fotoPerbaikanUrls.length > 0 && (
+                                    <div className="text-[10px] text-amber-600 mt-2 p-2 bg-amber-50 rounded-md border border-amber-200 font-medium">
+                                        * Data ini sudah memiliki {initialData.fotoPerbaikanUrls.length} foto perbaikan sebelumnya. Upload file baru akan menambah ke daftar foto perbaikan.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     <DialogFooter className="mt-4 pt-2">
                         <Button type="button" variant="outline" size="sm" className="h-8 text-xs" onClick={() => onOpenChange(false)}>Batal</Button>
-                        <Button type="submit" size="sm" className="h-8 text-xs px-6" disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan Temuan'}</Button>
+                        <Button type="submit" size="sm" className="h-8 text-xs px-6" disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan'}</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Edit, Trash2, Image as ImageIcon, FileSpreadsheet, FileText, Search, ArrowLeft, ArrowRight, Eye, MapPin, Calendar, User, Clock } from 'lucide-react';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { PlusCircle, Edit, Trash2, Image as ImageIcon, FileSpreadsheet, FileText, Search, ArrowLeft, ArrowRight, Eye, MapPin, Calendar, User, Clock, Wrench } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -140,6 +141,8 @@ export default function TemuanPeduliPage() {
             'Tempat Temuan': item.tempatTemuan,
             'Kategori 4M': Array.isArray(item.kategori4M) ? item.kategori4M.join(', ') : item.kategori4M || '',
             'Deskripsi Temuan': item.temuan,
+            'Status': item.status || 'OPEN',
+            'Tindakan Perbaikan': item.tindakanPerbaikan || '-',
             'Diinput Oleh': item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh,
             'Jumlah Foto': item.fotoUrls ? item.fotoUrls.length : 0
         }));
@@ -149,7 +152,7 @@ export default function TemuanPeduliPage() {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data Temuan');
         
         const wscols = [
-            {wch: 5}, {wch: 15}, {wch: 10}, {wch: 20}, {wch: 20}, {wch: 20}, {wch: 40}, {wch: 20}, {wch: 15}
+            {wch: 5}, {wch: 15}, {wch: 10}, {wch: 20}, {wch: 20}, {wch: 20}, {wch: 40}, {wch: 15}, {wch: 40}, {wch: 20}, {wch: 15}
         ];
         worksheet['!cols'] = wscols;
 
@@ -315,7 +318,7 @@ export default function TemuanPeduliPage() {
         doc.setFont("helvetica", "bold");
         doc.text('Rincian Data Temuan', 14, finalY + 10);
 
-        const tableColumn = ["No", "Waktu", "Area/Tempat", "Kategori 4M", "Deskripsi Temuan", "Pelapor"];
+        const tableColumn = ["No", "Waktu", "Area/Tempat", "Kategori", "Deskripsi", "Status", "Tindakan Perbaikan", "Pelapor"];
         const tableRows: any[] = [];
 
         data.forEach((item, index) => {
@@ -325,6 +328,8 @@ export default function TemuanPeduliPage() {
                 `${item.area}\n${item.tempatTemuan}`,
                 Array.isArray(item.kategori4M) ? item.kategori4M.join(', ') : item.kategori4M || '',
                 item.temuan,
+                item.status || 'OPEN',
+                item.tindakanPerbaikan || '-',
                 item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh,
             ];
             tableRows.push(itemData);
@@ -335,16 +340,33 @@ export default function TemuanPeduliPage() {
             body: tableRows,
             startY: finalY + 15,
             theme: 'grid',
-            styles: { fontSize: 9, cellPadding: 3 },
+            styles: { fontSize: 8, cellPadding: 3 },
             headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
             columnStyles: {
                 0: { cellWidth: 10 },
-                1: { cellWidth: 30 },
-                2: { cellWidth: 40 },
-                3: { cellWidth: 40 },
+                1: { cellWidth: 20 },
+                2: { cellWidth: 30 },
+                3: { cellWidth: 25 },
                 4: { cellWidth: 'auto' },
-                5: { cellWidth: 30 },
+                5: { cellWidth: 20 },
+                6: { cellWidth: 45 },
+                7: { cellWidth: 25 },
             },
+            didParseCell: function(data) {
+                if (data.section === 'body' && data.column.index === 5) {
+                    const statusText = data.cell.raw;
+                    if (statusText === 'OPEN') {
+                        data.cell.styles.textColor = [231, 76, 60]; // Red
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (statusText === 'IN_PROGRESS') {
+                        data.cell.styles.textColor = [243, 156, 18]; // Orange/Amber
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (statusText === 'CLOSED') {
+                        data.cell.styles.textColor = [46, 204, 113]; // Green
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            }
         });
 
         const pdfBlob = doc.output('blob');
@@ -372,6 +394,23 @@ export default function TemuanPeduliPage() {
 
     const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE) || 1;
     const paginatedData = filteredData.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'CLOSED':
+                return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none">Closed</Badge>;
+            case 'IN_PROGRESS':
+                return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-200 border-none">In Progress</Badge>;
+            default:
+                return <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none">Open</Badge>;
+        }
+    };
+
+    const totalTemuan = data.length;
+    const closedTemuan = data.filter(d => d.status === 'CLOSED').length;
+    const inProgressTemuan = data.filter(d => d.status === 'IN_PROGRESS').length;
+    const openTemuan = data.filter(d => d.status === 'OPEN').length || data.filter(d => !d.status).length;
+    const tindakLanjutTemuan = closedTemuan + inProgressTemuan;
 
     return (
         <div className="space-y-6">
@@ -416,6 +455,46 @@ export default function TemuanPeduliPage() {
                 </div>
             </div>
 
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardHeader className="pb-2 pt-4 px-4">
+                        <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Temuan</CardTitle>
+                    </CardHeader>
+                    <CardContent className="px-4 pb-4">
+                        <div className="text-2xl font-bold text-slate-900 dark:text-slate-50">{totalTemuan}</div>
+                    </CardContent>
+                </Card>
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardHeader className="pb-2 pt-4 px-4">
+                        <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sudah Ditindaklanjuti</CardTitle>
+                    </CardHeader>
+                    <CardContent className="px-4 pb-4">
+                        <div className="text-2xl font-bold text-emerald-600">{tindakLanjutTemuan}</div>
+                        <p className="text-[10px] text-slate-500 mt-1">In Progress & Closed</p>
+                    </CardContent>
+                </Card>
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardHeader className="pb-2 pt-4 px-4">
+                        <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Perbaikan</CardTitle>
+                    </CardHeader>
+                    <CardContent className="px-4 pb-4 flex gap-3">
+                        <div className="flex flex-col">
+                            <span className="text-lg font-bold text-rose-500">{openTemuan}</span>
+                            <span className="text-[10px] text-slate-500">Open</span>
+                        </div>
+                        <div className="flex flex-col border-l pl-3 border-slate-200 dark:border-slate-800">
+                            <span className="text-lg font-bold text-amber-500">{inProgressTemuan}</span>
+                            <span className="text-[10px] text-slate-500">In Progress</span>
+                        </div>
+                        <div className="flex flex-col border-l pl-3 border-slate-200 dark:border-slate-800">
+                            <span className="text-lg font-bold text-emerald-500">{closedTemuan}</span>
+                            <span className="text-[10px] text-slate-500">Closed</span>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
             {/* Controls */}
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between pb-2">
                 <div className="relative w-full max-w-sm">
@@ -454,9 +533,10 @@ export default function TemuanPeduliPage() {
                                     <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[180px]">Area / Tempat</TableHead>
                                     <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[160px]">Kategori 4M</TableHead>
                                     <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Deskripsi Temuan</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[120px]">Status</TableHead>
                                     <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[150px]">Diinput Oleh</TableHead>
-                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[120px]">Foto</TableHead>
-                                    <TableHead className="text-right font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pr-4 w-[100px]">Aksi</TableHead>
+                                    <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 w-[100px]">Foto</TableHead>
+                                    <TableHead className="text-right font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pr-4 w-[240px]">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -495,6 +575,9 @@ export default function TemuanPeduliPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-2">
+                                                {getStatusBadge(item.status)}
+                                            </TableCell>
+                                            <TableCell className="py-2">
                                                 <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
                                                     {item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}
                                                 </span>
@@ -507,17 +590,42 @@ export default function TemuanPeduliPage() {
                                                 ) : <span className="text-slate-400 text-xs">-</span>}
                                             </TableCell>
                                             <TableCell className="text-right py-2 pr-4">
-                                                <div className="flex justify-end gap-1">
-                                                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600" onClick={() => handleViewDetail(item)}>
-                                                        <Eye className="w-3.5 h-3.5" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md text-blue-500 hover:bg-blue-50 hover:text-blue-600" onClick={() => handleEdit(item)}>
-                                                        <Edit className="w-3.5 h-3.5" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => handleDelete(item.id)}>
-                                                        <Trash2 className="w-3.5 h-3.5" />
-                                                    </Button>
-                                                </div>
+                                                <TooltipProvider>
+                                                    <div className="flex justify-end gap-1.5">
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-semibold rounded-md text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors shadow-sm" onClick={() => handleViewDetail(item)}>
+                                                                    <Eye className="w-3.5 h-3.5 mr-1" /> Detail
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="bg-slate-900 text-white border-slate-800">
+                                                                <p>Lihat Detail Temuan</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                        
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-semibold rounded-md text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors shadow-sm" onClick={() => handleEdit(item)}>
+                                                                    <Wrench className="w-3.5 h-3.5 mr-1" /> Improve
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="bg-slate-900 text-white border-slate-800">
+                                                                <p>Update Status & Tindakan Perbaikan</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                        
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-semibold rounded-md text-rose-600 border-rose-200 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 transition-colors shadow-sm" onClick={() => handleDelete(item.id)}>
+                                                                    <Trash2 className="w-3.5 h-3.5 mr-1" /> Hapus
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="bg-rose-600 text-white border-rose-600">
+                                                                <p>Hapus Data Temuan Ini</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </div>
+                                                </TooltipProvider>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -589,7 +697,10 @@ export default function TemuanPeduliPage() {
                                     <div key={item.id} className="bg-white dark:bg-slate-950 rounded-xl p-3 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col gap-2">
                                         <div className="flex justify-between items-start gap-2">
                                             <div className="flex-1">
-                                                <Badge variant="outline" className="mb-1 bg-slate-50 dark:bg-slate-900 text-[9px] px-1.5 py-0">#{((page - 1) * ITEMS_PER_PAGE) + index + 1}</Badge>
+                                                <div className="flex gap-2 items-center mb-1">
+                                                    <Badge variant="outline" className="bg-slate-50 dark:bg-slate-900 text-[9px] px-1.5 py-0">#{((page - 1) * ITEMS_PER_PAGE) + index + 1}</Badge>
+                                                    {getStatusBadge(item.status)}
+                                                </div>
                                                 <h3 className="font-semibold text-slate-900 dark:text-slate-50 text-xs leading-tight">{item.area}</h3>
                                                 <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{item.tempatTemuan}</p>
                                             </div>
@@ -610,27 +721,60 @@ export default function TemuanPeduliPage() {
                                             </div>
                                         </div>
 
-                                        <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                                            <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                                        <div className="flex justify-between items-center pt-2 border-t border-slate-100 flex-wrap gap-2">
+                                            <div className="text-[10px] text-slate-500 dark:text-slate-400 mr-auto">
                                                 <span className="font-medium text-slate-700 dark:text-slate-300">{item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}</span>
                                             </div>
                                             
-                                            <div className="flex items-center gap-1">
-                                                {item.fotoUrls && item.fotoUrls.length > 0 && (
-                                                    <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-[10px] gap-1.5 text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-100 dark:border-indigo-900/50 hover:bg-indigo-100 mr-1 px-2">
-                                                        <ImageIcon className="w-3 h-3" /> {item.fotoUrls.length} Foto
-                                                    </Button>
-                                                )}
-                                                <Button variant="ghost" size="icon" onClick={() => handleViewDetail(item)} className="h-7 w-7 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50">
-                                                    <Eye className="w-3.5 h-3.5" />
-                                                </Button>
-                                                <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="h-7 w-7 text-blue-500 hover:text-blue-600 hover:bg-blue-50">
-                                                    <Edit className="w-3.5 h-3.5" />
-                                                </Button>
-                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50">
-                                                    <Trash2 className="w-3.5 h-3.5" />
-                                                </Button>
-                                            </div>
+                                            <TooltipProvider>
+                                                <div className="flex items-center gap-1.5 ml-auto w-full sm:w-auto justify-end">
+                                                    {item.fotoUrls && item.fotoUrls.length > 0 && (
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-[10px] font-semibold gap-1.5 text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200 hover:bg-indigo-100 mr-1 px-2.5 shadow-sm">
+                                                                    <ImageIcon className="w-3.5 h-3.5" /> {item.fotoUrls.length} Foto
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="bg-slate-900 text-white border-slate-800">
+                                                                <p>Lihat Foto Temuan</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    )}
+                                                    
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button variant="outline" size="sm" onClick={() => handleViewDetail(item)} className="h-7 px-2.5 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100 shadow-sm">
+                                                                <Eye className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Detail</span>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent className="bg-slate-900 text-white border-slate-800">
+                                                            <p>Lihat Detail Temuan</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                    
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button variant="outline" size="sm" onClick={() => handleEdit(item)} className="h-7 px-2.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100 shadow-sm">
+                                                                <Wrench className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Improve</span>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent className="bg-slate-900 text-white border-slate-800">
+                                                            <p>Update Status & Tindakan Perbaikan</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                    
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button variant="outline" size="sm" onClick={() => handleDelete(item.id)} className="h-7 px-2.5 text-[10px] font-semibold text-rose-600 bg-rose-50 border-rose-200 hover:bg-rose-100 shadow-sm">
+                                                                <Trash2 className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Hapus</span>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent className="bg-rose-600 text-white border-rose-600">
+                                                            <p>Hapus Data Temuan Ini</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </div>
+                                            </TooltipProvider>
                                         </div>
                                     </div>
                                 ))}
@@ -790,6 +934,46 @@ export default function TemuanPeduliPage() {
                                                 "{selectedDetail.temuan}"
                                             </p>
                                         </div>
+                                    </div>
+
+                                    {/* Improvement / Status Section */}
+                                    <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                        <div className="flex items-center justify-between mb-2 mt-2">
+                                            <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                                                <Wrench className="w-3.5 h-3.5 text-blue-500" /> Tindak Lanjut & Perbaikan
+                                            </Label>
+                                            {getStatusBadge(selectedDetail.status)}
+                                        </div>
+                                        
+                                        <div className="bg-blue-50/50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 relative overflow-hidden min-h-[80px]">
+                                            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed relative z-10">
+                                                {selectedDetail.tindakanPerbaikan || <span className="text-slate-400 italic">Belum ada tindakan perbaikan.</span>}
+                                            </p>
+                                        </div>
+                                        
+                                        {/* Foto Perbaikan */}
+                                        {selectedDetail.fotoPerbaikanUrls && selectedDetail.fotoPerbaikanUrls.length > 0 && (
+                                            <div className="mt-4">
+                                                <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 block">
+                                                    Dokumentasi Perbaikan ({selectedDetail.fotoPerbaikanUrls.length} Foto)
+                                                </Label>
+                                                <div className="flex gap-2 overflow-x-auto pb-2">
+                                                    {selectedDetail.fotoPerbaikanUrls.map((url: string, i: number) => (
+                                                        <div 
+                                                            key={i} 
+                                                            className="h-16 w-16 shrink-0 rounded-md overflow-hidden border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-400 shadow-sm"
+                                                            onClick={() => viewPhotos(selectedDetail.fotoPerbaikanUrls)}
+                                                        >
+                                                            <img 
+                                                                src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
+                                                                className="w-full h-full object-cover" 
+                                                                alt={`Foto Perbaikan ${i+1}`}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

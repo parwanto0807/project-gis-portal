@@ -236,6 +236,9 @@ exports.Prisma.TemuanPeduliScalarFieldEnum = {
   temuan: 'temuan',
   tempatTemuan: 'tempatTemuan',
   fotoUrls: 'fotoUrls',
+  status: 'status',
+  tindakanPerbaikan: 'tindakanPerbaikan',
+  fotoPerbaikanUrls: 'fotoPerbaikanUrls',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

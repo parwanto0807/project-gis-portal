@@ -11144,6 +11144,8 @@ export namespace Prisma {
     userId: number | null
     temuan: string | null
     tempatTemuan: string | null
+    status: string | null
+    tindakanPerbaikan: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11156,6 +11158,8 @@ export namespace Prisma {
     userId: number | null
     temuan: string | null
     tempatTemuan: string | null
+    status: string | null
+    tindakanPerbaikan: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11170,6 +11174,9 @@ export namespace Prisma {
     temuan: number
     tempatTemuan: number
     fotoUrls: number
+    status: number
+    tindakanPerbaikan: number
+    fotoPerbaikanUrls: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11194,6 +11201,8 @@ export namespace Prisma {
     userId?: true
     temuan?: true
     tempatTemuan?: true
+    status?: true
+    tindakanPerbaikan?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11206,6 +11215,8 @@ export namespace Prisma {
     userId?: true
     temuan?: true
     tempatTemuan?: true
+    status?: true
+    tindakanPerbaikan?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11220,6 +11231,9 @@ export namespace Prisma {
     temuan?: true
     tempatTemuan?: true
     fotoUrls?: true
+    status?: true
+    tindakanPerbaikan?: true
+    fotoPerbaikanUrls?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -11321,6 +11335,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls: JsonValue | null
+    status: string
+    tindakanPerbaikan: string | null
+    fotoPerbaikanUrls: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: TemuanPeduliCountAggregateOutputType | null
@@ -11354,6 +11371,9 @@ export namespace Prisma {
     temuan?: boolean
     tempatTemuan?: boolean
     fotoUrls?: boolean
+    status?: boolean
+    tindakanPerbaikan?: boolean
+    fotoPerbaikanUrls?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11369,6 +11389,9 @@ export namespace Prisma {
     temuan?: boolean
     tempatTemuan?: boolean
     fotoUrls?: boolean
+    status?: boolean
+    tindakanPerbaikan?: boolean
+    fotoPerbaikanUrls?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11384,6 +11407,9 @@ export namespace Prisma {
     temuan?: boolean
     tempatTemuan?: boolean
     fotoUrls?: boolean
+    status?: boolean
+    tindakanPerbaikan?: boolean
+    fotoPerbaikanUrls?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11399,11 +11425,14 @@ export namespace Prisma {
     temuan?: boolean
     tempatTemuan?: boolean
     fotoUrls?: boolean
+    status?: boolean
+    tindakanPerbaikan?: boolean
+    fotoPerbaikanUrls?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TemuanPeduliOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "area" | "tanggal" | "jam" | "userId" | "kategori4M" | "temuan" | "tempatTemuan" | "fotoUrls" | "createdAt" | "updatedAt", ExtArgs["result"]["temuanPeduli"]>
+  export type TemuanPeduliOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "area" | "tanggal" | "jam" | "userId" | "kategori4M" | "temuan" | "tempatTemuan" | "fotoUrls" | "status" | "tindakanPerbaikan" | "fotoPerbaikanUrls" | "createdAt" | "updatedAt", ExtArgs["result"]["temuanPeduli"]>
   export type TemuanPeduliInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -11429,6 +11458,9 @@ export namespace Prisma {
       temuan: string
       tempatTemuan: string
       fotoUrls: Prisma.JsonValue | null
+      status: string
+      tindakanPerbaikan: string | null
+      fotoPerbaikanUrls: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["temuanPeduli"]>
@@ -11864,6 +11896,9 @@ export namespace Prisma {
     readonly temuan: FieldRef<"TemuanPeduli", 'String'>
     readonly tempatTemuan: FieldRef<"TemuanPeduli", 'String'>
     readonly fotoUrls: FieldRef<"TemuanPeduli", 'Json'>
+    readonly status: FieldRef<"TemuanPeduli", 'String'>
+    readonly tindakanPerbaikan: FieldRef<"TemuanPeduli", 'String'>
+    readonly fotoPerbaikanUrls: FieldRef<"TemuanPeduli", 'Json'>
     readonly createdAt: FieldRef<"TemuanPeduli", 'DateTime'>
     readonly updatedAt: FieldRef<"TemuanPeduli", 'DateTime'>
   }
@@ -20762,6 +20797,9 @@ export namespace Prisma {
     temuan: 'temuan',
     tempatTemuan: 'tempatTemuan',
     fotoUrls: 'fotoUrls',
+    status: 'status',
+    tindakanPerbaikan: 'tindakanPerbaikan',
+    fotoPerbaikanUrls: 'fotoPerbaikanUrls',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -21790,6 +21828,9 @@ export namespace Prisma {
     temuan?: StringFilter<"TemuanPeduli"> | string
     tempatTemuan?: StringFilter<"TemuanPeduli"> | string
     fotoUrls?: JsonNullableFilter<"TemuanPeduli">
+    status?: StringFilter<"TemuanPeduli"> | string
+    tindakanPerbaikan?: StringNullableFilter<"TemuanPeduli"> | string | null
+    fotoPerbaikanUrls?: JsonNullableFilter<"TemuanPeduli">
     createdAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
     updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -21805,6 +21846,9 @@ export namespace Prisma {
     temuan?: SortOrder
     tempatTemuan?: SortOrder
     fotoUrls?: SortOrderInput | SortOrder
+    status?: SortOrder
+    tindakanPerbaikan?: SortOrderInput | SortOrder
+    fotoPerbaikanUrls?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -21823,6 +21867,9 @@ export namespace Prisma {
     temuan?: StringFilter<"TemuanPeduli"> | string
     tempatTemuan?: StringFilter<"TemuanPeduli"> | string
     fotoUrls?: JsonNullableFilter<"TemuanPeduli">
+    status?: StringFilter<"TemuanPeduli"> | string
+    tindakanPerbaikan?: StringNullableFilter<"TemuanPeduli"> | string | null
+    fotoPerbaikanUrls?: JsonNullableFilter<"TemuanPeduli">
     createdAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
     updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -21838,6 +21885,9 @@ export namespace Prisma {
     temuan?: SortOrder
     tempatTemuan?: SortOrder
     fotoUrls?: SortOrderInput | SortOrder
+    status?: SortOrder
+    tindakanPerbaikan?: SortOrderInput | SortOrder
+    fotoPerbaikanUrls?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TemuanPeduliCountOrderByAggregateInput
@@ -21860,6 +21910,9 @@ export namespace Prisma {
     temuan?: StringWithAggregatesFilter<"TemuanPeduli"> | string
     tempatTemuan?: StringWithAggregatesFilter<"TemuanPeduli"> | string
     fotoUrls?: JsonNullableWithAggregatesFilter<"TemuanPeduli">
+    status?: StringWithAggregatesFilter<"TemuanPeduli"> | string
+    tindakanPerbaikan?: StringNullableWithAggregatesFilter<"TemuanPeduli"> | string | null
+    fotoPerbaikanUrls?: JsonNullableWithAggregatesFilter<"TemuanPeduli">
     createdAt?: DateTimeWithAggregatesFilter<"TemuanPeduli"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"TemuanPeduli"> | Date | string
   }
@@ -23269,6 +23322,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    tindakanPerbaikan?: string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTemuanPeduliInput
@@ -23284,6 +23340,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    tindakanPerbaikan?: string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23296,6 +23355,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTemuanPeduliNestedInput
@@ -23311,6 +23373,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23325,6 +23390,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    tindakanPerbaikan?: string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23337,6 +23405,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23351,6 +23422,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24929,6 +25003,9 @@ export namespace Prisma {
     temuan?: SortOrder
     tempatTemuan?: SortOrder
     fotoUrls?: SortOrder
+    status?: SortOrder
+    tindakanPerbaikan?: SortOrder
+    fotoPerbaikanUrls?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24946,6 +25023,8 @@ export namespace Prisma {
     userId?: SortOrder
     temuan?: SortOrder
     tempatTemuan?: SortOrder
+    status?: SortOrder
+    tindakanPerbaikan?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24958,6 +25037,8 @@ export namespace Prisma {
     userId?: SortOrder
     temuan?: SortOrder
     tempatTemuan?: SortOrder
+    status?: SortOrder
+    tindakanPerbaikan?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -26847,6 +26928,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    tindakanPerbaikan?: string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26860,6 +26944,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    tindakanPerbaikan?: string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -27044,6 +27131,9 @@ export namespace Prisma {
     temuan?: StringFilter<"TemuanPeduli"> | string
     tempatTemuan?: StringFilter<"TemuanPeduli"> | string
     fotoUrls?: JsonNullableFilter<"TemuanPeduli">
+    status?: StringFilter<"TemuanPeduli"> | string
+    tindakanPerbaikan?: StringNullableFilter<"TemuanPeduli"> | string | null
+    fotoPerbaikanUrls?: JsonNullableFilter<"TemuanPeduli">
     createdAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
     updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
   }
@@ -29080,6 +29170,9 @@ export namespace Prisma {
     temuan: string
     tempatTemuan: string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    tindakanPerbaikan?: string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29282,6 +29375,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29295,6 +29391,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29308,6 +29407,9 @@ export namespace Prisma {
     temuan?: StringFieldUpdateOperationsInput | string
     tempatTemuan?: StringFieldUpdateOperationsInput | string
     fotoUrls?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    tindakanPerbaikan?: NullableStringFieldUpdateOperationsInput | string | null
+    fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -235,10 +235,13 @@ model TemuanPeduli {
   userId        Int      // Relasi ke User
   kategori4M    Json     // Array ["Man", "Machine", ...]
   temuan        String   @db.Text
-  tempatTemuan  String   // Area spesifik, e.g. "Area Resepsionis"
-  fotoUrls      Json?    // Array ["url1.jpg", "url2.jpg"]
+  tempatTemuan      String   // Area spesifik, e.g. "Area Resepsionis"
+  fotoUrls          Json?    // Array ["url1.jpg", "url2.jpg"]
+  status            String   @default("OPEN") // OPEN, IN_PROGRESS, CLOSED
+  tindakanPerbaikan String?  @db.Text
+  fotoPerbaikanUrls Json?
   
-  user          User     @relation("DiInputOleh", fields: [userId], references: [id])
+  user              User     @relation("DiInputOleh", fields: [userId], references: [id])
   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
