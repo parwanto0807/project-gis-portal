@@ -36,7 +36,7 @@ export const createTemuan = async (req, res, next) => {
                 area,
                 tanggal: new Date(tanggal),
                 jam,
-                userId: userId === 'dev' ? 1 : userId, // Fallback if dev bypass
+                userId: userId,
                 kategori4M: kategoriArray,
                 temuan,
                 tempatTemuan,
