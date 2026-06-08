@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud, CheckCircle } from 'lucide-react';
+import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud, CheckCircle, Mic } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 
@@ -57,6 +57,53 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
 
     const [fotoPerbaikan, setFotoPerbaikan] = useState<File[]>([]);
     const [fotoPerbaikanPreviews, setFotoPerbaikanPreviews] = useState<string[]>([]);
+    
+    const [isListening, setIsListening] = useState(false);
+    const [isListeningPerbaikan, setIsListeningPerbaikan] = useState(false);
+
+    const handleSpeechRecognition = (target: 'temuan' | 'perbaikan') => {
+        const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            toast.error('Browser Anda tidak mendukung fitur Voice Dictation');
+            return;
+        }
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+            if (target === 'temuan') setIsListening(true);
+            else setIsListeningPerbaikan(true);
+            toast.info('Silakan mulai bicara...', { duration: 2500 });
+        };
+
+        recognition.onresult = (event: any) => {
+            const transcript = event.results[0][0].transcript;
+            setFormData(prev => ({ 
+                ...prev, 
+                [target === 'temuan' ? 'temuan' : 'tindakanPerbaikan']: prev[target === 'temuan' ? 'temuan' : 'tindakanPerbaikan'] 
+                    ? `${prev[target === 'temuan' ? 'temuan' : 'tindakanPerbaikan']} ${transcript}` 
+                    : transcript 
+            }));
+        };
+
+        recognition.onerror = (event: any) => {
+            if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                console.error('Speech recognition error', event.error);
+                toast.error('Gagal mengenali suara: ' + event.error);
+            }
+            if (target === 'temuan') setIsListening(false);
+            else setIsListeningPerbaikan(false);
+        };
+
+        recognition.onend = () => {
+            if (target === 'temuan') setIsListening(false);
+            else setIsListeningPerbaikan(false);
+        };
+
+        recognition.start();
+    };
 
     useEffect(() => {
         const urls = fotos.map(f => URL.createObjectURL(f));
@@ -264,10 +311,26 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                         </div>
 
                         <div className="space-y-1.5 pt-1">
-                            <Label className="flex items-center gap-1.5 text-xs text-slate-600">
-                                <FileText className="w-3.5 h-3.5 text-slate-400" />
-                                Deskripsi Rinci
-                            </Label>
+                            <div className="flex items-center justify-between">
+                                <Label className="flex items-center gap-1.5 text-xs text-slate-600">
+                                    <FileText className="w-3.5 h-3.5 text-slate-400" />
+                                    Deskripsi Rinci
+                                </Label>
+                                <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={() => handleSpeechRecognition('temuan')}
+                                    className={`h-7 px-2.5 text-[10px] font-semibold gap-1.5 rounded-md transition-colors shadow-sm ${isListening ? 'bg-rose-100 text-rose-700 border-rose-300 hover:bg-rose-200 ring-2 ring-rose-200 ring-offset-1' : 'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700'}`}
+                                    title="Gunakan suara untuk mengetik (Dictation)"
+                                >
+                                    {isListening ? (
+                                        <><Mic className="w-3.5 h-3.5 animate-pulse text-rose-600" /> Mendengarkan...</>
+                                    ) : (
+                                        <><Mic className="w-3.5 h-3.5" /> Dictation</>
+                                    )}
+                                </Button>
+                            </div>
                             <Textarea 
                                 className="bg-white resize-none text-xs min-h-[80px]"
                                 placeholder="Jelaskan temuan secara rinci di sini..." 
@@ -335,9 +398,26 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                             </div>
 
                             <div className="space-y-1.5 pt-1">
-                                <Label className="flex items-center gap-1.5 text-xs text-slate-600">
-                                    Tindakan Perbaikan
-                                </Label>
+                                <div className="flex items-center justify-between">
+                                    <Label className="flex items-center gap-1.5 text-xs text-slate-600">
+                                        <FileText className="w-3.5 h-3.5 text-slate-400" />
+                                        Tindakan Perbaikan
+                                    </Label>
+                                    <Button 
+                                        type="button" 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={() => handleSpeechRecognition('perbaikan')}
+                                        className={`h-7 px-2.5 text-[10px] font-semibold gap-1.5 rounded-md transition-colors shadow-sm ${isListeningPerbaikan ? 'bg-rose-100 text-rose-700 border-rose-300 hover:bg-rose-200 ring-2 ring-rose-200 ring-offset-1' : 'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700'}`}
+                                        title="Gunakan suara untuk mengetik (Dictation)"
+                                    >
+                                        {isListeningPerbaikan ? (
+                                            <><Mic className="w-3.5 h-3.5 animate-pulse text-rose-600" /> Mendengarkan...</>
+                                        ) : (
+                                            <><Mic className="w-3.5 h-3.5" /> Dictation</>
+                                        )}
+                                    </Button>
+                                </div>
                                 <Textarea 
                                     className="bg-white resize-none text-xs min-h-[80px]"
                                     placeholder="Jelaskan tindakan perbaikan yang telah dilakukan..." 
