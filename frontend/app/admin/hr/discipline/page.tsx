@@ -4,7 +4,14 @@ import { useEffect, useState, useMemo, useRef } from 'react';
 import api from '@/lib/axios';
 import { useRouter } from 'next/navigation';
 import { generateDisciplineReportPDF } from '@/utils/pdfGenerator';
-import HeaderCard from '@/components/ui/header-card';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { 
     ClipboardCheck, 
     Plus, 
@@ -189,7 +196,7 @@ export default function DisciplineReportsPage() {
             {/* Mobile Native App Bar */}
             <div className="sm:hidden flex items-center justify-between bg-zinc-50 border-b border-slate-200/60 pb-3 px-1 sticky top-0 z-50">
                 <div className="flex flex-col">
-                    <h1 className="text-xl font-bold text-slate-900 tracking-tight leading-none">Discipline</h1>
+                    <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight leading-none">Discipline</h1>
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-[0.2em] mt-1.5 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Monitor
                     </span>
@@ -199,7 +206,7 @@ export default function DisciplineReportsPage() {
                         variant="ghost" 
                         size="icon" 
                         onClick={handleExportPDF} 
-                        className="rounded-full bg-white border border-slate-200 shadow-sm h-9 w-9 active:scale-95 transition-all text-slate-600"
+                        className="rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm h-9 w-9 active:scale-95 transition-all text-slate-600 dark:text-slate-400"
                     >
                         <FileDown className="w-4 h-4 text-emerald-600" />
                     </Button>
@@ -207,12 +214,12 @@ export default function DisciplineReportsPage() {
                         variant="ghost" 
                         size="icon" 
                         onClick={fetchReports} 
-                        className="rounded-full bg-white border border-slate-200 shadow-sm h-9 w-9 active:scale-95 transition-all text-slate-600"
+                        className="rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm h-9 w-9 active:scale-95 transition-all text-slate-600 dark:text-slate-400"
                     >
                         <RefreshCw className={loading ? "animate-spin w-4 h-4 text-rose-500" : "w-4 h-4"} />
                     </Button>
                     <Link href="/admin/hr/discipline/new">
-                        <Button className="rounded-full bg-slate-900 shadow-md h-9 w-9 p-0 active:scale-95 transition-all outline-none">
+                        <Button className="rounded-full bg-slate-900 dark:bg-slate-100 shadow-md h-9 w-9 p-0 active:scale-95 transition-all outline-none">
                             <Plus className="w-5 h-5 text-white" />
                         </Button>
                     </Link>
@@ -220,100 +227,123 @@ export default function DisciplineReportsPage() {
             </div>
 
             {/* Desktop Header Area */}
-            <div className="hidden sm:block">
-                <HeaderCard
-                    title="Discipline Monitor"
-                    description="Professional oversight and discipline tracking."
-                    icon={<ClipboardCheck className="text-white" />}
-                    variant="default"
-                    backgroundStyle="gradient"
-                    gradientFrom="from-slate-900"
-                    gradientTo="to-slate-950"
-                    className="w-full shadow-xl"
-                    showActionArea={true}
-                    actionArea={
-                        <div className="flex items-center gap-3">
-                            <Button 
-                                variant="ghost" 
-                                onClick={handleExportPDF} 
-                                className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/10 rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[10px]"
-                            >
-                                <FileDown className="w-4 h-4 mr-2" />
-                                Preview PDF
-                            </Button>
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                onClick={fetchReports} 
-                                className="bg-white/10 hover:bg-white/20 text-white border-white/10 rounded-xl h-12 w-12"
-                            >
-                                <RefreshCw className={loading ? "animate-spin w-5 h-5 text-white" : "w-5 h-5"} />
-                            </Button>
-                            <Link href="/admin/hr/discipline/new">
-                                <Button className="bg-white text-slate-950 hover:bg-slate-50 font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl shadow-2xl">
-                                    <Plus className="w-4 h-4 mr-2" />
-                                    New Report
-                                </Button>
-                            </Link>
-                        </div>
-                    }
-                />
+            <div className="hidden sm:flex justify-between items-start mb-4">
+                <div className="flex flex-col gap-1.5">
+                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
+                        <Breadcrumb>
+                            <BreadcrumbList className="text-[10px] md:text-xs">
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">Dashboard</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/admin/hr" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">HR</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="text-slate-900 dark:text-slate-50 font-semibold">Discipline Monitor</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                    </Badge>
+                    <div>
+                        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight flex items-center gap-2">
+                            <ClipboardCheck className="w-5 h-5 text-rose-600" />
+                            Discipline Monitor
+                        </h1>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Professional oversight and discipline tracking.</p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={handleExportPDF} 
+                        className="h-8 text-xs px-3 text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 font-semibold"
+                    >
+                        <FileDown className="w-3.5 h-3.5 mr-1.5" />
+                        Preview PDF
+                    </Button>
+                    <Button 
+                        variant="outline" 
+                        size="icon" 
+                        onClick={fetchReports} 
+                        className="h-8 w-8 text-slate-600 dark:text-slate-400"
+                    >
+                        <RefreshCw className={loading ? "animate-spin w-3.5 h-3.5" : "w-3.5 h-3.5"} />
+                    </Button>
+                    <Link href="/admin/hr/discipline/new">
+                        <Button size="sm" className="h-8 text-xs px-3 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 text-white font-semibold shadow-sm">
+                            <Plus className="w-3.5 h-3.5 mr-1.5" />
+                            New Report
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="bg-white border-0 shadow-sm rounded-[2rem] p-6 hover:shadow-md transition-all">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Reports</p>
-                    <div className="flex items-end justify-between">
-                        <h4 className="text-3xl font-black text-slate-900">{reports.length}</h4>
-                        <Hash className="w-10 h-10 text-slate-100" />
-                    </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Reports</p>
+                            <Hash className="w-4 h-4 text-slate-400" />
+                        </div>
+                        <h4 className="text-2xl font-bold text-slate-900 dark:text-slate-50">{reports.length}</h4>
+                    </CardContent>
                 </Card>
-                <Card className="bg-white border-0 shadow-sm rounded-[2rem] p-6 hover:shadow-md transition-all">
-                    <p className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-1">Critical Issues</p>
-                    <div className="flex items-end justify-between">
-                        <h4 className="text-3xl font-black text-rose-600">{reports.filter(r => severityMap[r.type]?.level === 3).length}</h4>
-                        <ShieldAlert className="w-10 h-10 text-rose-50" />
-                    </div>
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">Critical Issues</p>
+                            <ShieldAlert className="w-4 h-4 text-rose-400" />
+                        </div>
+                        <h4 className="text-2xl font-bold text-rose-600">{reports.filter(r => severityMap[r.type]?.level === 3).length}</h4>
+                    </CardContent>
                 </Card>
-                <Card className="bg-white border-0 shadow-sm rounded-[2rem] p-6 hover:shadow-md transition-all">
-                    <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Pending Review</p>
-                    <div className="flex items-end justify-between">
-                        <h4 className="text-3xl font-black text-amber-600">{reports.filter(r => r.status === 'PENDING').length}</h4>
-                        <Clock className="w-10 h-10 text-amber-50" />
-                    </div>
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Pending</p>
+                            <Clock className="w-4 h-4 text-amber-400" />
+                        </div>
+                        <h4 className="text-2xl font-bold text-amber-600">{reports.filter(r => r.status === 'PENDING').length}</h4>
+                    </CardContent>
                 </Card>
-                <Card className="bg-white border-0 shadow-sm rounded-[2rem] p-6 hover:shadow-md transition-all">
-                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Resolved</p>
-                    <div className="flex items-end justify-between">
-                        <h4 className="text-3xl font-black text-emerald-600">{reports.filter(r => r.status === 'RESOLVED').length}</h4>
-                        <CheckCircle2 className="w-10 h-10 text-emerald-50" />
-                    </div>
+                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Resolved</p>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <h4 className="text-2xl font-bold text-emerald-600">{reports.filter(r => r.status === 'RESOLVED').length}</h4>
+                    </CardContent>
                 </Card>
             </div>
 
             {/* Data Table */}
-            <Card className="bg-white border-0 shadow-lg lg:shadow-2xl rounded-[1.5rem] lg:rounded-[2.5rem] overflow-hidden mx-0 xl:mx-0">
-                <div className="p-4 sm:p-8 border-b border-slate-50 flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-6">
-                    <div className="relative flex-1 w-full lg:max-w-md">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="relative flex-1 max-w-sm">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                         <Input 
                             placeholder="Search employee or type..." 
-                            className="pl-11 h-12 lg:h-14 bg-slate-50 border-0 rounded-xl font-bold text-slate-900 focus-visible:ring-2 focus-visible:ring-slate-950 w-full"
+                            className="pl-8 h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                     {/* Horizontal scroll on mobile for filter buttons */}
-                    <div className="w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0 flex bg-slate-50 p-1 rounded-xl scrollbar-hide">
+                    <div className="w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 flex bg-slate-50 dark:bg-slate-900 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800 scrollbar-hide">
                         {['All', 'Sleeping / Tidur', 'Playing Phone / Main HP', 'Chatting / Ngobrol'].map((type) => (
                             <button
                                 key={type}
                                 onClick={() => setFilterType(type)}
-                                className={`px-4 py-2.5 lg:py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                                className={`px-3 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider transition-all whitespace-nowrap ${
                                     filterType === type 
-                                    ? 'bg-white text-slate-950 shadow-sm' 
-                                    : 'text-slate-400 hover:text-slate-600'
+                                    ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 shadow-sm border border-slate-200/50' 
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300'
                                 }`}
                             >
                                 {type === 'All' ? 'All' : type.split(' / ')[0]}
@@ -323,7 +353,7 @@ export default function DisciplineReportsPage() {
                 </div>
 
                 {/* Mobile Cards View */}
-                <div className="lg:hidden bg-slate-50/50 p-3 sm:p-4 flex flex-col gap-3">
+                <div className="lg:hidden bg-slate-50/50 dark:bg-slate-900/50 p-3 flex flex-col gap-3">
                     <AnimatePresence mode="popLayout">
                         {filteredReports.map((report) => (
                             <motion.div 
@@ -332,52 +362,50 @@ export default function DisciplineReportsPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 onClick={() => handleViewDetail(report)}
-                                className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100/60 active:scale-[0.98] transition-transform cursor-pointer flex flex-col gap-3"
+                                className="bg-white dark:bg-slate-950 rounded-xl p-3 shadow-sm border border-slate-200 dark:border-slate-800 active:scale-[0.98] transition-transform cursor-pointer flex flex-col gap-2"
                             >
                                 <div className="flex justify-between items-start gap-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center font-bold text-sm text-slate-700 uppercase border border-slate-100 shrink-0">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-semibold text-xs text-slate-700 dark:text-slate-300 uppercase border border-slate-200 dark:border-slate-800 shrink-0">
                                             {report.employeeName.charAt(0)}
                                         </div>
                                         <div className="flex flex-col">
-                                            <h4 className="font-bold text-slate-900 text-sm leading-tight flex items-center gap-1.5">
+                                            <h4 className="font-semibold text-slate-900 dark:text-slate-50 text-xs flex items-center gap-1">
                                                 {report.employeeName}
-                                                {report.photoUrl && <Camera className="w-3.5 h-3.5 text-rose-500 animate-pulse shrink-0" />}
+                                                {report.photoUrl && <Camera className="w-3 h-3 text-rose-500 shrink-0" />}
                                             </h4>
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                            <span className="text-[9px] text-slate-500 dark:text-slate-400">
                                                 {report.targetEmployeeId}
                                             </span>
                                         </div>
                                     </div>
                                     <Badge className={`
-                                        ${report.status === 'RESOLVED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'} 
-                                        font-black uppercase tracking-wide text-[9px] px-2 py-0.5 border shadow-sm shrink-0 mt-0.5
+                                        ${report.status === 'RESOLVED' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-amber-50 text-amber-600 border-amber-200'} 
+                                        font-semibold text-[9px] px-1.5 py-0 border shadow-sm shrink-0
                                     `}>
                                         {report.status}
                                     </Badge>
                                 </div>
 
-                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100/50">
-                                    <div className="flex items-center justify-between mb-1.5">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-2 h-2 rounded-full ${severityMap[report.type]?.color || 'bg-slate-300'} shadow-[0_0_8px_rgba(0,0,0,0.1)]`} />
-                                            <span className="font-bold text-slate-700 text-xs">{report.type.split(' / ')[0]}</span>
-                                        </div>
+                                <div className="bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+                                    <div className="flex items-center gap-1.5 mb-1">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${severityMap[report.type]?.color || 'bg-slate-300'}`} />
+                                        <span className="font-semibold text-slate-700 dark:text-slate-300 text-[10px]">{report.type.split(' / ')[0]}</span>
                                     </div>
-                                    <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">"{report.description}"</p>
+                                    <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-2">"{report.description}"</p>
                                 </div>
 
-                                <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase tracking-widest pt-1">
-                                    <span className="flex items-center gap-1.5 truncate pr-2">
-                                        <MapPin className="w-3 h-3 shrink-0" />
+                                <div className="flex justify-between items-center text-[9px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100">
+                                    <span className="flex items-center gap-1 truncate pr-2">
+                                        <MapPin className="w-2.5 h-2.5 shrink-0" />
                                         <span className="truncate max-w-[120px]">{report.location || "N/A"}</span>
                                     </span>
-                                    <div className="flex items-center gap-3 shrink-0">
-                                        <span className="flex items-center gap-1.5">
-                                            <Calendar className="w-3 h-3" />
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <span className="flex items-center gap-1">
+                                            <Calendar className="w-2.5 h-2.5" />
                                             {format(new Date(report.createdAt), 'MMM dd')}
                                         </span>
-                                        <ArrowUpRight className="w-3.5 h-3.5 text-slate-300" />
+                                        <ArrowUpRight className="w-3 h-3 text-slate-400" />
                                     </div>
                                 </div>
                             </motion.div>
@@ -386,73 +414,73 @@ export default function DisciplineReportsPage() {
                 </div>
 
                 {/* Desktop Table View */}
-                <div className="hidden lg:block">
+                <div className="hidden lg:block overflow-x-auto">
                     <Table>
-                        <TableHeader className="bg-slate-50/50">
-                            <TableRow className="hover:bg-transparent border-slate-50">
-                                <TableHead className="w-[150px] font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14 pl-8">Date</TableHead>
-                                <TableHead className="w-[250px] font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14">Personnel</TableHead>
-                                <TableHead className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14">Violation</TableHead>
-                                <TableHead className="w-[150px] font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14">Location</TableHead>
-                                <TableHead className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14">Status / Action</TableHead>
-                                <TableHead className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14">Reporter</TableHead>
-                                <TableHead className="text-right font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] h-14 pr-8">View</TableHead>
+                        <TableHeader className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                            <TableRow className="hover:bg-transparent">
+                                <TableHead className="w-[120px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pl-4">Date</TableHead>
+                                <TableHead className="w-[200px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Personnel</TableHead>
+                                <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Violation</TableHead>
+                                <TableHead className="w-[120px] font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Location</TableHead>
+                                <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Status / Action</TableHead>
+                                <TableHead className="font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2">Reporter</TableHead>
+                                <TableHead className="text-right font-semibold text-slate-500 dark:text-slate-400 text-xs h-9 py-2 pr-4">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             <AnimatePresence mode="popLayout">
                                 {filteredReports.map((report) => (
-                                    <TableRow key={report.id} className="group hover:bg-slate-50/50 border-slate-50 transition-all cursor-default">
-                                        <TableCell className="pl-8 font-bold text-slate-500 text-xs">
+                                    <TableRow key={report.id} className="group hover:bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                                        <TableCell className="pl-4 py-2 font-medium text-slate-600 dark:text-slate-400 text-xs">
                                             {format(new Date(report.createdAt), 'MMM dd, yyyy HH:mm')}
                                         </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
+                                        <TableCell className="py-2">
+                                            <div className="flex items-center gap-2">
                                                 <div className="flex flex-col">
-                                                    <span className="font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                                                    <span className="font-semibold text-slate-900 dark:text-slate-50 text-xs flex items-center gap-1.5">
                                                         {report.employeeName}
-                                                        {report.photoUrl && <Camera className="w-3.5 h-3.5 text-rose-500 animate-pulse" />}
+                                                        {report.photoUrl && <Camera className="w-3 h-3 text-rose-500" />}
                                                     </span>
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{report.targetEmployeeId}</span>
+                                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{report.targetEmployeeId}</span>
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col gap-1.5">
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`w-2 h-2 rounded-full ${severityMap[report.type]?.color || 'bg-slate-300'} shadow-sm`} />
-                                                    <span className="font-bold text-slate-700 text-[13px]">{report.type.split(' / ')[0]}</span>
+                                        <TableCell className="py-2">
+                                            <div className="flex flex-col gap-0.5">
+                                                <div className="flex items-center gap-1.5">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${severityMap[report.type]?.color || 'bg-slate-300'}`} />
+                                                    <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs">{report.type.split(' / ')[0]}</span>
+                                                    <Badge variant="outline" className={`text-[8px] h-4 px-1 py-0 border-slate-200 dark:border-slate-800 ${severityMap[report.type]?.color ? severityMap[report.type]?.color.replace('bg-', 'text-').replace('500', '600') : 'text-slate-500 dark:text-slate-400'}`}>
+                                                        {severityMap[report.type]?.label || 'General'}
+                                                    </Badge>
                                                 </div>
-                                                <Badge className={`${severityMap[report.type]?.color || 'bg-slate-500'} text-[8px] h-4 font-black uppercase text-white border-0 px-2 flex-shrink-0 scale-90 origin-left`}>
-                                                    {severityMap[report.type]?.label || 'General'}
-                                                </Badge>
-                                                <p className="text-[10px] text-slate-400 font-medium italic line-clamp-1 max-w-[150px]">"{report.description}"</p>
+                                                <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 max-w-[200px]">"{report.description}"</p>
                                             </div>
                                         </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2 text-slate-500">
-                                                <MapPin className="w-3.5 h-3.5 opacity-50" />
-                                                <span className="text-xs font-bold leading-none">{report.location || "N/A"}</span>
+                                        <TableCell className="py-2">
+                                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
+                                                <MapPin className="w-3 h-3 text-slate-400" />
+                                                <span className="text-xs font-medium">{report.location || "N/A"}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col gap-2">
+                                        <TableCell className="py-2">
+                                            <div className="flex flex-col gap-1 items-start">
                                                 <Badge className={`
-                                                    ${report.status === 'RESOLVED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'} 
-                                                    font-black uppercase tracking-widest text-[9px] px-3 py-1 border w-fit
+                                                    ${report.status === 'RESOLVED' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-amber-50 text-amber-600 border-amber-200'} 
+                                                    font-semibold text-[9px] px-2 py-0 border
                                                 `}>
                                                     {report.status}
                                                 </Badge>
                                                 {report.status === 'RESOLVED' && (
-                                                    <div className="flex flex-col gap-1">
+                                                    <div className="flex flex-col">
                                                         {report.actionTaken && (
-                                                            <span className="text-[10px] font-black text-emerald-700 uppercase tracking-tighter flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100/50 w-fit">
-                                                                <ArrowUpRight className="w-3 h-3" />
+                                                            <span className="text-[9px] font-semibold text-emerald-700 flex items-center gap-1">
+                                                                <ArrowUpRight className="w-2.5 h-2.5" />
                                                                 {report.actionTaken}
                                                             </span>
                                                         )}
                                                         {report.handledBy && (
-                                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1">
+                                                            <span className="text-[9px] text-slate-400 pl-3.5">
                                                                 By: {report.handledBy.firstName}
                                                             </span>
                                                         )}
@@ -460,19 +488,20 @@ export default function DisciplineReportsPage() {
                                                 )}
                                             </div>
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="py-2">
                                             <div className="flex flex-col">
-                                                <span className="font-bold text-slate-600 text-sm whitespace-nowrap">{report.reporter?.firstName} {report.reporter?.lastName}</span>
-                                                <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest leading-none mt-1 shadow-sm w-fit px-1 bg-slate-50 rounded">Reporter</span>
+                                                <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs">{report.reporter?.firstName} {report.reporter?.lastName}</span>
+                                                <span className="text-[9px] text-slate-500 dark:text-slate-400">Reporter</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-right pr-8">
+                                        <TableCell className="text-right pr-4 py-2">
                                             <Button 
                                                 variant="ghost" 
-                                                className="h-10 px-4 bg-slate-50 group-hover:bg-slate-900 group-hover:text-white rounded-xl transition-all font-black uppercase text-[10px] tracking-widest"
+                                                size="sm"
+                                                className="h-7 px-2.5 text-[10px] font-semibold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-50"
                                                 onClick={() => handleViewDetail(report)}
                                             >
-                                                View Detail
+                                                View
                                             </Button>
                                         </TableCell>
                                     </TableRow>
@@ -485,11 +514,11 @@ export default function DisciplineReportsPage() {
 
             {/* Detail Dialog */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-[95vw] sm:max-w-2xl lg:max-w-5xl rounded-[2.5rem] border-0 shadow-2xl p-0 overflow-hidden bg-white">
+                <DialogContent className="max-w-[95vw] sm:max-w-3xl rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl p-0 overflow-hidden bg-white dark:bg-slate-950">
                     {selectedReport && (
-                        <div className="flex flex-col lg:flex-row w-full h-full max-h-[90vh] overflow-y-auto lg:overflow-hidden">
+                        <div className="flex flex-col sm:flex-row w-full h-full max-h-[85vh] overflow-y-auto sm:overflow-hidden">
                             {/* Left: Proof Image */}
-                            <div className="w-full lg:w-1/2 min-h-[300px] lg:min-h-full bg-slate-100 flex items-center justify-center relative overflow-hidden">
+                            <div className="w-full sm:w-2/5 min-h-[200px] sm:min-h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center relative overflow-hidden border-r border-slate-200 dark:border-slate-800">
                                 {selectedReport.photoUrl ? (
                                     <img 
                                         src={`${window.location.protocol}//${window.location.hostname}:5001${selectedReport.photoUrl.startsWith('/') ? '' : '/'}${selectedReport.photoUrl}`} 
@@ -497,90 +526,87 @@ export default function DisciplineReportsPage() {
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <div className="flex flex-col items-center gap-4 text-slate-300">
-                                        <Camera className="w-16 h-16" />
-                                        <span className="text-[10px] font-black tracking-[0.2em] uppercase">No Photographic Proof</span>
+                                    <div className="flex flex-col items-center gap-2 text-slate-400">
+                                        <Camera className="w-8 h-8" />
+                                        <span className="text-[10px] font-semibold tracking-wider uppercase">No Proof Uploaded</span>
                                     </div>
                                 )}
-                                <div className="absolute top-6 left-6 z-10 flex flex-col gap-2">
-                                    <Badge className={`${severityMap[selectedReport.type]?.color || 'bg-slate-500'} text-white font-black uppercase text-[10px] border-0 shadow-xl`}>
+                                <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
+                                    <Badge className={`${severityMap[selectedReport.type]?.color || 'bg-slate-500'} text-white font-semibold uppercase text-[9px] border-0 shadow-sm px-1.5 py-0`}>
                                         {severityMap[selectedReport.type]?.label || 'General'}
                                     </Badge>
-                                    <Badge className="bg-white/95 backdrop-blur-md text-slate-900 border-0 shadow-xl font-black uppercase text-[10px]">
+                                    <Badge className="bg-white/95 backdrop-blur-md text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-800 shadow-sm font-semibold uppercase text-[9px] px-1.5 py-0">
                                         {selectedReport.status}
                                     </Badge>
                                 </div>
                             </div>
 
                             {/* Right: Details */}
-                            <div className="w-full lg:w-1/2 p-6 md:p-10 flex flex-col overflow-y-auto">
-                                <div className="space-y-6 flex-1">
+                            <div className="w-full sm:w-3/5 p-4 sm:p-6 flex flex-col overflow-y-auto">
+                                <div className="space-y-4 flex-1">
                                     <div className="flex justify-between items-start">
-                                        <DialogHeader className="text-left">
-                                            <DialogTitle className="text-3xl font-black text-slate-950 tracking-tighter uppercase leading-none">
+                                        <DialogHeader className="text-left space-y-0.5">
+                                            <DialogTitle className="text-lg font-bold text-slate-900 dark:text-slate-50 leading-tight">
                                                 {selectedReport.employeeName}
                                             </DialogTitle>
-                                            <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-widest">Incident Protocol Log</p>
+                                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Incident Log</p>
                                         </DialogHeader>
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 border border-slate-100">
-                                            <ShieldAlert className="w-6 h-6" />
+                                        <div className="w-8 h-8 bg-slate-50 dark:bg-slate-900 rounded-lg flex items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-800">
+                                            <ShieldAlert className="w-4 h-4" />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-6 pt-4">
-                                        <div className="space-y-1">
-                                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center">
-                                                <Building2 className="w-3 h-3 mr-1.5" /> Department
+                                    <div className="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg">
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
+                                                <Building2 className="w-2.5 h-2.5 mr-1" /> Department
                                             </Label>
-                                            <p className="text-sm font-bold text-slate-800">{selectedReport.location || "N/A"}</p>
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{selectedReport.location || "N/A"}</p>
                                         </div>
-                                        <div className="space-y-1">
-                                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center">
-                                                <Hash className="w-3 h-3 mr-1.5" /> Subject ID
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
+                                                <Hash className="w-2.5 h-2.5 mr-1" /> Subject ID
                                             </Label>
-                                            <p className="text-sm font-bold text-slate-800">{selectedReport.targetEmployeeId}</p>
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{selectedReport.targetEmployeeId}</p>
                                         </div>
-                                        <div className="space-y-1">
-                                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center">
-                                                <Calendar className="w-3 h-3 mr-1.5" /> Timestamp
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
+                                                <Calendar className="w-2.5 h-2.5 mr-1" /> Timestamp
                                             </Label>
-                                            <p className="text-sm font-bold text-slate-800">{format(new Date(selectedReport.createdAt), 'MMM dd, yyyy HH:mm')}</p>
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{format(new Date(selectedReport.createdAt), 'MMM dd, yyyy HH:mm')}</p>
                                         </div>
-                                        <div className="space-y-1">
-                                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center">
-                                                <User className="w-3 h-3 mr-1.5" /> Reporter
+                                        <div className="space-y-0.5">
+                                            <Label className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
+                                                <User className="w-2.5 h-2.5 mr-1" /> Reporter
                                             </Label>
-                                            <p className="text-sm font-bold text-slate-800">{selectedReport.reporter?.firstName} {selectedReport.reporter?.lastName}</p>
+                                            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{selectedReport.reporter?.firstName} {selectedReport.reporter?.lastName}</p>
                                         </div>
                                     </div>
 
-                                    <Separator className="bg-slate-100" />
-
-                                    <div className="space-y-4">
-                                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Narrative Evidence</Label>
-                                        <div className="bg-slate-50/80 p-6 rounded-[2rem] border border-slate-100 italic relative">
-                                            <AlertTriangle className="absolute -left-2 -top-2 w-10 h-10 text-slate-200/50" />
-                                            <p className="text-sm font-medium text-slate-600 leading-relaxed relative z-10">
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><Info className="w-3.5 h-3.5" /> Narrative</Label>
+                                        <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
+                                            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic">
                                                 "{selectedReport.description}"
                                             </p>
                                         </div>
                                     </div>
 
-                                    <Separator className="bg-slate-100" />
+                                    <Separator className="bg-slate-200 dark:bg-slate-800" />
                                     
                                     {selectedReport.status === 'PENDING' ? (
-                                        <div className="space-y-6 pt-2">
+                                        <div className="space-y-4 pt-1">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-1.5 h-6 bg-slate-900 rounded-full" />
-                                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Superior Action</h3>
+                                                <div className="w-1 h-4 bg-slate-900 dark:bg-slate-100 rounded-full" />
+                                                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wider">Superior Action</h3>
                                             </div>
                                             
-                                            <div className="space-y-4 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    <div className="space-y-2">
-                                                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Action</Label>
+                                            <div className="space-y-3 bg-white dark:bg-slate-950 p-0">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    <div className="space-y-1.5">
+                                                        <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400">Select Action</Label>
                                                         <select 
-                                                            className="w-full h-12 bg-white border border-slate-200 rounded-xl px-4 text-sm font-bold focus:ring-2 focus:ring-slate-950 outline-none appearance-none"
+                                                            className="w-full h-8 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md px-2.5 text-xs font-medium focus:ring-1 focus:ring-slate-900 outline-none"
                                                             value={actionTaken}
                                                             onChange={(e) => setActionTaken(e.target.value)}
                                                         >
@@ -595,47 +621,48 @@ export default function DisciplineReportsPage() {
                                                             <option value="PHK">Pemutusan Hubungan Kerja (PHK)</option>
                                                         </select>
                                                     </div>
-                                                    <div className="space-y-2">
-                                                        <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Action Date</Label>
+                                                    <div className="space-y-1.5">
+                                                        <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400">Action Date</Label>
                                                         <Input 
                                                             type="date" 
-                                                            className="h-12 bg-white border-slate-200 rounded-xl font-bold px-4"
+                                                            className="h-8 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-md text-xs px-2.5"
                                                             value={actionDate}
                                                             onChange={(e) => setActionDate(e.target.value)}
                                                         />
                                                     </div>
                                                 </div>
                                                 
-                                                <div className="space-y-2">
-                                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Resolution Summary / Resume</Label>
+                                                <div className="space-y-1.5">
+                                                    <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400">Resolution Summary / Resume</Label>
                                                     <textarea 
-                                                        className="w-full min-h-[80px] bg-white border border-slate-200 rounded-xl p-4 text-sm font-bold focus:ring-2 focus:ring-slate-950 outline-none resize-none"
+                                                        className="w-full min-h-[60px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md p-2.5 text-xs focus:ring-1 focus:ring-slate-900 outline-none resize-none"
                                                         placeholder="Summary of the results or resume of the action taken..."
                                                         value={resolutionSummary}
                                                         onChange={(e) => setResolutionSummary(e.target.value)}
                                                     />
                                                 </div>
 
-                                                <div className="space-y-4">
-                                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Resolution Proof (Photo)</Label>
-                                                    <div className="flex items-center gap-4">
+                                                <div className="space-y-1.5">
+                                                    <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400">Resolution Proof (Photo)</Label>
+                                                    <div className="flex items-center gap-3">
                                                         <Button 
                                                             type="button"
                                                             variant="outline"
+                                                            size="sm"
                                                             onClick={() => resolutionFileRef.current?.click()}
-                                                            className="h-14 border border-slate-200 rounded-2xl px-6 flex items-center gap-3 font-bold"
+                                                            className="h-8 border-slate-200 dark:border-slate-800 rounded-md px-3 text-xs flex items-center gap-2"
                                                         >
-                                                            <Camera className="w-4 h-4 text-slate-400" />
+                                                            <Camera className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                                                             {resolutionPhoto ? 'Change Proof' : 'Upload Proof'}
                                                         </Button>
                                                         {resolutionPhoto && (
-                                                            <div className="w-20 h-14 rounded-xl overflow-hidden border border-slate-100 shadow-sm relative group">
+                                                            <div className="w-12 h-8 rounded-md overflow-hidden border border-slate-200 dark:border-slate-800 relative group">
                                                                 <img src={resolutionPhoto} className="w-full h-full object-cover" />
                                                                 <button 
                                                                     onClick={() => setResolutionPhoto(null)}
                                                                     className="absolute inset-0 bg-rose-500/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
                                                                 >
-                                                                    <X className="w-4 h-4 text-white" />
+                                                                    <X className="w-3 h-3 text-white" />
                                                                 </button>
                                                             </div>
                                                         )}
@@ -649,10 +676,10 @@ export default function DisciplineReportsPage() {
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2">
-                                                    <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Improvement Plan / Notes</Label>
+                                                <div className="space-y-1.5">
+                                                    <Label className="text-[10px] font-semibold text-slate-600 dark:text-slate-400">Improvement Plan / Notes</Label>
                                                     <textarea 
-                                                        className="w-full min-h-[80px] bg-white border border-slate-200 rounded-xl p-4 text-sm font-bold focus:ring-2 focus:ring-slate-950 outline-none resize-none"
+                                                        className="w-full min-h-[60px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md p-2.5 text-xs focus:ring-1 focus:ring-slate-900 outline-none resize-none"
                                                         placeholder="What steps must be taken to prevent recurrence..."
                                                         value={improvementPlan}
                                                         onChange={(e) => setImprovementPlan(e.target.value)}
@@ -661,7 +688,7 @@ export default function DisciplineReportsPage() {
                                             </div>
 
                                             <Button 
-                                                className="w-full h-14 bg-slate-900 hover:bg-black text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl transition-all active:scale-95 disabled:opacity-50"
+                                                className="w-full h-9 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 text-white font-semibold text-xs tracking-wider rounded-md transition-all active:scale-95 disabled:opacity-50 mt-2"
                                                 onClick={handleResolve}
                                                 disabled={!actionTaken || !improvementPlan || resolveLoading}
                                             >
@@ -669,65 +696,56 @@ export default function DisciplineReportsPage() {
                                             </Button>
                                         </div>
                                     ) : (
-                                        <div className="space-y-6 pt-2">
-                                            <div className="flex items-center gap-2">
-                                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                                                <h3 className="text-sm font-black text-emerald-600 uppercase tracking-widest">Resolution Finalized</h3>
+                                        <div className="bg-emerald-50/50 border border-emerald-100 rounded-lg p-4 space-y-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                                <h3 className="text-xs font-bold text-emerald-900 uppercase tracking-wider">Resolution Details</h3>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Action Implemented</p>
+                                                    <p className="text-xs font-bold text-emerald-950">{selectedReport.actionTaken}</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Resolution Date</p>
+                                                    <p className="text-xs font-bold text-emerald-950">{selectedReport.actionDate ? format(new Date(selectedReport.actionDate), 'MMM dd, yyyy') : "N/A"}</p>
+                                                </div>
                                             </div>
                                             
-                                            <div className="bg-emerald-50/50 p-6 rounded-[2rem] border border-emerald-100 space-y-4">
-                                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-emerald-700/60">
-                                                    <span>Action Taken</span>
-                                                    <span>Action Date</span>
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <Badge className="bg-emerald-500 text-white border-0 font-black px-4 py-1.5 rounded-full">{selectedReport.actionTaken}</Badge>
-                                                    <span className="text-sm font-bold text-slate-800">
-                                                        {selectedReport.actionDate ? format(new Date(selectedReport.actionDate), 'MMM dd, yyyy') : 'N/A'}
-                                                    </span>
-                                                </div>
-
-                                                {selectedReport.resolutionSummary && (
-                                                    <div className="space-y-2">
-                                                        <Label className="text-[10px] font-black text-emerald-700/60 uppercase tracking-widest">Resolution Summary / Resume</Label>
-                                                        <p className="text-sm font-bold text-emerald-900 leading-relaxed bg-white/50 p-4 rounded-2xl border border-emerald-100/50">
-                                                            {selectedReport.resolutionSummary}
-                                                        </p>
-                                                    </div>
-                                                )}
-
-                                                {selectedReport.resolutionPhotoUrl && (
-                                                    <div className="space-y-2">
-                                                        <Label className="text-[10px] font-black text-emerald-700/60 uppercase tracking-widest">Resolution Proof</Label>
-                                                        <div className="w-full h-40 rounded-2xl overflow-hidden border border-emerald-100">
-                                                            <img 
-                                                                src={`${window.location.protocol}//${window.location.hostname}:5001${selectedReport.resolutionPhotoUrl.startsWith('/') ? '' : '/'}${selectedReport.resolutionPhotoUrl}`} 
-                                                                className="w-full h-full object-cover" 
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-emerald-700/60 pt-2 border-t border-emerald-100/30">
-                                                    <span>Improvement Plan</span>
-                                                    <span>Handled By</span>
-                                                </div>
-                                                <div className="flex justify-between items-start gap-4">
-                                                    <p className="text-sm font-bold text-slate-700 leading-relaxed italic flex-1">
-                                                        "{selectedReport.improvementPlan}"
+                                            {selectedReport.resolutionSummary && (
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Summary</p>
+                                                    <p className="text-xs text-emerald-900 bg-white dark:bg-slate-950 p-2.5 rounded-md border border-emerald-100/50">
+                                                        {selectedReport.resolutionSummary}
                                                     </p>
-                                                    <span className="text-sm font-bold text-slate-800 whitespace-nowrap pt-1">
-                                                        {selectedReport.handledBy?.firstName} {selectedReport.handledBy?.lastName}
-                                                    </span>
                                                 </div>
-                                            </div>
+                                            )}
 
-                                            <Button 
-                                                variant="outline"
-                                                className="w-full h-14 border-2 border-slate-200 text-slate-400 font-black uppercase tracking-[0.2em] rounded-2xl cursor-default"
-                                            >
-                                                Case Resolved
-                                            </Button>
+                                            {selectedReport.resolutionPhotoUrl && (
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Resolution Proof</p>
+                                                    <div className="w-full h-32 rounded-md overflow-hidden border border-emerald-100">
+                                                        <img 
+                                                            src={`${window.location.protocol}//${window.location.hostname}:5001${selectedReport.resolutionPhotoUrl.startsWith('/') ? '' : '/'}${selectedReport.resolutionPhotoUrl}`} 
+                                                            className="w-full h-full object-cover" 
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+                                            
+                                            <div className="space-y-1">
+                                                <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Improvement Plan</p>
+                                                <p className="text-xs text-emerald-900 bg-white dark:bg-slate-950 p-2.5 rounded-md border border-emerald-100/50">
+                                                    {selectedReport.improvementPlan}
+                                                </p>
+                                            </div>
+                                            
+                                            <div className="space-y-1 pt-2 border-t border-emerald-100/50 flex justify-between items-center">
+                                                <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Handled By</p>
+                                                <p className="text-[10px] font-bold text-emerald-900">
+                                                    {selectedReport.handledBy?.firstName} {selectedReport.handledBy?.lastName}
+                                                </p>
+                                            </div>
                                         </div>
                                     )}
                                 </div>

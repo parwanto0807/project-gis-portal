@@ -21,7 +21,7 @@ const ShortcutButton = ({ href, icon: Icon, label, colorClass, bgClass }: any) =
 );
 
 const KPICard = ({ title, value, icon: Icon, color, bgIconClass }: any) => (
-    <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm flex items-center gap-4">
+    <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-slate-950 dark:bg-gray-900 p-5 shadow-sm flex items-center gap-4">
         <div className={`rounded-xl p-3 ${bgIconClass}`}>
             <Icon className={`h-6 w-6 ${color}`} />
         </div>
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
                     </Link>
                 </div>
                 
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div className="bg-white dark:bg-slate-950 dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
                     {loading ? (
                         <div className="p-8 text-center text-sm text-gray-500">Memuat data terbaru...</div>
                     ) : recentTemuan.length === 0 ? (

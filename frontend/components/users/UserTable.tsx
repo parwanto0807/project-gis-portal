@@ -81,36 +81,36 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
     }
 
     return (
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
             <Table>
                 <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
-                    <TableRow>
-                        <TableHead className="w-[300px]">User Profile</TableHead>
-                        <TableHead>Role & Access</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Joined Date</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                    <TableRow className="text-xs">
+                        <TableHead className="w-[250px] py-2 h-9">User Profile</TableHead>
+                        <TableHead className="py-2 h-9">Role & Access</TableHead>
+                        <TableHead className="py-2 h-9">Status</TableHead>
+                        <TableHead className="py-2 h-9">Joined Date</TableHead>
+                        <TableHead className="text-right py-2 h-9">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {users.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-16 text-slate-500">
-                                <div className="flex flex-col items-center justify-center space-y-3">
-                                    <div className="p-4 bg-slate-100 rounded-full">
-                                        <User className="h-8 w-8 text-slate-400" />
+                            <TableCell colSpan={5} className="text-center py-10 text-slate-500">
+                                <div className="flex flex-col items-center justify-center space-y-2">
+                                    <div className="p-2.5 bg-slate-100 rounded-full">
+                                        <User className="h-5 w-5 text-slate-400" />
                                     </div>
-                                    <p className="text-lg font-medium">No users found</p>
-                                    <p className="text-sm">Try adjusting your search or add a new user.</p>
+                                    <p className="text-sm font-medium">No users found</p>
+                                    <p className="text-xs">Try adjusting your search or add a new user.</p>
                                 </div>
                             </TableCell>
                         </TableRow>
                     ) : (
                         users.map((user) => (
                             <TableRow key={user.id} className="group hover:bg-slate-50/50 transition-colors">
-                                <TableCell>
-                                    <div className="flex items-center gap-4">
-                                        <Avatar className="h-8 w-8 md:h-10 md:w-10 border-2 border-white shadow-sm">
+                                <TableCell className="py-2">
+                                    <div className="flex items-center gap-2.5">
+                                        <Avatar className="h-8 w-8 border border-slate-100 shadow-sm">
                                             <AvatarImage
                                                 src={
                                                     user.picture
@@ -119,52 +119,52 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                                                 }
                                                 referrerPolicy="no-referrer"
                                             />
-                                            <AvatarFallback className="bg-blue-100 text-blue-700 font-bold">
+                                            <AvatarFallback className="bg-blue-50 text-blue-700 font-medium text-[10px]">
                                                 {user.firstName?.[0]}{user.lastName?.[0]}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <div className="font-semibold text-sm md:text-base text-slate-900 group-hover:text-blue-600 transition-colors">
+                                            <div className="font-medium text-xs text-slate-900 group-hover:text-blue-600 transition-colors">
                                                 {user.firstName} {user.lastName}
                                             </div>
-                                            <div className="text-[10px] md:text-xs text-slate-500 font-mono mt-0.5">
+                                            <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                                 {user.email}
                                             </div>
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell>
-                                    <Badge variant="outline" className={`px-2.5 py-0.5 shadow-sm transition-colors ${getRoleBadgeColor(user.role)}`}>
-                                        <div className="flex items-center gap-1.5">
-                                            {user.role === 'SUPER_ADMIN' && <Shield className="h-3 w-3" />}
+                                <TableCell className="py-2">
+                                    <Badge variant="outline" className={`px-1.5 py-0 shadow-sm transition-colors text-[9px] font-medium tracking-wide uppercase ${getRoleBadgeColor(user.role)}`}>
+                                        <div className="flex items-center gap-1">
+                                            {user.role === 'SUPER_ADMIN' && <Shield className="h-2.5 w-2.5" />}
                                             <span className="capitalize">{user.role?.replace('_', ' ').toLowerCase()}</span>
                                         </div>
                                     </Badge>
                                 </TableCell>
-                                <TableCell>
-                                    <Badge variant="outline" className={`px-2.5 py-0.5 shadow-sm ${getStatusBadgeColor(user.status)}`}>
+                                <TableCell className="py-2">
+                                    <Badge variant="outline" className={`px-1.5 py-0 shadow-sm text-[9px] font-medium tracking-wide uppercase ${getStatusBadgeColor(user.status)}`}>
                                         <span className="capitalize">{user.status.toLowerCase()}</span>
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="text-slate-500 text-xs md:text-sm">
+                                <TableCell className="text-slate-500 text-xs py-2">
                                     {new Date(user.createdAt).toLocaleDateString('en-GB', {
                                         day: 'numeric',
                                         month: 'short',
                                         year: 'numeric'
                                     })}
                                 </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex items-center justify-end gap-2">
+                                <TableCell className="text-right py-2">
+                                    <div className="flex items-center justify-end gap-1">
                                         <TooltipProvider>
                                             <Tooltip delayDuration={300}>
                                                 <TooltipTrigger asChild>
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-8 w-8 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700"
+                                                        className="h-7 w-7 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700"
                                                         onClick={() => router.push(`/admin/users/${user.id}`)}
                                                     >
-                                                        <Pencil className="h-4 w-4" />
+                                                        <Pencil className="h-3.5 w-3.5" />
                                                         <span className="sr-only">Edit Details</span>
                                                     </Button>
                                                 </TooltipTrigger>
@@ -176,10 +176,10 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-8 w-8 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
+                                                        className="h-7 w-7 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
                                                         onClick={() => router.push(`/admin/users/${user.id}`)}
                                                     >
-                                                        <Shield className="h-4 w-4" />
+                                                        <Shield className="h-3.5 w-3.5" />
                                                         <span className="sr-only">Permissions</span>
                                                     </Button>
                                                 </TooltipTrigger>
@@ -191,10 +191,10 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-8 w-8 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+                                                        className="h-7 w-7 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
                                                         onClick={() => onDelete?.(user.id)}
                                                     >
-                                                        <Trash2 className="h-4 w-4" />
+                                                        <Trash2 className="h-3.5 w-3.5" />
                                                         <span className="sr-only">Delete User</span>
                                                     </Button>
                                                 </TooltipTrigger>

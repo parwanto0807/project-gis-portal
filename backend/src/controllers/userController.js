@@ -90,12 +90,13 @@ export const updateUserPermissions = async (req, res, next) => {
     // Transaction implementation for atomicity
     const updatedUser = await prisma.$transaction(async (tx) => {
       // 1. Update basic info
+      const updateData = {};
+      if (role) updateData.role = role;
+      if (status) updateData.status = status;
+
       const user = await tx.user.update({
         where: { id: parseInt(id) },
-        data: { 
-            role, 
-            status 
-        },
+        data: updateData,
       });
 
       // 2. Handle Permissions
@@ -123,6 +124,8 @@ export const updateUserPermissions = async (req, res, next) => {
     res.json({ success: true, data: updatedUser, message: 'User permissions updated' });
 
   } catch (error) {
+    console.error("PERMISSION UPDATE ERROR:", error);
+    import('fs').then(fs => fs.writeFileSync('permission_error.txt', String(error.message) + '\\n' + String(error.stack)));
     next(error);
   }
 };
