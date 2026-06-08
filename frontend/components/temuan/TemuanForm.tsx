@@ -62,7 +62,7 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
     const [isListeningPerbaikan, setIsListeningPerbaikan] = useState(false);
 
     const handleSpeechRecognition = (target: 'temuan' | 'perbaikan') => {
-        const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
         if (!SpeechRecognition) {
             toast.error('Browser Anda tidak mendukung fitur Voice Dictation');
             return;
