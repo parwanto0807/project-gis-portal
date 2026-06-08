@@ -442,57 +442,58 @@ export default function TemuanPeduliPage() {
                         <p className="text-xs text-slate-500 dark:text-slate-400">Daftar temuan audit internal dari berbagai area gedung.</p>
                     </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <Button onClick={exportToExcel} variant="outline" size="sm" className="h-8 gap-2 bg-green-50 text-green-700 hover:bg-green-100 border-green-200">
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <Button onClick={exportToExcel} variant="outline" size="sm" className="h-8 gap-2 bg-green-50 text-green-700 hover:bg-green-100 border-green-200 w-full sm:w-auto justify-center">
                         <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
                     </Button>
-                    <Button onClick={exportToPDF} variant="outline" size="sm" className="h-8 gap-2 bg-red-50 text-red-700 hover:bg-red-100 border-red-200">
+                    <Button onClick={exportToPDF} variant="outline" size="sm" className="h-8 gap-2 bg-red-50 text-red-700 hover:bg-red-100 border-red-200 w-full sm:w-auto justify-center">
                         <FileText className="w-3.5 h-3.5" /> PDF
                     </Button>
-                    <Button onClick={handleCreate} size="sm" className="h-8 gap-2">
+                    <Button onClick={handleCreate} size="sm" className="hidden sm:flex h-8 gap-2 w-full sm:w-auto justify-center">
                         <PlusCircle className="w-3.5 h-3.5" /> Tambah Temuan
                     </Button>
                 </div>
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
-                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                        <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Temuan</CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                        <div className="text-2xl font-bold text-slate-900 dark:text-slate-50">{totalTemuan}</div>
-                    </CardContent>
-                </Card>
-                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                        <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sudah Ditindaklanjuti</CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                        <div className="text-2xl font-bold text-emerald-600">{tindakLanjutTemuan}</div>
-                        <p className="text-[10px] text-slate-500 mt-1">In Progress & Closed</p>
-                    </CardContent>
-                </Card>
-                <Card className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                        <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Perbaikan</CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4 flex gap-3">
-                        <div className="flex flex-col">
-                            <span className="text-lg font-bold text-rose-500">{openTemuan}</span>
-                            <span className="text-[10px] text-slate-500">Open</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-2">
+                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
+                    <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Temuan</div>
+                    <div className="text-xl font-bold text-slate-900 dark:text-slate-50 leading-none">{totalTemuan}</div>
+                </div>
+                
+                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
+                    <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Sudah Ditindaklanjuti</div>
+                    <div className="flex items-end justify-between leading-none">
+                        <div className="text-xl font-bold text-emerald-600 leading-none">{tindakLanjutTemuan}</div>
+                        <p className="text-[9px] text-slate-400">In Progress & Closed</p>
+                    </div>
+                </div>
+                
+                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
+                    <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Status Perbaikan</div>
+                    <div className="flex gap-4 items-center">
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-lg font-bold text-rose-500 leading-none">{openTemuan}</span>
+                            <span className="text-[9px] text-slate-500 uppercase">Open</span>
                         </div>
-                        <div className="flex flex-col border-l pl-3 border-slate-200 dark:border-slate-800">
-                            <span className="text-lg font-bold text-amber-500">{inProgressTemuan}</span>
-                            <span className="text-[10px] text-slate-500">In Progress</span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-lg font-bold text-amber-500 leading-none">{inProgressTemuan}</span>
+                            <span className="text-[9px] text-slate-500 uppercase">In Prog</span>
                         </div>
-                        <div className="flex flex-col border-l pl-3 border-slate-200 dark:border-slate-800">
-                            <span className="text-lg font-bold text-emerald-500">{closedTemuan}</span>
-                            <span className="text-[10px] text-slate-500">Closed</span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-lg font-bold text-emerald-500 leading-none">{closedTemuan}</span>
+                            <span className="text-[9px] text-slate-500 uppercase">Closed</span>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Create Button */}
+            <div className="block sm:hidden mb-2">
+                <Button onClick={handleCreate} className="w-full h-10 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-sm">
+                    <PlusCircle className="w-4 h-4" /> Tambah Temuan Baru
+                </Button>
             </div>
 
             {/* Controls */}
@@ -694,87 +695,39 @@ export default function TemuanPeduliPage() {
                         ) : (
                             <div className="space-y-3">
                                 {paginatedData.map((item, index) => (
-                                    <div key={item.id} className="bg-white dark:bg-slate-950 rounded-xl p-3 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col gap-2">
-                                        <div className="flex justify-between items-start gap-2">
-                                            <div className="flex-1">
-                                                <div className="flex gap-2 items-center mb-1">
-                                                    <Badge variant="outline" className="bg-slate-50 dark:bg-slate-900 text-[9px] px-1.5 py-0">#{((page - 1) * ITEMS_PER_PAGE) + index + 1}</Badge>
-                                                    {getStatusBadge(item.status)}
-                                                </div>
-                                                <h3 className="font-semibold text-slate-900 dark:text-slate-50 text-xs leading-tight">{item.area}</h3>
-                                                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{item.tempatTemuan}</p>
+                                    <div key={item.id} className="bg-white dark:bg-slate-950 rounded-lg p-2.5 shadow-sm border border-slate-200 dark:border-slate-800">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <div className="flex items-center gap-1.5 overflow-hidden">
+                                                {getStatusBadge(item.status)}
+                                                <span className="font-bold text-slate-800 dark:text-slate-100 text-[10px] truncate max-w-[150px]">{item.area}</span>
+                                                <span className="text-slate-400 text-[9px] truncate max-w-[100px]">• {item.tempatTemuan}</span>
                                             </div>
-                                            <div className="text-right shrink-0">
-                                                <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{formatDateDDMMM(item.tanggal)}</div>
-                                                <div className="text-[10px] text-slate-500 dark:text-slate-400">{item.jam}</div>
-                                            </div>
+                                            <div className="text-[9px] font-medium text-slate-400 shrink-0">{formatDateDDMMM(item.tanggal)}</div>
                                         </div>
                                         
-                                        <div className="bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-100 flex flex-col gap-1.5 mt-1">
-                                            <div>
-                                                <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Kategori 4M</div>
-                                                <div className="flex flex-wrap gap-1">{formatKategori(item.kategori4M)}</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-1 mt-1">Deskripsi</div>
-                                                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{item.temuan}</p>
-                                            </div>
-                                        </div>
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-300 truncate mb-2">{item.temuan}</p>
 
-                                        <div className="flex justify-between items-center pt-2 border-t border-slate-100 flex-wrap gap-2">
-                                            <div className="text-[10px] text-slate-500 dark:text-slate-400 mr-auto">
-                                                <span className="font-medium text-slate-700 dark:text-slate-300">{item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}</span>
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex flex-wrap gap-1">
+                                                {formatKategori(item.kategori4M)}
                                             </div>
                                             
-                                            <TooltipProvider>
-                                                <div className="flex items-center gap-1.5 ml-auto w-full sm:w-auto justify-end">
-                                                    {item.fotoUrls && item.fotoUrls.length > 0 && (
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-7 text-[10px] font-semibold gap-1.5 text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200 hover:bg-indigo-100 mr-1 px-2.5 shadow-sm">
-                                                                    <ImageIcon className="w-3.5 h-3.5" /> {item.fotoUrls.length} Foto
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent className="bg-slate-900 text-white border-slate-800">
-                                                                <p>Lihat Foto Temuan</p>
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    )}
-                                                    
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button variant="outline" size="sm" onClick={() => handleViewDetail(item)} className="h-7 px-2.5 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100 shadow-sm">
-                                                                <Eye className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Detail</span>
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent className="bg-slate-900 text-white border-slate-800">
-                                                            <p>Lihat Detail Temuan</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                    
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button variant="outline" size="sm" onClick={() => handleEdit(item)} className="h-7 px-2.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100 shadow-sm">
-                                                                <Wrench className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Improve</span>
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent className="bg-slate-900 text-white border-slate-800">
-                                                            <p>Update Status & Tindakan Perbaikan</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                    
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button variant="outline" size="sm" onClick={() => handleDelete(item.id)} className="h-7 px-2.5 text-[10px] font-semibold text-rose-600 bg-rose-50 border-rose-200 hover:bg-rose-100 shadow-sm">
-                                                                <Trash2 className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Hapus</span>
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent className="bg-rose-600 text-white border-rose-600">
-                                                            <p>Hapus Data Temuan Ini</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </div>
-                                            </TooltipProvider>
+                                            <div className="flex items-center gap-0.5 shrink-0">
+                                                {item.fotoUrls && item.fotoUrls.length > 0 && (
+                                                    <Button variant="ghost" size="icon" onClick={() => viewPhotos(item.fotoUrls)} className="h-6 w-6 text-indigo-500 hover:bg-indigo-50">
+                                                        <ImageIcon className="w-3.5 h-3.5" />
+                                                    </Button>
+                                                )}
+                                                <Button variant="ghost" size="icon" onClick={() => handleViewDetail(item)} className="h-6 w-6 text-emerald-500 hover:bg-emerald-50">
+                                                    <Eye className="w-3.5 h-3.5" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="h-6 w-6 text-blue-500 hover:bg-blue-50">
+                                                    <Wrench className="w-3.5 h-3.5" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-6 w-6 text-rose-500 hover:bg-rose-50">
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

@@ -30,7 +30,7 @@ export default function AdminLayout({
                     )}
                 >
                     <Header />
-                    <main className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-gray-300 md:pb-6 pb-24">
+                    <main className="flex-1 overflow-y-auto p-3 md:p-6 scrollbar-thin scrollbar-thumb-gray-300 md:pb-6 pb-24">
                         {children}
                     </main>
                     <InstallPWA />
