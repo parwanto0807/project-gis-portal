@@ -375,8 +375,8 @@ export default function TemuanPeduliPage() {
 
     return (
         <div className="space-y-6">
-            {/* Desktop Header Area */}
-            <div className="hidden sm:flex justify-between items-start mb-4">
+            {/* Header Area */}
+            <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
                 <div className="flex flex-col gap-1.5">
                     <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
                         <Breadcrumb>
@@ -403,7 +403,7 @@ export default function TemuanPeduliPage() {
                         <p className="text-xs text-slate-500 dark:text-slate-400">Daftar temuan audit internal dari berbagai area gedung.</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <Button onClick={exportToExcel} variant="outline" size="sm" className="h-8 gap-2 bg-green-50 text-green-700 hover:bg-green-100 border-green-200">
                         <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
                     </Button>
