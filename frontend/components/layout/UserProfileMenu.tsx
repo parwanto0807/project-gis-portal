@@ -2,10 +2,79 @@
 
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { LogOut, User, ChevronDown } from 'lucide-react';
+import { LogOut, User, ChevronDown, Download } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
+
+// Move Install logic inside the menu directly
+function InstallAppButton() {
+    const [supportsPWA, setSupportsPWA] = useState(false);
+    const [promptInstall, setPromptInstall] = useState<any>(null);
+    const [isInstalled, setIsInstalled] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [deviceType, setDeviceType] = useState<"ios" | "android" | "other">("other");
+
+    useEffect(() => {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+        if (isStandalone) {
+            setIsInstalled(true);
+            return;
+        }
+
+        const ua = window.navigator.userAgent.toLowerCase();
+        const isIOS = /iphone|ipad|ipod/.test(ua);
+        const isAndroid = /android/.test(ua);
+        if (isIOS) setDeviceType("ios");
+        else if (isAndroid) setDeviceType("android");
+        
+        if (isIOS || isAndroid) {
+            setIsMobile(true);
+        }
+
+        const handler = (e: any) => {
+            e.preventDefault();
+            setSupportsPWA(true);
+            setPromptInstall(e);
+        };
+        if (typeof window !== 'undefined' && (window as any).deferredPrompt) {
+            handler((window as any).deferredPrompt);
+        }
+
+        window.addEventListener("beforeinstallprompt", handler);
+        return () => window.removeEventListener("beforeinstallprompt", handler);
+    }, []);
+
+    const onClickInstall = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (promptInstall) {
+            promptInstall.prompt();
+        } else {
+            if (deviceType === "ios") {
+                alert("Untuk install di iOS/iPhone:\n\n1. Tap ikon 'Share' (kotak dengan panah ke atas) di bawah layar Safari.\n2. Scroll ke bawah dan pilih 'Add to Home Screen' (Tambahkan ke Layar Utama).");
+            } else {
+                alert("Untuk install di Android:\n\nTap ikon Menu (titik tiga ⋮) di pojok kanan atas browser Chrome Anda, lalu pilih 'Install App' atau 'Tambahkan ke Layar Utama'.");
+            }
+        }
+    };
+
+    if (isInstalled || (!supportsPWA && !isMobile)) {
+        return null;
+    }
+
+    return (
+        <>
+            <div className="my-1 border-t border-gray-100"></div>
+            <button
+                onClick={onClickInstall}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-blue-600 hover:bg-blue-50 transition-colors"
+            >
+                <Download className="w-4 h-4 text-blue-500" />
+                <span className="font-medium">Install App</span>
+            </button>
+        </>
+    );
+}
 
 export default function UserProfileMenu() {
     const { user, logout } = useAuthStore();
@@ -139,13 +208,15 @@ export default function UserProfileMenu() {
                         <button
                             onClick={() => {
                                 setIsOpen(false);
-                                router.push('/admin/profile');
+                                router.push('/admin/settings/profile');
                             }}
                             className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         >
                             <User className="w-4 h-4 text-gray-500" />
                             <span>My Profile</span>
                         </button>
+
+                        <InstallAppButton />
 
                         <div className="my-1 border-t border-gray-100"></div>
 
