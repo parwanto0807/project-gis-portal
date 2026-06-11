@@ -6,7 +6,6 @@ import { Download, X } from 'lucide-react';
 export default function InstallPWA() {
     const [supportsPWA, setSupportsPWA] = useState(false);
     const [promptInstall, setPromptInstall] = useState<any>(null);
-    const [isDismissed, setIsDismissed] = useState(false);
     const [isInstalled, setIsInstalled] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [deviceType, setDeviceType] = useState<"ios" | "android" | "other">("other");
@@ -67,37 +66,27 @@ export default function InstallPWA() {
         }
     };
 
-    if (isDismissed || isInstalled || (!supportsPWA && !isMobile)) {
+    if (isInstalled || (!supportsPWA && !isMobile)) {
         return null;
     }
 
     return (
-        <div className="fixed bottom-20 left-4 right-4 z-50">
-            <div className="bg-blue-600 rounded-xl p-4 shadow-lg text-white flex items-center justify-between animate-in slide-in-from-bottom-5">
-                <div className="flex items-center gap-3">
-                    <div className="bg-white/20 p-2 rounded-lg">
-                        <Download className="w-5 h-5" />
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-sm">Install App GIS Portal</h4>
-                        <p className="text-xs text-blue-100 mt-0.5">Akses lebih cepat & mudah</p>
-                    </div>
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-sm p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+            <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-3 rounded-xl">
+                    <Download className="w-6 h-6" />
                 </div>
-                <div className="flex items-center gap-2">
-                    <button 
-                        onClick={onClickInstall}
-                        className="bg-white text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
-                    >
-                        Install
-                    </button>
-                    <button 
-                        onClick={() => setIsDismissed(true)}
-                        className="p-1.5 text-blue-200 hover:text-white transition-colors"
-                    >
-                        <X className="w-4 h-4" />
-                    </button>
+                <div>
+                    <h4 className="font-bold text-lg">Install Aplikasi GIS Portal</h4>
+                    <p className="text-sm text-blue-100">Akses lebih cepat & mudah layaknya aplikasi Native di perangkat Anda.</p>
                 </div>
             </div>
+            <button 
+                onClick={onClickInstall}
+                className="bg-white text-blue-600 hover:bg-gray-50 px-6 py-2.5 rounded-xl font-bold shadow-sm transition-colors w-full sm:w-auto text-sm"
+            >
+                Install Sekarang
+            </button>
         </div>
     );
 }

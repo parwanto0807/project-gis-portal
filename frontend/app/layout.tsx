@@ -4,7 +4,6 @@ import { GeistMono } from "geist/font/mono";
 import { Toaster } from "sonner";
 import "./globals.css";
 import Providers from "./providers";
-import InstallPWA from "@/components/pwa/InstallPWA";
 
 // Configure Inter - Perfect for ERP/Dashboard
 const inter = Inter({
@@ -83,7 +82,6 @@ export default function RootLayout({
       <body className={`${inter.variable} ${GeistMono.variable} font-sans antialiased`}>
         <Providers>
           {children}
-          <InstallPWA />
           <Toaster position="top-center" richColors />
         </Providers>
       </body>
