@@ -52,13 +52,16 @@ function InstallAppButton() {
         } else {
             if (deviceType === "ios") {
                 alert("Untuk install di iOS/iPhone:\n\n1. Tap ikon 'Share' (kotak dengan panah ke atas) di bawah layar Safari.\n2. Scroll ke bawah dan pilih 'Add to Home Screen' (Tambahkan ke Layar Utama).");
-            } else {
+            } else if (deviceType === "android") {
                 alert("Untuk install di Android:\n\nTap ikon Menu (titik tiga ⋮) di pojok kanan atas browser Chrome Anda, lalu pilih 'Install App' atau 'Tambahkan ke Layar Utama'.");
+            } else {
+                alert("Pemasangan Otomatis Tidak Tersedia.\n\nJika Anda di Desktop/Laptop (Chrome/Edge):\nCari ikon Install (tanda panah ke bawah di layar) pada pojok kanan atas di Address Bar browser Anda.");
             }
         }
     };
 
-    if (isInstalled || (!supportsPWA && !isMobile)) {
+    // Jangan di-hide agar user selalu bisa melihat panduan manual meskipun PWA gagal mendeteksi
+    if (isInstalled) {
         return null;
     }
 
