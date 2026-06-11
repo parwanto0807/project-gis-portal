@@ -3,7 +3,6 @@
 import { useAuthStore } from '@/store/authStore';
 import { User, Shield, Mail, Key, Calendar } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import InstallPWA from '@/components/pwa/InstallPWA';
 
 export default function ProfilePage() {
     const user = useAuthStore((state) => state.user);
@@ -103,9 +102,6 @@ export default function ProfilePage() {
                     )}
                 </div>
             </div>
-
-            {/* Install PWA Button Component */}
-            <InstallPWA />
         </div>
     );
 }

@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://grafindo-app.com"),
   title: "GIS Portal - ERP System",
   description: "Grafindo Information System - Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
-  manifest: "/manifest.json",
   icons: {
     icon: "/logo-sm.png",
     shortcut: "/logo-sm.png",
@@ -53,11 +52,6 @@ export const metadata: Metadata = {
     description: "Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
     images: ["/logo-md.png"],
   },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "GIS Portal",
-  },
 };
 
 export default function RootLayout({
@@ -67,18 +61,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                window.deferredPrompt = e;
-              });
-            `,
-          }}
-        />
-      </head>
       <body className={`${inter.variable} ${GeistMono.variable} font-sans antialiased`}>
         <Providers>
           {children}
