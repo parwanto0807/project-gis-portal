@@ -31,6 +31,7 @@ interface User {
     role: string;
     status: string;
     createdAt: string;
+    lastLoginAt?: string | null;
     picture?: string | null;
 }
 
@@ -89,13 +90,14 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                         <TableHead className="py-2 h-9">Role & Access</TableHead>
                         <TableHead className="py-2 h-9">Status</TableHead>
                         <TableHead className="py-2 h-9">Joined Date</TableHead>
+                        <TableHead className="py-2 h-9">Last Login</TableHead>
                         <TableHead className="text-right py-2 h-9">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {users.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-10 text-slate-500">
+                            <TableCell colSpan={6} className="text-center py-10 text-slate-500">
                                 <div className="flex flex-col items-center justify-center space-y-2">
                                     <div className="p-2.5 bg-slate-100 rounded-full">
                                         <User className="h-5 w-5 text-slate-400" />
@@ -152,6 +154,15 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                                         month: 'short',
                                         year: 'numeric'
                                     })}
+                                </TableCell>
+                                <TableCell className="text-slate-500 text-xs py-2">
+                                    {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('en-GB', {
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }) : '-'}
                                 </TableCell>
                                 <TableCell className="text-right py-2">
                                     <div className="flex items-center justify-end gap-1">

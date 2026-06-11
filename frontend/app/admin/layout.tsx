@@ -7,8 +7,6 @@ import { useSidebarToggle } from '@/hooks/use-sidebar-toggle';
 import { useStore } from '@/hooks/use-store';
 import { cn } from '@/lib/utils';
 import BottomNav from '@/components/layout/BottomNav';
-import InstallPWA from '@/components/pwa/InstallPWA';
-
 import Link from 'next/link'; // Ensure Link is imported if needed, though mostly for BottomNav internals
 export default function AdminLayout({
     children,
@@ -33,7 +31,6 @@ export default function AdminLayout({
                     <main className="flex-1 overflow-y-auto p-3 md:p-6 scrollbar-thin scrollbar-thumb-gray-300 md:pb-6 pb-24">
                         {children}
                     </main>
-                    <InstallPWA />
                     <BottomNav />
                 </div>
             </div>

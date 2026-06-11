@@ -24,6 +24,10 @@ export default function InstallPWA() {
             setSupportsPWA(true);
             setPromptInstall(e);
         };
+        // Check if the event fired before this component mounted
+        if (typeof window !== 'undefined' && (window as any).deferredPrompt) {
+            handler((window as any).deferredPrompt);
+        }
 
         const onAppInstalled = () => {
             setIsInstalled(true);
