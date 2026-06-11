@@ -52,7 +52,7 @@ export default function InstallPWA() {
     }
 
     return (
-        <div className="fixed bottom-20 left-4 right-4 z-50 md:hidden">
+        <div className="fixed bottom-20 left-4 right-4 z-50">
             <div className="bg-blue-600 rounded-xl p-4 shadow-lg text-white flex items-center justify-between animate-in slide-in-from-bottom-5">
                 <div className="flex items-center gap-3">
                     <div className="bg-white/20 p-2 rounded-lg">

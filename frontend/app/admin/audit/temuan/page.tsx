@@ -41,12 +41,12 @@ const formatDateDDMMM = (dateStr: string | Date) => {
 const formatPrintDateTime = () => {
     const d = new Date();
     const datePart = formatDateDDMMM(d);
-    const timeOptions: Intl.DateTimeFormatOptions = { 
-        timeZone: 'Asia/Jakarta', 
-        hour12: false, 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
+    const timeOptions: Intl.DateTimeFormatOptions = {
+        timeZone: 'Asia/Jakarta',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
     };
     const timeStr = d.toLocaleTimeString('id-ID', timeOptions).replace(/\./g, ':');
     return `Jakarta, ${datePart} ${timeStr}`;
@@ -57,7 +57,7 @@ export default function TemuanPeduliPage() {
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    
+
     // For Image Preview
     const [previewImages, setPreviewImages] = useState<string[]>([]);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -150,13 +150,13 @@ export default function TemuanPeduliPage() {
         const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data Temuan');
-        
+
         const wscols = [
-            {wch: 5}, {wch: 15}, {wch: 10}, {wch: 20}, {wch: 20}, {wch: 20}, {wch: 40}, {wch: 15}, {wch: 40}, {wch: 20}, {wch: 15}
+            { wch: 5 }, { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 40 }, { wch: 15 }, { wch: 40 }, { wch: 20 }, { wch: 15 }
         ];
         worksheet['!cols'] = wscols;
 
-        XLSX.writeFile(workbook, `Temuan_Audit_${new Date().toISOString().slice(0,10)}.xlsx`);
+        XLSX.writeFile(workbook, `Temuan_Audit_${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
 
     const exportToPDF = async () => {
@@ -166,7 +166,7 @@ export default function TemuanPeduliPage() {
         }
 
         const doc = new jsPDF('landscape');
-        
+
         // --- Header with Logo and Company Info ---
         try {
             const logoUrl = '/logo-md.png';
@@ -190,21 +190,21 @@ export default function TemuanPeduliPage() {
             console.warn('Failed to load logo for PDF', e);
         }
 
-        const textX = 45; 
-        
+        const textX = 45;
+
         // Company Name
         doc.setFontSize(16);
         doc.setTextColor(0, 0, 255);
         doc.setFont("helvetica", "bold");
         doc.text('PT. GRAFINDO MITRASEMESTA', textX, 16);
-        
+
         // Address & Phone
         doc.setFontSize(9);
         doc.setTextColor(80, 80, 80);
         doc.setFont("helvetica", "normal");
         doc.text('Cikarang Industrial Estate Jababeka 1 Block U 8D, U 8C & U 7A, Cikarang, Harja Mekar', textX, 22);
         doc.text('Cikarang Utara, Bekasi Regency, West Java 17530 | Telepon: (021) 8934714', textX, 27);
-        
+
         // Separator line
         doc.setDrawColor(200, 200, 200);
         doc.setLineWidth(0.5);
@@ -215,12 +215,12 @@ export default function TemuanPeduliPage() {
         doc.setTextColor(40, 40, 40);
         doc.setFont("helvetica", "bold");
         doc.text('LAPORAN AUDIT INTERNAL - Temuan Peduli Bersinergi', 14, 42);
-        
+
         // --- Data Aggregation ---
-        
+
         // --- Data Aggregation Variables ---
         const totalTemuan = data.length;
-        
+
         const kategoriCount: Record<string, number> = {};
         data.forEach(item => {
             const cats = Array.isArray(item.kategori4M) ? item.kategori4M : (item.kategori4M ? [item.kategori4M] : ['Lainnya']);
@@ -229,7 +229,7 @@ export default function TemuanPeduliPage() {
             });
         });
         const sortedKategori = Object.entries(kategoriCount).sort((a, b) => b[1] - a[1]);
-        
+
         const areaCount: Record<string, number> = {};
         data.forEach(item => {
             const area = item.area || 'Lainnya';
@@ -242,7 +242,7 @@ export default function TemuanPeduliPage() {
         doc.setTextColor(40, 40, 40);
         doc.setFont("helvetica", "bold");
         doc.text('Ringkasan Eksekutif', 14, 52);
-        
+
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
         doc.text(`Total Temuan: ${totalTemuan} kasus`, 14, 60);
@@ -266,7 +266,7 @@ export default function TemuanPeduliPage() {
             doc.setFont("helvetica", "bold");
             doc.text(title, cx - radius, cy - radius - 5);
             doc.setFont("helvetica", "normal");
-            
+
             let currentAngle = -Math.PI / 2;
             let legendY = cy - radius + 2;
 
@@ -275,23 +275,23 @@ export default function TemuanPeduliPage() {
                 const label = item[0];
                 const color = colors[index % colors.length];
                 const sliceAngle = (count / total) * 2 * Math.PI;
-                
+
                 // Draw pie slice using triangles
                 const numSegments = Math.max(5, Math.floor((sliceAngle / (2 * Math.PI)) * 30));
                 doc.setFillColor(color[0], color[1], color[2]);
-                
+
                 const pts = [[cx, cy]];
                 for (let i = 0; i <= numSegments; i++) {
                     const angle = currentAngle + (i / numSegments) * sliceAngle;
                     pts.push([cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)]);
                 }
-                
+
                 for (let i = 1; i < pts.length - 1; i++) {
-                    doc.triangle(pts[0][0], pts[0][1], pts[i][0], pts[i][1], pts[i+1][0], pts[i+1][1], 'F');
+                    doc.triangle(pts[0][0], pts[0][1], pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], 'F');
                 }
-                
+
                 currentAngle += sliceAngle;
-                
+
                 // Draw Legend
                 doc.setFillColor(color[0], color[1], color[2]);
                 doc.rect(cx + radius + 8, legendY - 3, 4, 4, 'F');
@@ -352,7 +352,7 @@ export default function TemuanPeduliPage() {
                 6: { cellWidth: 45 },
                 7: { cellWidth: 25 },
             },
-            didParseCell: function(data) {
+            didParseCell: function (data) {
                 if (data.section === 'body' && data.column.index === 5) {
                     const statusText = data.cell.raw;
                     if (statusText === 'OPEN') {
@@ -381,12 +381,12 @@ export default function TemuanPeduliPage() {
     const filteredData = data.filter(item => {
         const searchLower = searchQuery.toLowerCase();
         const pelapor = item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh;
-        const matchesSearch = 
+        const matchesSearch =
             item.area?.toLowerCase().includes(searchLower) ||
             item.tempatTemuan?.toLowerCase().includes(searchLower) ||
             item.temuan?.toLowerCase().includes(searchLower) ||
             pelapor?.toLowerCase().includes(searchLower);
-        
+
         const matchesKategori = filterKategori === '' || (Array.isArray(item.kategori4M) ? item.kategori4M.includes(filterKategori) : item.kategori4M === filterKategori);
 
         return matchesSearch && matchesKategori;
@@ -417,15 +417,15 @@ export default function TemuanPeduliPage() {
             {/* Header Area */}
             <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
                 <div className="flex flex-col gap-1.5">
-                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-800">
+                    <Badge variant="secondary" className="w-fit px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-800">
                         <Breadcrumb>
                             <BreadcrumbList className="text-[10px] md:text-xs">
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">Dashboard</BreadcrumbLink>
+                                    <BreadcrumbLink href="/admin/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">Dashboard</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin/audit" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50">Audit</BreadcrumbLink>
+                                    <BreadcrumbLink href="/admin/audit" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">Audit</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
@@ -461,7 +461,7 @@ export default function TemuanPeduliPage() {
                     <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Temuan</div>
                     <div className="text-xl font-bold text-slate-900 dark:text-slate-50 leading-none">{totalTemuan}</div>
                 </div>
-                
+
                 <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
                     <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Sudah Ditindaklanjuti</div>
                     <div className="flex items-end justify-between leading-none">
@@ -469,7 +469,7 @@ export default function TemuanPeduliPage() {
                         <p className="text-[9px] text-slate-400">In Progress & Closed</p>
                     </div>
                 </div>
-                
+
                 <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
                     <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Status Perbaikan</div>
                     <div className="flex gap-4 items-center">
@@ -500,8 +500,8 @@ export default function TemuanPeduliPage() {
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between pb-2">
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-                    <Input 
-                        placeholder="Search by area, description, or pelapor..." 
+                    <Input
+                        placeholder="Search by area, description, or pelapor..."
                         className="pl-8 h-8 text-xs bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 w-full shadow-sm"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -510,11 +510,11 @@ export default function TemuanPeduliPage() {
 
                 <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-white dark:bg-slate-950 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm scrollbar-hide">
                     {['', 'Man', 'Machine', 'Material', 'Method'].map(kat => (
-                        <Button 
+                        <Button
                             key={kat}
-                            variant={filterKategori === kat ? 'default' : 'ghost'} 
+                            variant={filterKategori === kat ? 'default' : 'ghost'}
                             onClick={() => setFilterKategori(kat)}
-                            className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider whitespace-nowrap ${filterKategori === kat ? 'bg-slate-900 dark:bg-slate-100 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900'}`}
+                            className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider whitespace-nowrap ${filterKategori === kat ? 'bg-slate-900 dark:bg-slate-100 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900'}`}
                         >
                             {kat === '' ? 'Semua Kategori' : kat}
                         </Button>
@@ -546,7 +546,7 @@ export default function TemuanPeduliPage() {
                                     <TableRow>
                                         <TableCell colSpan={10} className="text-center py-12 text-slate-400 font-medium text-sm">
                                             <div className="flex items-center justify-center gap-2">
-                                                <div className="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"/> Memuat data temuan...
+                                                <div className="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" /> Memuat data temuan...
                                             </div>
                                         </TableCell>
                                     </TableRow>
@@ -642,7 +642,7 @@ export default function TemuanPeduliPage() {
                             </p>
                             <p className="text-[10px] font-medium text-slate-400">Page {page} of {totalPages}</p>
                         </div>
-                        
+
                         <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
                             <Button
                                 variant="ghost"
@@ -653,12 +653,12 @@ export default function TemuanPeduliPage() {
                             >
                                 <ArrowLeft className="w-4 h-4" />
                             </Button>
-                            
+
                             <div className="flex items-center gap-0.5 px-1">
                                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                                     let pageNum = page <= 3 ? i + 1 : page - 2 + i;
                                     if (pageNum > totalPages) return null;
-                                    
+
                                     return (
                                         <Button
                                             key={i}
@@ -689,7 +689,7 @@ export default function TemuanPeduliPage() {
                     <div className="block md:hidden space-y-4 p-4 bg-slate-50/50 dark:bg-slate-900/30">
                         {loading ? (
                             <div className="text-center py-10 text-slate-400 text-xs border rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex flex-col items-center justify-center gap-2">
-                                <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"/>
+                                <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
                                 Memuat data...
                             </div>
                         ) : paginatedData.length === 0 ? (
@@ -714,12 +714,12 @@ export default function TemuanPeduliPage() {
                                                 <span className="text-[9px] font-medium text-slate-400">{item.jam}</span>
                                             </div>
                                         </div>
-                                        
+
                                         {/* Mobile Card Body */}
                                         <div className="p-3 space-y-3">
                                             {/* Deskripsi Temuan */}
                                             <div className="space-y-1">
-                                                <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1"><FileText className="w-3 h-3"/> Deskripsi Temuan</Label>
+                                                <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1"><FileText className="w-3 h-3" /> Deskripsi Temuan</Label>
                                                 <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">{item.temuan}</p>
                                             </div>
 
@@ -731,7 +731,7 @@ export default function TemuanPeduliPage() {
                                                         {formatKategori(item.kategori4M)}
                                                     </div>
                                                 </div>
-                                                
+
                                                 {(item.tindakanPerbaikan || item.status !== 'OPEN') && (
                                                     <div className="space-y-1.5">
                                                         <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Perbaikan</Label>
@@ -741,7 +741,7 @@ export default function TemuanPeduliPage() {
                                                     </div>
                                                 )}
                                             </div>
-                                            
+
                                             {/* Pelapor & Dokumentasi */}
                                             <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 mt-2">
                                                 <div className="flex items-center gap-1.5">
@@ -752,7 +752,7 @@ export default function TemuanPeduliPage() {
                                                         {item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh}
                                                     </span>
                                                 </div>
-                                                
+
                                                 <div className="flex items-center gap-1">
                                                     {item.fotoUrls && item.fotoUrls.length > 0 && (
                                                         <Button variant="outline" size="sm" onClick={() => viewPhotos(item.fotoUrls)} className="h-6 px-1.5 text-[9px] font-bold gap-1 text-indigo-600 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 rounded-md">
@@ -788,11 +788,11 @@ export default function TemuanPeduliPage() {
                 </CardContent>
             </Card>
 
-            <TemuanForm 
-                open={isFormOpen} 
-                onOpenChange={setIsFormOpen} 
-                onSuccess={fetchData} 
-                initialData={selectedItem} 
+            <TemuanForm
+                open={isFormOpen}
+                onOpenChange={setIsFormOpen}
+                onSuccess={fetchData}
+                initialData={selectedItem}
             />
 
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
@@ -812,13 +812,13 @@ export default function TemuanPeduliPage() {
                             {previewImages.map((url, i) => (
                                 <div key={i} className="flex flex-col bg-white dark:bg-slate-950 p-2 rounded-lg border border-slate-100 shadow-sm group">
                                     <div className="relative flex justify-center items-center rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 min-h-[200px]">
-                                        <img 
-                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
-                                            alt={`Foto ${i+1}`} 
-                                            className="max-w-full max-h-[60vh] w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+                                        <img
+                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`}
+                                            alt={`Foto ${i + 1}`}
+                                            className="max-w-full max-h-[60vh] w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute top-2 right-2 bg-slate-900/60 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm font-medium z-10">
-                                            Foto {i+1} dari {previewImages.length}
+                                            Foto {i + 1} dari {previewImages.length}
                                         </div>
                                     </div>
                                 </div>
@@ -838,9 +838,9 @@ export default function TemuanPeduliPage() {
                                 {selectedDetail.fotoUrls && selectedDetail.fotoUrls.length > 0 ? (
                                     <>
                                         <div className="flex-1 w-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden cursor-pointer group" onClick={() => viewPhotos(selectedDetail.fotoUrls)}>
-                                            <img 
-                                                src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${selectedDetail.fotoUrls[0]}`} 
-                                                alt="Dokumentasi Temuan Utama" 
+                                            <img
+                                                src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${selectedDetail.fotoUrls[0]}`}
+                                                alt="Dokumentasi Temuan Utama"
                                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors" />
@@ -848,14 +848,14 @@ export default function TemuanPeduliPage() {
                                         {selectedDetail.fotoUrls.length > 1 && (
                                             <div className="h-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 p-2 flex gap-2 overflow-x-auto shrink-0">
                                                 {selectedDetail.fotoUrls.slice(1).map((url: string, i: number) => (
-                                                    <div 
-                                                        key={i} 
+                                                    <div
+                                                        key={i}
                                                         className="h-full w-20 shrink-0 rounded-md overflow-hidden border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-indigo-400"
                                                         onClick={() => viewPhotos(selectedDetail.fotoUrls)}
                                                     >
-                                                        <img 
-                                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
-                                                            className="w-full h-full object-cover" 
+                                                        <img
+                                                            src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`}
+                                                            className="w-full h-full object-cover"
                                                         />
                                                     </div>
                                                 ))}
@@ -916,7 +916,7 @@ export default function TemuanPeduliPage() {
                                                 <Tags className="w-2.5 h-2.5 mr-1" /> Kategori 4M
                                             </Label>
                                             <div className="flex flex-wrap gap-1 mt-0.5">
-                                                {Array.isArray(selectedDetail.kategori4M) 
+                                                {Array.isArray(selectedDetail.kategori4M)
                                                     ? selectedDetail.kategori4M.map((c: string) => (
                                                         <Badge key={c} variant="secondary" className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 text-[9px] px-1.5 py-0">
                                                             {c}
@@ -948,13 +948,13 @@ export default function TemuanPeduliPage() {
                                             </Label>
                                             {getStatusBadge(selectedDetail.status)}
                                         </div>
-                                        
+
                                         <div className="bg-blue-50/50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 relative overflow-hidden min-h-[80px]">
                                             <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed relative z-10">
                                                 {selectedDetail.tindakanPerbaikan || <span className="text-slate-400 italic">Belum ada tindakan perbaikan.</span>}
                                             </p>
                                         </div>
-                                        
+
                                         {/* Foto Perbaikan */}
                                         {selectedDetail.fotoPerbaikanUrls && selectedDetail.fotoPerbaikanUrls.length > 0 && (
                                             <div className="mt-4">
@@ -963,15 +963,15 @@ export default function TemuanPeduliPage() {
                                                 </Label>
                                                 <div className="flex gap-2 overflow-x-auto pb-2">
                                                     {selectedDetail.fotoPerbaikanUrls.map((url: string, i: number) => (
-                                                        <div 
-                                                            key={i} 
+                                                        <div
+                                                            key={i}
                                                             className="h-16 w-16 shrink-0 rounded-md overflow-hidden border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-400 shadow-sm"
                                                             onClick={() => viewPhotos(selectedDetail.fotoPerbaikanUrls)}
                                                         >
-                                                            <img 
-                                                                src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`} 
-                                                                className="w-full h-full object-cover" 
-                                                                alt={`Foto Perbaikan ${i+1}`}
+                                                            <img
+                                                                src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}${url}`}
+                                                                className="w-full h-full object-cover"
+                                                                alt={`Foto Perbaikan ${i + 1}`}
                                                             />
                                                         </div>
                                                     ))}

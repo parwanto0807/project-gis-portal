@@ -530,14 +530,14 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                     </TabsTrigger>
                                 </TabsList>
                                 <TabsContent value="informasi" className="mt-0 outline-none">
-                                    <InformasiFormContent />
+                                    {InformasiFormContent()}
                                 </TabsContent>
                                 <TabsContent value="tindaklanjut" className="mt-0 outline-none">
-                                    <TindakLanjutFormContent />
+                                    {TindakLanjutFormContent()}
                                 </TabsContent>
                             </Tabs>
                         ) : (
-                            <InformasiFormContent />
+                            InformasiFormContent()
                         )}
                     </div>
 
