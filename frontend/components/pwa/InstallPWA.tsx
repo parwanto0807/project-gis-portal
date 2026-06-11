@@ -7,8 +7,9 @@ export default function InstallPWA() {
     const [supportsPWA, setSupportsPWA] = useState(false);
     const [promptInstall, setPromptInstall] = useState<any>(null);
     const [isDismissed, setIsDismissed] = useState(false);
-
     const [isInstalled, setIsInstalled] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [deviceType, setDeviceType] = useState<"ios" | "android" | "other">("other");
 
     useEffect(() => {
         // Deteksi apakah aplikasi sudah diinstall (berjalan di mode standalone)
@@ -16,6 +17,16 @@ export default function InstallPWA() {
         if (isStandalone) {
             setIsInstalled(true);
             return;
+        }
+
+        const ua = window.navigator.userAgent.toLowerCase();
+        const isIOS = /iphone|ipad|ipod/.test(ua);
+        const isAndroid = /android/.test(ua);
+        if (isIOS) setDeviceType("ios");
+        else if (isAndroid) setDeviceType("android");
+        
+        if (isIOS || isAndroid) {
+            setIsMobile(true);
         }
 
         const handler = (e: any) => {
@@ -45,13 +56,18 @@ export default function InstallPWA() {
 
     const onClickInstall = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (!promptInstall) {
-            return;
+        if (promptInstall) {
+            promptInstall.prompt();
+        } else {
+            if (deviceType === "ios") {
+                alert("Untuk install di iOS/iPhone:\n\n1. Tap ikon 'Share' (kotak dengan panah ke atas) di bawah layar Safari.\n2. Scroll ke bawah dan pilih 'Add to Home Screen' (Tambahkan ke Layar Utama).");
+            } else {
+                alert("Untuk install di Android:\n\nTap ikon Menu (titik tiga ⋮) di pojok kanan atas browser Chrome Anda, lalu pilih 'Install App' atau 'Tambahkan ke Layar Utama'.");
+            }
         }
-        promptInstall.prompt();
     };
 
-    if (!supportsPWA || isDismissed || isInstalled) {
+    if (isDismissed || isInstalled || (!supportsPWA && !isMobile)) {
         return null;
     }
 
