@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud, CheckCircle, Mic, AlertCircle, Wrench, Info } from 'lucide-react';
+import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud, CheckCircle, Mic, AlertCircle, Wrench, Info, X } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 
@@ -135,7 +135,7 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                 status: initialData.status || 'OPEN',
                 tindakanPerbaikan: initialData.tindakanPerbaikan || ''
             });
-            setActiveTab('informasi');
+            setActiveTab('tindaklanjut');
         } else {
             setFormData({
                 area: '',
@@ -494,17 +494,20 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-[95vw] sm:max-w-2xl md:max-w-3xl max-h-[90vh] p-0 overflow-hidden flex flex-col bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl">
+            <DialogContent 
+                onInteractOutside={(e) => e.preventDefault()}
+                showCloseButton={false}
+                className="max-w-[95vw] sm:max-w-2xl md:max-w-3xl max-h-[90vh] p-0 overflow-hidden flex flex-col bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl">
                 
                 {/* Custom Header with Gradient Banner */}
                 <div className="relative">
                     <div className={`absolute inset-0 h-24 ${initialData ? 'bg-gradient-to-r from-blue-600 to-indigo-700' : 'bg-gradient-to-r from-indigo-600 to-purple-700'} opacity-100`} />
-                    <DialogHeader className="relative z-10 px-6 pt-6 pb-4">
+                    <DialogHeader className="relative z-10 px-6 pt-6 pb-4 flex flex-row items-start justify-between">
                         <div className="flex items-center gap-3">
                             <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-md border border-white/30 text-white shadow-inner">
                                 {initialData ? <Wrench className="w-6 h-6" /> : <CheckCircle className="w-6 h-6" />}
                             </div>
-                            <div className="text-left">
+                            <div className="text-left mt-1">
                                 <DialogTitle className="text-xl font-black text-white tracking-tight">
                                     {initialData ? 'Improve Temuan Peduli' : 'Tambah Temuan Baru'}
                                 </DialogTitle>
@@ -513,6 +516,15 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                 </DialogDescription>
                             </div>
                         </div>
+                        
+                        {/* Custom Close Button since default might be hidden/misaligned by absolute div */}
+                        <button 
+                            type="button" 
+                            onClick={() => onOpenChange(false)}
+                            className="text-white/70 hover:text-white bg-black/10 hover:bg-black/30 p-2 rounded-full transition-all z-20 focus:outline-none"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </DialogHeader>
                 </div>
 
