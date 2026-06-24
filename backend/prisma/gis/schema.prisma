@@ -77,6 +77,7 @@ model User {
   reports        DisciplineReport[] @relation("Reporter")
   handledReports DisciplineReport[] @relation("Handler")
   temuanPeduli   TemuanPeduli[]     @relation("DiInputOleh")
+  userLogs       UserLog[]          @relation("UserLogs")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -396,3 +397,19 @@ model ProductSku {
 
   @@map("product_skus")
 }
+
+model UserLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  action      String   // e.g., "CREATE", "UPDATE", "DELETE"
+  module      String   // e.g., "TEMUAN_PEDULI"
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+
+  user User @relation("UserLogs", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([module])
+  @@map("user_logs")
+}
+

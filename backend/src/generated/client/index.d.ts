@@ -88,6 +88,11 @@ export type Product = $Result.DefaultSelection<Prisma.$ProductPayload>
  * 
  */
 export type ProductSku = $Result.DefaultSelection<Prisma.$ProductSkuPayload>
+/**
+ * Model UserLog
+ * 
+ */
+export type UserLog = $Result.DefaultSelection<Prisma.$UserLogPayload>
 
 /**
  * Enums
@@ -429,6 +434,16 @@ export class PrismaClient<
     * ```
     */
   get productSku(): Prisma.ProductSkuDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userLog`: Exposes CRUD operations for the **UserLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserLogs
+    * const userLogs = await prisma.userLog.findMany()
+    * ```
+    */
+  get userLog(): Prisma.UserLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -884,7 +899,8 @@ export namespace Prisma {
     jenisProduct: 'jenisProduct',
     Gudang: 'Gudang',
     Product: 'Product',
-    ProductSku: 'ProductSku'
+    ProductSku: 'ProductSku',
+    UserLog: 'UserLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -903,7 +919,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "permission" | "refreshToken" | "company" | "userCompany" | "supplier" | "disciplineReport" | "temuanPeduli" | "savedDatabaseConnection" | "satuan" | "typeProduct" | "jenisProduct" | "gudang" | "product" | "productSku"
+      modelProps: "user" | "permission" | "refreshToken" | "company" | "userCompany" | "supplier" | "disciplineReport" | "temuanPeduli" | "savedDatabaseConnection" | "satuan" | "typeProduct" | "jenisProduct" | "gudang" | "product" | "productSku" | "userLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2017,6 +2033,80 @@ export namespace Prisma {
           }
         }
       }
+      UserLog: {
+        payload: Prisma.$UserLogPayload<ExtArgs>
+        fields: Prisma.UserLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>
+          }
+          findFirst: {
+            args: Prisma.UserLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>
+          }
+          findMany: {
+            args: Prisma.UserLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>[]
+          }
+          create: {
+            args: Prisma.UserLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>
+          }
+          createMany: {
+            args: Prisma.UserLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>[]
+          }
+          delete: {
+            args: Prisma.UserLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>
+          }
+          update: {
+            args: Prisma.UserLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLogPayload>
+          }
+          aggregate: {
+            args: Prisma.UserLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserLog>
+          }
+          groupBy: {
+            args: Prisma.UserLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserLogCountArgs<ExtArgs>
+            result: $Utils.Optional<UserLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2128,6 +2218,7 @@ export namespace Prisma {
     gudang?: GudangOmit
     product?: ProductOmit
     productSku?: ProductSkuOmit
+    userLog?: UserLogOmit
   }
 
   /* Types for Logging */
@@ -2214,6 +2305,7 @@ export namespace Prisma {
     reports: number
     handledReports: number
     temuanPeduli: number
+    userLogs: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2223,6 +2315,7 @@ export namespace Prisma {
     reports?: boolean | UserCountOutputTypeCountReportsArgs
     handledReports?: boolean | UserCountOutputTypeCountHandledReportsArgs
     temuanPeduli?: boolean | UserCountOutputTypeCountTemuanPeduliArgs
+    userLogs?: boolean | UserCountOutputTypeCountUserLogsArgs
   }
 
   // Custom InputTypes
@@ -2276,6 +2369,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTemuanPeduliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TemuanPeduliWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUserLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserLogWhereInput
   }
 
 
@@ -2797,6 +2897,7 @@ export namespace Prisma {
     reports?: boolean | User$reportsArgs<ExtArgs>
     handledReports?: boolean | User$handledReportsArgs<ExtArgs>
     temuanPeduli?: boolean | User$temuanPeduliArgs<ExtArgs>
+    userLogs?: boolean | User$userLogsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2862,6 +2963,7 @@ export namespace Prisma {
     reports?: boolean | User$reportsArgs<ExtArgs>
     handledReports?: boolean | User$handledReportsArgs<ExtArgs>
     temuanPeduli?: boolean | User$temuanPeduliArgs<ExtArgs>
+    userLogs?: boolean | User$userLogsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2876,6 +2978,7 @@ export namespace Prisma {
       reports: Prisma.$DisciplineReportPayload<ExtArgs>[]
       handledReports: Prisma.$DisciplineReportPayload<ExtArgs>[]
       temuanPeduli: Prisma.$TemuanPeduliPayload<ExtArgs>[]
+      userLogs: Prisma.$UserLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3293,6 +3396,7 @@ export namespace Prisma {
     reports<T extends User$reportsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisciplineReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     handledReports<T extends User$handledReportsArgs<ExtArgs> = {}>(args?: Subset<T, User$handledReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisciplineReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     temuanPeduli<T extends User$temuanPeduliArgs<ExtArgs> = {}>(args?: Subset<T, User$temuanPeduliArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemuanPeduliPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userLogs<T extends User$userLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$userLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3866,6 +3970,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TemuanPeduliScalarFieldEnum | TemuanPeduliScalarFieldEnum[]
+  }
+
+  /**
+   * User.userLogs
+   */
+  export type User$userLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    where?: UserLogWhereInput
+    orderBy?: UserLogOrderByWithRelationInput | UserLogOrderByWithRelationInput[]
+    cursor?: UserLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserLogScalarFieldEnum | UserLogScalarFieldEnum[]
   }
 
   /**
@@ -20648,6 +20776,1115 @@ export namespace Prisma {
 
 
   /**
+   * Model UserLog
+   */
+
+  export type AggregateUserLog = {
+    _count: UserLogCountAggregateOutputType | null
+    _avg: UserLogAvgAggregateOutputType | null
+    _sum: UserLogSumAggregateOutputType | null
+    _min: UserLogMinAggregateOutputType | null
+    _max: UserLogMaxAggregateOutputType | null
+  }
+
+  export type UserLogAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type UserLogSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type UserLogMinAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    action: string | null
+    module: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type UserLogMaxAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    action: string | null
+    module: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type UserLogCountAggregateOutputType = {
+    id: number
+    userId: number
+    action: number
+    module: number
+    description: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserLogAvgAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type UserLogSumAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type UserLogMinAggregateInputType = {
+    id?: true
+    userId?: true
+    action?: true
+    module?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type UserLogMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    action?: true
+    module?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type UserLogCountAggregateInputType = {
+    id?: true
+    userId?: true
+    action?: true
+    module?: true
+    description?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLog to aggregate.
+     */
+    where?: UserLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLogs to fetch.
+     */
+    orderBy?: UserLogOrderByWithRelationInput | UserLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserLogs
+    **/
+    _count?: true | UserLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserLogMaxAggregateInputType
+  }
+
+  export type GetUserLogAggregateType<T extends UserLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserLog[P]>
+      : GetScalarType<T[P], AggregateUserLog[P]>
+  }
+
+
+
+
+  export type UserLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserLogWhereInput
+    orderBy?: UserLogOrderByWithAggregationInput | UserLogOrderByWithAggregationInput[]
+    by: UserLogScalarFieldEnum[] | UserLogScalarFieldEnum
+    having?: UserLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserLogCountAggregateInputType | true
+    _avg?: UserLogAvgAggregateInputType
+    _sum?: UserLogSumAggregateInputType
+    _min?: UserLogMinAggregateInputType
+    _max?: UserLogMaxAggregateInputType
+  }
+
+  export type UserLogGroupByOutputType = {
+    id: number
+    userId: number
+    action: string
+    module: string
+    description: string
+    createdAt: Date
+    _count: UserLogCountAggregateOutputType | null
+    _avg: UserLogAvgAggregateOutputType | null
+    _sum: UserLogSumAggregateOutputType | null
+    _min: UserLogMinAggregateOutputType | null
+    _max: UserLogMaxAggregateOutputType | null
+  }
+
+  type GetUserLogGroupByPayload<T extends UserLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserLogGroupByOutputType[P]>
+            : GetScalarType<T[P], UserLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    action?: boolean
+    module?: boolean
+    description?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLog"]>
+
+  export type UserLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    action?: boolean
+    module?: boolean
+    description?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLog"]>
+
+  export type UserLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    action?: boolean
+    module?: boolean
+    description?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLog"]>
+
+  export type UserLogSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    action?: boolean
+    module?: boolean
+    description?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "action" | "module" | "description" | "createdAt", ExtArgs["result"]["userLog"]>
+  export type UserLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserLog"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: number
+      action: string
+      module: string
+      description: string
+      createdAt: Date
+    }, ExtArgs["result"]["userLog"]>
+    composites: {}
+  }
+
+  type UserLogGetPayload<S extends boolean | null | undefined | UserLogDefaultArgs> = $Result.GetResult<Prisma.$UserLogPayload, S>
+
+  type UserLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserLogCountAggregateInputType | true
+    }
+
+  export interface UserLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserLog'], meta: { name: 'UserLog' } }
+    /**
+     * Find zero or one UserLog that matches the filter.
+     * @param {UserLogFindUniqueArgs} args - Arguments to find a UserLog
+     * @example
+     * // Get one UserLog
+     * const userLog = await prisma.userLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserLogFindUniqueArgs>(args: SelectSubset<T, UserLogFindUniqueArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserLogFindUniqueOrThrowArgs} args - Arguments to find a UserLog
+     * @example
+     * // Get one UserLog
+     * const userLog = await prisma.userLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserLogFindUniqueOrThrowArgs>(args: SelectSubset<T, UserLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogFindFirstArgs} args - Arguments to find a UserLog
+     * @example
+     * // Get one UserLog
+     * const userLog = await prisma.userLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserLogFindFirstArgs>(args?: SelectSubset<T, UserLogFindFirstArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogFindFirstOrThrowArgs} args - Arguments to find a UserLog
+     * @example
+     * // Get one UserLog
+     * const userLog = await prisma.userLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserLogFindFirstOrThrowArgs>(args?: SelectSubset<T, UserLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserLogs
+     * const userLogs = await prisma.userLog.findMany()
+     * 
+     * // Get first 10 UserLogs
+     * const userLogs = await prisma.userLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userLogWithIdOnly = await prisma.userLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserLogFindManyArgs>(args?: SelectSubset<T, UserLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserLog.
+     * @param {UserLogCreateArgs} args - Arguments to create a UserLog.
+     * @example
+     * // Create one UserLog
+     * const UserLog = await prisma.userLog.create({
+     *   data: {
+     *     // ... data to create a UserLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserLogCreateArgs>(args: SelectSubset<T, UserLogCreateArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserLogs.
+     * @param {UserLogCreateManyArgs} args - Arguments to create many UserLogs.
+     * @example
+     * // Create many UserLogs
+     * const userLog = await prisma.userLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserLogCreateManyArgs>(args?: SelectSubset<T, UserLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserLogs and returns the data saved in the database.
+     * @param {UserLogCreateManyAndReturnArgs} args - Arguments to create many UserLogs.
+     * @example
+     * // Create many UserLogs
+     * const userLog = await prisma.userLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserLogs and only return the `id`
+     * const userLogWithIdOnly = await prisma.userLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserLogCreateManyAndReturnArgs>(args?: SelectSubset<T, UserLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserLog.
+     * @param {UserLogDeleteArgs} args - Arguments to delete one UserLog.
+     * @example
+     * // Delete one UserLog
+     * const UserLog = await prisma.userLog.delete({
+     *   where: {
+     *     // ... filter to delete one UserLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserLogDeleteArgs>(args: SelectSubset<T, UserLogDeleteArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserLog.
+     * @param {UserLogUpdateArgs} args - Arguments to update one UserLog.
+     * @example
+     * // Update one UserLog
+     * const userLog = await prisma.userLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserLogUpdateArgs>(args: SelectSubset<T, UserLogUpdateArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserLogs.
+     * @param {UserLogDeleteManyArgs} args - Arguments to filter UserLogs to delete.
+     * @example
+     * // Delete a few UserLogs
+     * const { count } = await prisma.userLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserLogDeleteManyArgs>(args?: SelectSubset<T, UserLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserLogs
+     * const userLog = await prisma.userLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserLogUpdateManyArgs>(args: SelectSubset<T, UserLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLogs and returns the data updated in the database.
+     * @param {UserLogUpdateManyAndReturnArgs} args - Arguments to update many UserLogs.
+     * @example
+     * // Update many UserLogs
+     * const userLog = await prisma.userLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserLogs and only return the `id`
+     * const userLogWithIdOnly = await prisma.userLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserLogUpdateManyAndReturnArgs>(args: SelectSubset<T, UserLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserLog.
+     * @param {UserLogUpsertArgs} args - Arguments to update or create a UserLog.
+     * @example
+     * // Update or create a UserLog
+     * const userLog = await prisma.userLog.upsert({
+     *   create: {
+     *     // ... data to create a UserLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserLogUpsertArgs>(args: SelectSubset<T, UserLogUpsertArgs<ExtArgs>>): Prisma__UserLogClient<$Result.GetResult<Prisma.$UserLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogCountArgs} args - Arguments to filter UserLogs to count.
+     * @example
+     * // Count the number of UserLogs
+     * const count = await prisma.userLog.count({
+     *   where: {
+     *     // ... the filter for the UserLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserLogCountArgs>(
+      args?: Subset<T, UserLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserLogAggregateArgs>(args: Subset<T, UserLogAggregateArgs>): Prisma.PrismaPromise<GetUserLogAggregateType<T>>
+
+    /**
+     * Group by UserLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserLogGroupByArgs['orderBy'] }
+        : { orderBy?: UserLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserLog model
+   */
+  readonly fields: UserLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserLog model
+   */
+  interface UserLogFieldRefs {
+    readonly id: FieldRef<"UserLog", 'Int'>
+    readonly userId: FieldRef<"UserLog", 'Int'>
+    readonly action: FieldRef<"UserLog", 'String'>
+    readonly module: FieldRef<"UserLog", 'String'>
+    readonly description: FieldRef<"UserLog", 'String'>
+    readonly createdAt: FieldRef<"UserLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserLog findUnique
+   */
+  export type UserLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLog to fetch.
+     */
+    where: UserLogWhereUniqueInput
+  }
+
+  /**
+   * UserLog findUniqueOrThrow
+   */
+  export type UserLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLog to fetch.
+     */
+    where: UserLogWhereUniqueInput
+  }
+
+  /**
+   * UserLog findFirst
+   */
+  export type UserLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLog to fetch.
+     */
+    where?: UserLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLogs to fetch.
+     */
+    orderBy?: UserLogOrderByWithRelationInput | UserLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLogs.
+     */
+    cursor?: UserLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLogs.
+     */
+    distinct?: UserLogScalarFieldEnum | UserLogScalarFieldEnum[]
+  }
+
+  /**
+   * UserLog findFirstOrThrow
+   */
+  export type UserLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLog to fetch.
+     */
+    where?: UserLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLogs to fetch.
+     */
+    orderBy?: UserLogOrderByWithRelationInput | UserLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLogs.
+     */
+    cursor?: UserLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLogs.
+     */
+    distinct?: UserLogScalarFieldEnum | UserLogScalarFieldEnum[]
+  }
+
+  /**
+   * UserLog findMany
+   */
+  export type UserLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLogs to fetch.
+     */
+    where?: UserLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLogs to fetch.
+     */
+    orderBy?: UserLogOrderByWithRelationInput | UserLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserLogs.
+     */
+    cursor?: UserLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLogs.
+     */
+    skip?: number
+    distinct?: UserLogScalarFieldEnum | UserLogScalarFieldEnum[]
+  }
+
+  /**
+   * UserLog create
+   */
+  export type UserLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserLog.
+     */
+    data: XOR<UserLogCreateInput, UserLogUncheckedCreateInput>
+  }
+
+  /**
+   * UserLog createMany
+   */
+  export type UserLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserLogs.
+     */
+    data: UserLogCreateManyInput | UserLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserLog createManyAndReturn
+   */
+  export type UserLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserLogs.
+     */
+    data: UserLogCreateManyInput | UserLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserLog update
+   */
+  export type UserLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserLog.
+     */
+    data: XOR<UserLogUpdateInput, UserLogUncheckedUpdateInput>
+    /**
+     * Choose, which UserLog to update.
+     */
+    where: UserLogWhereUniqueInput
+  }
+
+  /**
+   * UserLog updateMany
+   */
+  export type UserLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserLogs.
+     */
+    data: XOR<UserLogUpdateManyMutationInput, UserLogUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLogs to update
+     */
+    where?: UserLogWhereInput
+    /**
+     * Limit how many UserLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserLog updateManyAndReturn
+   */
+  export type UserLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * The data used to update UserLogs.
+     */
+    data: XOR<UserLogUpdateManyMutationInput, UserLogUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLogs to update
+     */
+    where?: UserLogWhereInput
+    /**
+     * Limit how many UserLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserLog upsert
+   */
+  export type UserLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserLog to update in case it exists.
+     */
+    where: UserLogWhereUniqueInput
+    /**
+     * In case the UserLog found by the `where` argument doesn't exist, create a new UserLog with this data.
+     */
+    create: XOR<UserLogCreateInput, UserLogUncheckedCreateInput>
+    /**
+     * In case the UserLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserLogUpdateInput, UserLogUncheckedUpdateInput>
+  }
+
+  /**
+   * UserLog delete
+   */
+  export type UserLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+    /**
+     * Filter which UserLog to delete.
+     */
+    where: UserLogWhereUniqueInput
+  }
+
+  /**
+   * UserLog deleteMany
+   */
+  export type UserLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLogs to delete
+     */
+    where?: UserLogWhereInput
+    /**
+     * Limit how many UserLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserLog without action
+   */
+  export type UserLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLog
+     */
+    select?: UserLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLog
+     */
+    omit?: UserLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLogInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20935,6 +22172,18 @@ export namespace Prisma {
   export type ProductSkuScalarFieldEnum = (typeof ProductSkuScalarFieldEnum)[keyof typeof ProductSkuScalarFieldEnum]
 
 
+  export const UserLogScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    action: 'action',
+    module: 'module',
+    description: 'description',
+    createdAt: 'createdAt'
+  };
+
+  export type UserLogScalarFieldEnum = (typeof UserLogScalarFieldEnum)[keyof typeof UserLogScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -21163,6 +22412,7 @@ export namespace Prisma {
     reports?: DisciplineReportListRelationFilter
     handledReports?: DisciplineReportListRelationFilter
     temuanPeduli?: TemuanPeduliListRelationFilter
+    userLogs?: UserLogListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -21187,6 +22437,7 @@ export namespace Prisma {
     reports?: DisciplineReportOrderByRelationAggregateInput
     handledReports?: DisciplineReportOrderByRelationAggregateInput
     temuanPeduli?: TemuanPeduliOrderByRelationAggregateInput
+    userLogs?: UserLogOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -21214,6 +22465,7 @@ export namespace Prisma {
     reports?: DisciplineReportListRelationFilter
     handledReports?: DisciplineReportListRelationFilter
     temuanPeduli?: TemuanPeduliListRelationFilter
+    userLogs?: UserLogListRelationFilter
   }, "id" | "email" | "username" | "googleId">
 
   export type UserOrderByWithAggregationInput = {
@@ -22572,6 +23824,68 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ProductSku"> | Date | string
   }
 
+  export type UserLogWhereInput = {
+    AND?: UserLogWhereInput | UserLogWhereInput[]
+    OR?: UserLogWhereInput[]
+    NOT?: UserLogWhereInput | UserLogWhereInput[]
+    id?: IntFilter<"UserLog"> | number
+    userId?: IntFilter<"UserLog"> | number
+    action?: StringFilter<"UserLog"> | string
+    module?: StringFilter<"UserLog"> | string
+    description?: StringFilter<"UserLog"> | string
+    createdAt?: DateTimeFilter<"UserLog"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserLogOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: UserLogWhereInput | UserLogWhereInput[]
+    OR?: UserLogWhereInput[]
+    NOT?: UserLogWhereInput | UserLogWhereInput[]
+    userId?: IntFilter<"UserLog"> | number
+    action?: StringFilter<"UserLog"> | string
+    module?: StringFilter<"UserLog"> | string
+    description?: StringFilter<"UserLog"> | string
+    createdAt?: DateTimeFilter<"UserLog"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type UserLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    _count?: UserLogCountOrderByAggregateInput
+    _avg?: UserLogAvgOrderByAggregateInput
+    _max?: UserLogMaxOrderByAggregateInput
+    _min?: UserLogMinOrderByAggregateInput
+    _sum?: UserLogSumOrderByAggregateInput
+  }
+
+  export type UserLogScalarWhereWithAggregatesInput = {
+    AND?: UserLogScalarWhereWithAggregatesInput | UserLogScalarWhereWithAggregatesInput[]
+    OR?: UserLogScalarWhereWithAggregatesInput[]
+    NOT?: UserLogScalarWhereWithAggregatesInput | UserLogScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"UserLog"> | number
+    userId?: IntWithAggregatesFilter<"UserLog"> | number
+    action?: StringWithAggregatesFilter<"UserLog"> | string
+    module?: StringWithAggregatesFilter<"UserLog"> | string
+    description?: StringWithAggregatesFilter<"UserLog"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"UserLog"> | Date | string
+  }
+
   export type UserCreateInput = {
     email: string
     username?: string | null
@@ -22593,6 +23907,7 @@ export namespace Prisma {
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -22617,6 +23932,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -22640,6 +23956,7 @@ export namespace Prisma {
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -22664,6 +23981,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -24187,6 +25505,65 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserLogCreateInput = {
+    action: string
+    module: string
+    description: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutUserLogsInput
+  }
+
+  export type UserLogUncheckedCreateInput = {
+    id?: number
+    userId: number
+    action: string
+    module: string
+    description: string
+    createdAt?: Date | string
+  }
+
+  export type UserLogUpdateInput = {
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutUserLogsNestedInput
+  }
+
+  export type UserLogUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLogCreateManyInput = {
+    id?: number
+    userId: number
+    action: string
+    module: string
+    description: string
+    createdAt?: Date | string
+  }
+
+  export type UserLogUpdateManyMutationInput = {
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLogUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -24299,6 +25676,12 @@ export namespace Prisma {
     none?: TemuanPeduliWhereInput
   }
 
+  export type UserLogListRelationFilter = {
+    every?: UserLogWhereInput
+    some?: UserLogWhereInput
+    none?: UserLogWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -24321,6 +25704,10 @@ export namespace Prisma {
   }
 
   export type TemuanPeduliOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -25535,6 +26922,43 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type UserLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserLogAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type UserLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserLogSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
   export type PermissionCreateNestedManyWithoutUserInput = {
     create?: XOR<PermissionCreateWithoutUserInput, PermissionUncheckedCreateWithoutUserInput> | PermissionCreateWithoutUserInput[] | PermissionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutUserInput | PermissionCreateOrConnectWithoutUserInput[]
@@ -25577,6 +27001,13 @@ export namespace Prisma {
     connect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
   }
 
+  export type UserLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserLogCreateWithoutUserInput, UserLogUncheckedCreateWithoutUserInput> | UserLogCreateWithoutUserInput[] | UserLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLogCreateOrConnectWithoutUserInput | UserLogCreateOrConnectWithoutUserInput[]
+    createMany?: UserLogCreateManyUserInputEnvelope
+    connect?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+  }
+
   export type PermissionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<PermissionCreateWithoutUserInput, PermissionUncheckedCreateWithoutUserInput> | PermissionCreateWithoutUserInput[] | PermissionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutUserInput | PermissionCreateOrConnectWithoutUserInput[]
@@ -25617,6 +27048,13 @@ export namespace Prisma {
     connectOrCreate?: TemuanPeduliCreateOrConnectWithoutUserInput | TemuanPeduliCreateOrConnectWithoutUserInput[]
     createMany?: TemuanPeduliCreateManyUserInputEnvelope
     connect?: TemuanPeduliWhereUniqueInput | TemuanPeduliWhereUniqueInput[]
+  }
+
+  export type UserLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserLogCreateWithoutUserInput, UserLogUncheckedCreateWithoutUserInput> | UserLogCreateWithoutUserInput[] | UserLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLogCreateOrConnectWithoutUserInput | UserLogCreateOrConnectWithoutUserInput[]
+    createMany?: UserLogCreateManyUserInputEnvelope
+    connect?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -25739,6 +27177,20 @@ export namespace Prisma {
     deleteMany?: TemuanPeduliScalarWhereInput | TemuanPeduliScalarWhereInput[]
   }
 
+  export type UserLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserLogCreateWithoutUserInput, UserLogUncheckedCreateWithoutUserInput> | UserLogCreateWithoutUserInput[] | UserLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLogCreateOrConnectWithoutUserInput | UserLogCreateOrConnectWithoutUserInput[]
+    upsert?: UserLogUpsertWithWhereUniqueWithoutUserInput | UserLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserLogCreateManyUserInputEnvelope
+    set?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    disconnect?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    delete?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    connect?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    update?: UserLogUpdateWithWhereUniqueWithoutUserInput | UserLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserLogUpdateManyWithWhereWithoutUserInput | UserLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserLogScalarWhereInput | UserLogScalarWhereInput[]
+  }
+
   export type PermissionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<PermissionCreateWithoutUserInput, PermissionUncheckedCreateWithoutUserInput> | PermissionCreateWithoutUserInput[] | PermissionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutUserInput | PermissionCreateOrConnectWithoutUserInput[]
@@ -25821,6 +27273,20 @@ export namespace Prisma {
     update?: TemuanPeduliUpdateWithWhereUniqueWithoutUserInput | TemuanPeduliUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TemuanPeduliUpdateManyWithWhereWithoutUserInput | TemuanPeduliUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TemuanPeduliScalarWhereInput | TemuanPeduliScalarWhereInput[]
+  }
+
+  export type UserLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserLogCreateWithoutUserInput, UserLogUncheckedCreateWithoutUserInput> | UserLogCreateWithoutUserInput[] | UserLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLogCreateOrConnectWithoutUserInput | UserLogCreateOrConnectWithoutUserInput[]
+    upsert?: UserLogUpsertWithWhereUniqueWithoutUserInput | UserLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserLogCreateManyUserInputEnvelope
+    set?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    disconnect?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    delete?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    connect?: UserLogWhereUniqueInput | UserLogWhereUniqueInput[]
+    update?: UserLogUpdateWithWhereUniqueWithoutUserInput | UserLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserLogUpdateManyWithWhereWithoutUserInput | UserLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserLogScalarWhereInput | UserLogScalarWhereInput[]
   }
 
   export type PermissionCreateactionsInput = {
@@ -26404,6 +27870,20 @@ export namespace Prisma {
     update?: XOR<XOR<GudangUpdateToOneWithWhereWithoutSkusInput, GudangUpdateWithoutSkusInput>, GudangUncheckedUpdateWithoutSkusInput>
   }
 
+  export type UserCreateNestedOneWithoutUserLogsInput = {
+    create?: XOR<UserCreateWithoutUserLogsInput, UserUncheckedCreateWithoutUserLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutUserLogsNestedInput = {
+    create?: XOR<UserCreateWithoutUserLogsInput, UserUncheckedCreateWithoutUserLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserLogsInput
+    upsert?: UserUpsertWithoutUserLogsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserLogsInput, UserUpdateWithoutUserLogsInput>, UserUncheckedUpdateWithoutUserLogsInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -26961,6 +28441,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserLogCreateWithoutUserInput = {
+    action: string
+    module: string
+    description: string
+    createdAt?: Date | string
+  }
+
+  export type UserLogUncheckedCreateWithoutUserInput = {
+    id?: number
+    action: string
+    module: string
+    description: string
+    createdAt?: Date | string
+  }
+
+  export type UserLogCreateOrConnectWithoutUserInput = {
+    where: UserLogWhereUniqueInput
+    create: XOR<UserLogCreateWithoutUserInput, UserLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserLogCreateManyUserInputEnvelope = {
+    data: UserLogCreateManyUserInput | UserLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PermissionUpsertWithWhereUniqueWithoutUserInput = {
     where: PermissionWhereUniqueInput
     update: XOR<PermissionUpdateWithoutUserInput, PermissionUncheckedUpdateWithoutUserInput>
@@ -27138,6 +28643,34 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TemuanPeduli"> | Date | string
   }
 
+  export type UserLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserLogWhereUniqueInput
+    update: XOR<UserLogUpdateWithoutUserInput, UserLogUncheckedUpdateWithoutUserInput>
+    create: XOR<UserLogCreateWithoutUserInput, UserLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserLogWhereUniqueInput
+    data: XOR<UserLogUpdateWithoutUserInput, UserLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserLogUpdateManyWithWhereWithoutUserInput = {
+    where: UserLogScalarWhereInput
+    data: XOR<UserLogUpdateManyMutationInput, UserLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserLogScalarWhereInput = {
+    AND?: UserLogScalarWhereInput | UserLogScalarWhereInput[]
+    OR?: UserLogScalarWhereInput[]
+    NOT?: UserLogScalarWhereInput | UserLogScalarWhereInput[]
+    id?: IntFilter<"UserLog"> | number
+    userId?: IntFilter<"UserLog"> | number
+    action?: StringFilter<"UserLog"> | string
+    module?: StringFilter<"UserLog"> | string
+    description?: StringFilter<"UserLog"> | string
+    createdAt?: DateTimeFilter<"UserLog"> | Date | string
+  }
+
   export type UserCreateWithoutPermissionsInput = {
     email: string
     username?: string | null
@@ -27158,6 +28691,7 @@ export namespace Prisma {
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPermissionsInput = {
@@ -27181,6 +28715,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPermissionsInput = {
@@ -27219,6 +28754,7 @@ export namespace Prisma {
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPermissionsInput = {
@@ -27242,6 +28778,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -27264,6 +28801,7 @@ export namespace Prisma {
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -27287,6 +28825,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -27325,6 +28864,7 @@ export namespace Prisma {
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -27348,6 +28888,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCompanyCreateWithoutCompanyInput = {
@@ -27511,6 +29052,7 @@ export namespace Prisma {
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompaniesInput = {
@@ -27534,6 +29076,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompaniesInput = {
@@ -27658,6 +29201,7 @@ export namespace Prisma {
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompaniesInput = {
@@ -27681,6 +29225,7 @@ export namespace Prisma {
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutUsersInput = {
@@ -27916,6 +29461,7 @@ export namespace Prisma {
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -27939,6 +29485,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
     temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -27966,6 +29513,7 @@ export namespace Prisma {
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutHandledReportsInput = {
@@ -27989,6 +29537,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutHandledReportsInput = {
@@ -28027,6 +29576,7 @@ export namespace Prisma {
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -28050,6 +29600,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
     temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutHandledReportsInput = {
@@ -28083,6 +29634,7 @@ export namespace Prisma {
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHandledReportsInput = {
@@ -28106,6 +29658,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTemuanPeduliInput = {
@@ -28128,6 +29681,7 @@ export namespace Prisma {
     companies?: UserCompanyCreateNestedManyWithoutUserInput
     reports?: DisciplineReportCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    userLogs?: UserLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTemuanPeduliInput = {
@@ -28151,6 +29705,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
     reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
     handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    userLogs?: UserLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTemuanPeduliInput = {
@@ -28189,6 +29744,7 @@ export namespace Prisma {
     companies?: UserCompanyUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    userLogs?: UserLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTemuanPeduliInput = {
@@ -28212,6 +29768,7 @@ export namespace Prisma {
     companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
     reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
     handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    userLogs?: UserLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProductSkuCreateWithoutSatuanInput = {
@@ -29096,6 +30653,116 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserCreateWithoutUserLogsInput = {
+    email: string
+    username?: string | null
+    password?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    picture?: string | null
+    role?: $Enums.Role
+    status?: $Enums.Status
+    isEmailVerified?: boolean
+    googleId?: string | null
+    lastLoginAt?: Date | string | null
+    loginAttempts?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: PermissionCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    companies?: UserCompanyCreateNestedManyWithoutUserInput
+    reports?: DisciplineReportCreateNestedManyWithoutReporterInput
+    handledReports?: DisciplineReportCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutUserLogsInput = {
+    id?: number
+    email: string
+    username?: string | null
+    password?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    picture?: string | null
+    role?: $Enums.Role
+    status?: $Enums.Status
+    isEmailVerified?: boolean
+    googleId?: string | null
+    lastLoginAt?: Date | string | null
+    loginAttempts?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: PermissionUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    companies?: UserCompanyUncheckedCreateNestedManyWithoutUserInput
+    reports?: DisciplineReportUncheckedCreateNestedManyWithoutReporterInput
+    handledReports?: DisciplineReportUncheckedCreateNestedManyWithoutHandledByInput
+    temuanPeduli?: TemuanPeduliUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUserLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserLogsInput, UserUncheckedCreateWithoutUserLogsInput>
+  }
+
+  export type UserUpsertWithoutUserLogsInput = {
+    update: XOR<UserUpdateWithoutUserLogsInput, UserUncheckedUpdateWithoutUserLogsInput>
+    create: XOR<UserCreateWithoutUserLogsInput, UserUncheckedCreateWithoutUserLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserLogsInput, UserUncheckedUpdateWithoutUserLogsInput>
+  }
+
+  export type UserUpdateWithoutUserLogsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    isEmailVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loginAttempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: PermissionUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    companies?: UserCompanyUpdateManyWithoutUserNestedInput
+    reports?: DisciplineReportUpdateManyWithoutReporterNestedInput
+    handledReports?: DisciplineReportUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserLogsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    isEmailVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loginAttempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: PermissionUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    companies?: UserCompanyUncheckedUpdateManyWithoutUserNestedInput
+    reports?: DisciplineReportUncheckedUpdateManyWithoutReporterNestedInput
+    handledReports?: DisciplineReportUncheckedUpdateManyWithoutHandledByNestedInput
+    temuanPeduli?: TemuanPeduliUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type PermissionCreateManyUserInput = {
     id?: number
     module: $Enums.AppModule
@@ -29175,6 +30842,14 @@ export namespace Prisma {
     fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type UserLogCreateManyUserInput = {
+    id?: number
+    action: string
+    module: string
+    description: string
+    createdAt?: Date | string
   }
 
   export type PermissionUpdateWithoutUserInput = {
@@ -29412,6 +31087,29 @@ export namespace Prisma {
     fotoPerbaikanUrls?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLogUpdateWithoutUserInput = {
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLogUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLogUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    action?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCompanyCreateManyCompanyInput = {

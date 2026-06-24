@@ -2,12 +2,17 @@ import express from 'express';
 import * as authController from '../controllers/authController.js';
 import prisma from '../config/prisma.js';
 import * as authService from '../services/authService.js';
+import { verifyToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/google', authController.googleLogin);
+
+router.get('/me', verifyToken, (req, res) => {
+  res.json({ success: true, user: req.user });
+});
 
 router.get('/test-me', async (req, res) => {
   try {

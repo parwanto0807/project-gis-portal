@@ -48,6 +48,15 @@ export const createTemuan = async (req, res, next) => {
             }
         });
 
+        await prisma.userLog.create({
+            data: {
+                userId,
+                action: 'CREATE',
+                module: 'TEMUAN_PEDULI',
+                description: `Menambahkan temuan baru di area ${area}`
+            }
+        });
+
         res.status(StatusCodes.CREATED).json({ success: true, data: newTemuan, message: 'Temuan created successfully' });
     } catch (error) {
         next(error);
@@ -120,6 +129,16 @@ export const updateTemuan = async (req, res, next) => {
             }
         });
 
+        const userId = req.user.userId || req.user.id;
+        await prisma.userLog.create({
+            data: {
+                userId,
+                action: 'UPDATE',
+                module: 'TEMUAN_PEDULI',
+                description: `Mengubah data temuan ID: ${id}`
+            }
+        });
+
         res.status(StatusCodes.OK).json({ success: true, data: updatedTemuan, message: 'Temuan updated successfully' });
     } catch (error) {
         next(error);
@@ -130,6 +149,17 @@ export const deleteTemuan = async (req, res, next) => {
     try {
         const { id } = req.params;
         await prisma.temuanPeduli.delete({ where: { id: parseInt(id) } });
+
+        const userId = req.user.userId || req.user.id;
+        await prisma.userLog.create({
+            data: {
+                userId,
+                action: 'DELETE',
+                module: 'TEMUAN_PEDULI',
+                description: `Menghapus data temuan ID: ${id}`
+            }
+        });
+
         res.status(StatusCodes.OK).json({ success: true, message: 'Temuan deleted successfully' });
     } catch (error) {
         next(error);

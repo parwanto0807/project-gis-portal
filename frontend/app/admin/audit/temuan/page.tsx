@@ -15,7 +15,7 @@ import api from '@/lib/axios';
 import { TemuanForm } from '@/components/temuan/TemuanForm';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import {
     Breadcrumb,
@@ -66,6 +66,10 @@ export default function TemuanPeduliPage() {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedDetail, setSelectedDetail] = useState<any>(null);
 
+    // Delete Dialog
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+
     // Search, Filter, Pagination
     const [searchQuery, setSearchQuery] = useState('');
     const [filterKategori, setFilterKategori] = useState('');
@@ -90,14 +94,22 @@ export default function TemuanPeduliPage() {
         fetchData();
     }, []);
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+    const triggerDelete = (id: number) => {
+        setItemToDelete(id);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
-            await api.delete(`/temuan-peduli/${id}`);
+            await api.delete(`/temuan-peduli/${itemToDelete}`);
             toast.success('Data berhasil dihapus');
             fetchData();
         } catch (error) {
             toast.error('Gagal menghapus data');
+        } finally {
+            setIsDeleteDialogOpen(false);
+            setItemToDelete(null);
         }
     };
 
@@ -442,81 +454,72 @@ export default function TemuanPeduliPage() {
                         <p className="text-xs text-slate-500 dark:text-slate-400">Daftar temuan audit internal dari berbagai area gedung.</p>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <Button onClick={exportToExcel} variant="outline" size="sm" className="h-8 gap-2 bg-green-50 text-green-700 hover:bg-green-100 border-green-200 w-full sm:w-auto justify-center">
-                        <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
+                <div className="flex sm:flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                    <Button onClick={handleCreate} size="sm" className="flex-1 sm:flex-none h-9 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm rounded-lg justify-center">
+                        <PlusCircle className="w-4 h-4" /> <span className="hidden sm:inline">Tambah Temuan Baru</span><span className="sm:hidden">Tambah Temuan</span>
                     </Button>
-                    <Button onClick={exportToPDF} variant="outline" size="sm" className="h-8 gap-2 bg-red-50 text-red-700 hover:bg-red-100 border-red-200 w-full sm:w-auto justify-center">
-                        <FileText className="w-3.5 h-3.5" /> PDF
+                    <Button onClick={exportToExcel} variant="outline" size="sm" className="h-9 w-9 sm:w-auto sm:px-3 gap-2 bg-green-50 text-green-700 hover:bg-green-100 border-green-200 rounded-lg justify-center shrink-0 p-0 sm:p-auto shadow-sm">
+                        <FileSpreadsheet className="w-4 h-4" /> <span className="hidden sm:inline">Excel</span>
                     </Button>
-                    <Button onClick={handleCreate} size="sm" className="hidden sm:flex h-8 gap-2 w-full sm:w-auto justify-center">
-                        <PlusCircle className="w-3.5 h-3.5" /> Tambah Temuan
+                    <Button onClick={exportToPDF} variant="outline" size="sm" className="h-9 w-9 sm:w-auto sm:px-3 gap-2 bg-red-50 text-red-700 hover:bg-red-100 border-red-200 rounded-lg justify-center shrink-0 p-0 sm:p-auto shadow-sm">
+                        <FileText className="w-4 h-4" /> <span className="hidden sm:inline">PDF</span>
                     </Button>
                 </div>
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-2">
-                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
-                    <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Temuan</div>
-                    <div className="text-xl font-bold text-slate-900 dark:text-slate-50 leading-none">{totalTemuan}</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Total Temuan</div>
+                    <div className="text-2xl font-black text-slate-900 dark:text-slate-50 leading-none">{totalTemuan}</div>
+                </div>
+                
+                <div className="bg-rose-50 dark:bg-rose-950/30 shadow-sm border border-rose-100 dark:border-rose-900 rounded-xl p-3 flex flex-col justify-between">
+                    <div className="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">Open</div>
+                    <div className="text-2xl font-black text-rose-600 dark:text-rose-400 leading-none">{openTemuan}</div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
-                    <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Sudah Ditindaklanjuti</div>
-                    <div className="flex items-end justify-between leading-none">
-                        <div className="text-xl font-bold text-emerald-600 leading-none">{tindakLanjutTemuan}</div>
-                        <p className="text-[9px] text-slate-400">In Progress & Closed</p>
-                    </div>
+                <div className="bg-amber-50 dark:bg-amber-950/30 shadow-sm border border-amber-100 dark:border-amber-900 rounded-xl p-3 flex flex-col justify-between">
+                    <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1">In Progress</div>
+                    <div className="text-2xl font-black text-amber-600 dark:text-amber-400 leading-none">{inProgressTemuan}</div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-950 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-center">
-                    <div className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Status Perbaikan</div>
-                    <div className="flex gap-4 items-center">
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-bold text-rose-500 leading-none">{openTemuan}</span>
-                            <span className="text-[9px] text-slate-500 uppercase">Open</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-bold text-amber-500 leading-none">{inProgressTemuan}</span>
-                            <span className="text-[9px] text-slate-500 uppercase">In Prog</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-bold text-emerald-500 leading-none">{closedTemuan}</span>
-                            <span className="text-[9px] text-slate-500 uppercase">Closed</span>
+                <div className="bg-emerald-50 dark:bg-emerald-950/30 shadow-sm border border-emerald-100 dark:border-emerald-900 rounded-xl p-3 flex flex-col justify-between">
+                    <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Closed</div>
+                    <div className="flex items-end justify-between leading-none w-full">
+                        <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 leading-none">{closedTemuan}</div>
+                        <div className="text-[10px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-900/50 px-1.5 py-0.5 rounded-md">
+                            {totalTemuan > 0 ? Math.round((closedTemuan/totalTemuan)*100) : 0}%
                         </div>
                     </div>
+                    {/* Visual Progress Bar */}
+                    <div className="w-full bg-emerald-200/50 dark:bg-emerald-900/30 h-1.5 rounded-full mt-2 overflow-hidden">
+                        <div className="bg-emerald-500 h-full rounded-full transition-all duration-1000" style={{width: `${totalTemuan > 0 ? (closedTemuan/totalTemuan)*100 : 0}%`}}></div>
+                    </div>
                 </div>
-            </div>
-
-            {/* Mobile Create Button */}
-            <div className="block sm:hidden mb-2">
-                <Button onClick={handleCreate} className="w-full h-10 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-sm">
-                    <PlusCircle className="w-4 h-4" /> Tambah Temuan Baru
-                </Button>
             </div>
 
             {/* Controls */}
-            <div className="flex flex-col md:flex-row gap-3 items-center justify-between pb-2">
-                <div className="relative w-full max-w-sm">
+            <div className="flex flex-col sm:flex-row gap-2 sm:items-center pb-2 w-full">
+                <div className="relative w-full sm:w-[250px] shrink-0">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                     <Input
-                        placeholder="Search by area, description, or pelapor..."
-                        className="pl-8 h-8 text-xs bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 w-full shadow-sm"
+                        placeholder="Cari..."
+                        className="pl-8 h-9 text-xs bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 w-full shadow-sm rounded-lg"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
-                <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex bg-white dark:bg-slate-950 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm scrollbar-hide">
+                <div className="flex-1 min-w-0 overflow-x-auto flex gap-1.5 scrollbar-hide items-center pb-1 -mb-1">
                     {['', 'Man', 'Machine', 'Material', 'Method'].map(kat => (
                         <Button
                             key={kat}
-                            variant={filterKategori === kat ? 'default' : 'ghost'}
+                            variant={filterKategori === kat ? 'default' : 'outline'}
                             onClick={() => setFilterKategori(kat)}
-                            className={`rounded-md h-7 px-3 font-semibold text-[10px] uppercase tracking-wider whitespace-nowrap ${filterKategori === kat ? 'bg-slate-900 dark:bg-slate-100 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900'}`}
+                            className={`rounded-full h-8 px-4 font-bold text-[11px] whitespace-nowrap shrink-0 border shadow-sm transition-colors ${filterKategori === kat ? 'bg-slate-900 dark:bg-slate-100 text-white border-slate-900 dark:border-slate-100' : 'bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900'}`}
                         >
-                            {kat === '' ? 'Semua Kategori' : kat}
+                            {kat === '' ? 'Semua' : kat}
                         </Button>
                     ))}
                 </div>
@@ -622,7 +625,7 @@ export default function TemuanPeduliPage() {
                                                     <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-bold rounded-md text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors shadow-sm" onClick={() => handleEdit(item)}>
                                                         <Wrench className="w-3.5 h-3.5 mr-1" /> Improve
                                                     </Button>
-                                                    <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-bold rounded-md text-rose-600 border-rose-200 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 transition-colors shadow-sm" onClick={() => handleDelete(item.id)}>
+                                                    <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-bold rounded-md text-rose-600 border-rose-200 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 transition-colors shadow-sm" onClick={() => triggerDelete(item.id)}>
                                                         <Trash2 className="w-3.5 h-3.5 mr-1" /> Hapus
                                                     </Button>
                                                 </div>
@@ -776,7 +779,7 @@ export default function TemuanPeduliPage() {
                                             <Button variant="ghost" className="flex-1 h-9 rounded-none text-[10px] font-bold text-blue-600 hover:bg-blue-50 border-r border-slate-100 dark:border-slate-800" onClick={() => handleEdit(item)}>
                                                 <Wrench className="w-3.5 h-3.5 mr-1.5" /> Improve
                                             </Button>
-                                            <Button variant="ghost" className="flex-1 h-9 rounded-none text-[10px] font-bold text-rose-500 hover:bg-rose-50" onClick={() => handleDelete(item.id)}>
+                                            <Button variant="ghost" className="flex-1 h-9 rounded-none text-[10px] font-bold text-rose-500 hover:bg-rose-50" onClick={() => triggerDelete(item.id)}>
                                                 <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Hapus
                                             </Button>
                                         </div>
@@ -985,6 +988,30 @@ export default function TemuanPeduliPage() {
                     )}
                 </DialogContent>
             </Dialog>
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent className="sm:max-w-md border-rose-200 dark:border-rose-900 bg-white dark:bg-slate-950">
+                    <DialogHeader className="items-center sm:items-start text-center sm:text-left">
+                        <div className="flex justify-center sm:justify-start w-full mb-2">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/50">
+                                <Trash2 className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+                            </div>
+                        </div>
+                        <DialogTitle className="text-lg font-bold text-slate-900 dark:text-slate-100">Hapus Data Temuan?</DialogTitle>
+                        <DialogDescription className="text-slate-500 dark:text-slate-400">
+                            Data temuan ini akan dihapus secara permanen beserta file foto di dalamnya. Tindakan ini tidak dapat dibatalkan.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex sm:justify-end gap-2 mt-4">
+                        <Button type="button" variant="outline" onClick={() => setIsDeleteDialogOpen(false)} className="w-full sm:w-auto font-bold border-slate-200 hover:bg-slate-100">
+                            BATAL
+                        </Button>
+                        <Button type="button" variant="destructive" onClick={confirmDelete} className="w-full sm:w-auto font-bold bg-rose-600 hover:bg-rose-700 shadow-md">
+                            YA, HAPUS DATA
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
         </div>
     );
 }

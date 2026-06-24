@@ -16,6 +16,7 @@ import dbConnectionRoutes from './dbConnectionRoutes.js';
 import productRoutes from './productRoutes.js';
 import temuanPeduliRoutes from './temuanPeduliRoutes.js';
 import backupRoutes from './backupRoutes.js';
+import userLogRoutes from './userLogRoutes.js';
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -25,5 +26,6 @@ router.use('/database', dbConnectionRoutes);
 router.use('/products', productRoutes);
 router.use('/temuan-peduli', temuanPeduliRoutes);
 router.use('/backups', backupRoutes);
+router.use('/user-logs', userLogRoutes);
 
 export default router;

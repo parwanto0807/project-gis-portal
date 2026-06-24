@@ -350,6 +350,15 @@ exports.Prisma.ProductSkuScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UserLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  module: 'module',
+  description: 'description',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -434,7 +443,8 @@ exports.Prisma.ModelName = {
   jenisProduct: 'jenisProduct',
   Gudang: 'Gudang',
   Product: 'Product',
-  ProductSku: 'ProductSku'
+  ProductSku: 'ProductSku',
+  UserLog: 'UserLog'
 };
 
 /**

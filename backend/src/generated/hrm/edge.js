@@ -273,7 +273,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Penyimpanan Utama\\Documents\\DATA PARWANTO\\PROJECT WEBAPP\\project-gis-portal\\backend\\src\\generated\\hrm",
+      "value": "D:\\Project WebApp\\project-gis-portal\\backend\\src\\generated\\hrm",
       "fromEnvVar": null
     },
     "config": {
@@ -287,7 +287,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Penyimpanan Utama\\Documents\\DATA PARWANTO\\PROJECT WEBAPP\\project-gis-portal\\backend\\prisma\\hrm\\schema.prisma",
+    "sourceFilePath": "D:\\Project WebApp\\project-gis-portal\\backend\\prisma\\hrm\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

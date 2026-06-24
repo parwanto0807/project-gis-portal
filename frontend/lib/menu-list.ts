@@ -15,6 +15,7 @@ import {
     ShieldCheck,
     ClipboardCheck,
     Database,
+    History,
     LucideIcon
 } from "lucide-react";
 import { AppModule, Action, Role } from "@/types/rbac";
@@ -119,8 +120,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
                         { label: "User Management", href: "/admin/users", icon: Users },
                         { label: "Database Connection", href: "/admin/settings/database", icon: Database },
                         { label: "Backup & Restore", href: "/admin/settings/backup", icon: Database },
-                        // { label: "Roles & Permissions", href: "/settings/roles", icon: UserCog },
-                        // { label: "Audit Logs", href: "/settings/audit", icon: ShieldCheck },
+                        { label: "User Logs", href: "/admin/settings/logs", icon: History },
                     ]
                 }
             ]
@@ -139,7 +139,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
 
             // Staff bypass for specific menus
             if (user.role?.toUpperCase() === 'STAFF') {
-                const allowedPaths = ['/admin/audit/temuan', '/admin/settings/profile'];
+                const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
                 // Only keep submenus that match allowedPaths
                 item.submenus = item.submenus.filter(sub => allowedPaths.includes(sub.href));
                 if (item.submenus.length === 0 && !allowedPaths.includes(item.href || '')) {
