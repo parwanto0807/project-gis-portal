@@ -33,7 +33,6 @@ interface User {
     createdAt: string;
     lastLoginAt?: string | null;
     picture?: string | null;
-    lastLoginAt?: string | null;
 }
 
 interface UserTableProps {
