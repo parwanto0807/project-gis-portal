@@ -41,25 +41,52 @@ export const getAverageAging = (data: Temuan[]) => {
     return Math.round(totalDays / data.length);
 };
 
-export const getTrendData = (data: Temuan[]) => {
-    const countsByDate = data.reduce((acc: Record<string, number>, curr) => {
-        const date = format(new Date(curr.tanggal), 'd MMM', { locale: id });
-        acc[date] = (acc[date] || 0) + 1;
-        return acc;
-    }, {});
+export const getTrendData = (data: Temuan[], period: 'Mingguan' | 'Bulanan' | 'Tahunan' = 'Mingguan') => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
-    // Sort by actual date to ensure correct timeline
-    const sortedDates = Object.keys(countsByDate).sort((a, b) => {
-        const [dayA, monthA] = a.split(' ');
-        const [dayB, monthB] = b.split(' ');
-        const monthOrder: Record<string, number> = { 'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'Mei': 5, 'Jun': 6, 'Jul': 7, 'Agt': 8, 'Sep': 9, 'Okt': 10, 'Nov': 11, 'Des': 12 };
-        if (monthOrder[monthA] !== monthOrder[monthB]) return monthOrder[monthA] - monthOrder[monthB];
-        return parseInt(dayA) - parseInt(dayB);
-    });
+    let datesToInclude: string[] = [];
+    const dateMap: Record<string, number> = {};
 
-    return sortedDates.map(date => ({
+    if (period === 'Mingguan' || period === 'Bulanan') {
+        const daysToSub = period === 'Mingguan' ? 6 : 29;
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - daysToSub);
+        
+        for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+            const key = format(d, 'd MMM', { locale: id });
+            datesToInclude.push(key);
+            dateMap[key] = 0;
+        }
+        
+        data.forEach(curr => {
+            const dateStr = format(new Date(curr.tanggal), 'd MMM', { locale: id });
+            if (dateMap[dateStr] !== undefined) {
+                dateMap[dateStr]++;
+            }
+        });
+    } else if (period === 'Tahunan') {
+        const startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 11);
+        startDate.setDate(1);
+        
+        for (let d = new Date(startDate); d <= today; d.setMonth(d.getMonth() + 1)) {
+            const key = format(d, 'MMM yyyy', { locale: id });
+            datesToInclude.push(key);
+            dateMap[key] = 0;
+        }
+        
+        data.forEach(curr => {
+            const monthStr = format(new Date(curr.tanggal), 'MMM yyyy', { locale: id });
+            if (dateMap[monthStr] !== undefined) {
+                dateMap[monthStr]++;
+            }
+        });
+    }
+
+    return datesToInclude.map(date => ({
         date,
-        count: countsByDate[date]
+        count: dateMap[date]
     }));
 };
 

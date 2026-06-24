@@ -54,6 +54,7 @@ export default function AdminDashboard() {
     const [data, setData] = useState<Temuan[]>([]);
     const [loading, setLoading] = useState(true);
     const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+    const [trendTab, setTrendTab] = useState('Mingguan');
     const user = useAuthStore((state) => state.user);
 
     const fetchData = async () => {
@@ -80,7 +81,26 @@ export default function AdminDashboard() {
         avgAging: getAverageAging(data)
     }), [data]);
 
-    const trendData = useMemo(() => getTrendData(data), [data]);
+    const trendData = useMemo(() => {
+        let filteredData = data;
+        const now = new Date();
+        
+        if (trendTab === 'Mingguan') {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(now.getDate() - 7);
+            filteredData = data.filter(d => new Date(d.tanggal) >= oneWeekAgo || d.status !== 'CLOSED');
+        } else if (trendTab === 'Bulanan') {
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(now.getMonth() - 1);
+            filteredData = data.filter(d => new Date(d.tanggal) >= oneMonthAgo);
+        } else if (trendTab === 'Tahunan') {
+            const oneYearAgo = new Date();
+            oneYearAgo.setFullYear(now.getFullYear() - 1);
+            filteredData = data.filter(d => new Date(d.tanggal) >= oneYearAgo);
+        }
+        
+        return getTrendData(filteredData, trendTab as any);
+    }, [data, trendTab]);
     const kategoriData = useMemo(() => getKategori4MData(data), [data]);
     const gedungData = useMemo(() => getGedungData(data), [data]);
     const areaData = useMemo(() => getAreaData(data), [data]);
@@ -107,17 +127,17 @@ export default function AdminDashboard() {
         <div className="space-y-6 pb-20 md:pb-0 w-full animate-in fade-in duration-500">
             
             <Dialog open={isWarningModalOpen} onOpenChange={setIsWarningModalOpen}>
-                <DialogContent className="sm:max-w-md border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40">
+                <DialogContent className="sm:max-w-md border-red-200 dark:border-red-800 bg-red-50 dark:bg-slate-950 shadow-2xl shadow-red-900/20">
                     <DialogHeader className="items-center">
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50 mb-3 animate-pulse">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/80 mb-3 animate-pulse">
                             <AlertTriangle className="h-7 w-7 text-red-600 dark:text-red-400" aria-hidden="true" />
                         </div>
                         <DialogTitle className="text-xl font-bold text-red-700 dark:text-red-400">Peringatan Tindak Lanjut!</DialogTitle>
-                        <DialogDescription className="text-center text-red-600 dark:text-red-300 pt-2">
-                            Terdapat <strong className="text-xl mx-1 font-black">{kpi.open.count} Temuan</strong> berstatus OPEN yang belum ditindaklanjuti.<br/>
-                            {criticalFindings.length > 0 && <span className="inline-block mt-2 font-bold bg-white dark:bg-slate-900 px-3 py-1 rounded-full text-red-600 text-xs border border-red-200">(Termasuk {criticalFindings.length} temuan kritis {'>'} 14 hari)</span>}
+                        <DialogDescription className="text-center text-red-600 dark:text-slate-300 pt-2">
+                            Terdapat <strong className="text-xl mx-1 font-black text-red-700 dark:text-red-400">{kpi.open.count} Temuan</strong> berstatus OPEN yang belum ditindaklanjuti.<br/>
+                            {criticalFindings.length > 0 && <span className="inline-block mt-2 font-bold bg-white dark:bg-slate-900 px-3 py-1 rounded-full text-red-600 dark:text-red-400 text-xs border border-red-200 dark:border-red-800/50">(Termasuk {criticalFindings.length} temuan kritis {'>'} 14 hari)</span>}
                             <br/><br/>
-                            <span className="text-xs text-red-500/80">Sistem memonitor aktivitas closing Anda. Harap segera melakukan closing temuan untuk menjaga performa dan komitmen di area Anda.</span>
+                            <span className="text-xs text-red-500/80 dark:text-slate-400">Sistem memonitor aktivitas closing Anda. Harap segera melakukan closing temuan untuk menjaga performa dan komitmen di area Anda.</span>
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="sm:justify-center mt-4">
@@ -187,7 +207,20 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Section B: Trend Analysis */}
                 <div className="lg:col-span-2 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-                    <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-indigo-500" /> Trend Pelaporan Temuan</h2>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                        <h2 className="text-sm font-bold flex items-center gap-2"><TrendingUp className="w-4 h-4 text-indigo-500" /> Trend Pelaporan Temuan</h2>
+                        <div className="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
+                            {['Mingguan', 'Bulanan', 'Tahunan'].map(tab => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setTrendTab(tab)}
+                                    className={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors ${trendTab === tab ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                     <div className="h-[250px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
