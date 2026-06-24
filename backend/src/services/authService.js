@@ -129,9 +129,10 @@ export const createSession = async (user, companyCode = null) => {
     },
   });
 
-  // Fetch fresh user data with permissions to return
-  const userData = await prisma.user.findUnique({
+  // Update lastLoginAt and fetch fresh user data with permissions to return
+  const userData = await prisma.user.update({
       where: { id: user.id },
+      data: { lastLoginAt: new Date() },
       include: { permissions: true }
   });
 

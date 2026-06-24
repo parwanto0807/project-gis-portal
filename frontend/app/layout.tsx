@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import { Toaster } from "sonner";
 import "./globals.css";
 import Providers from "./providers";
+import InstallPWA from "@/components/InstallPWA";
 
 // Configure Inter - Perfect for ERP/Dashboard
 const inter = Inter({
@@ -26,7 +27,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://grafindo-app.com"),
   title: "GIS Portal - ERP System",
   description: "Grafindo Information System - Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
-  manifest: "/manifest.json",
   icons: {
     icon: "/logo-sm.png",
     shortcut: "/logo-sm.png",
@@ -53,11 +53,6 @@ export const metadata: Metadata = {
     description: "Pusat kendali operasional ERP dan Temuan Peduli Bersinergi PT Grafindo Mitrasemesta.",
     images: ["/logo-md.png"],
   },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "GIS Portal",
-  },
 };
 
 export default function RootLayout({
@@ -70,6 +65,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${GeistMono.variable} font-sans antialiased`}>
         <Providers>
           {children}
+          <InstallPWA />
           <Toaster position="top-center" richColors />
         </Providers>
       </body>

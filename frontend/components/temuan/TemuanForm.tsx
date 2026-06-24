@@ -163,14 +163,26 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setFotos(Array.from(e.target.files));
+            const newFiles = Array.from(e.target.files);
+            setFotos(prev => [...prev, ...newFiles]);
+            e.target.value = '';
         }
     };
 
     const handleFotoPerbaikanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setFotoPerbaikan(Array.from(e.target.files));
+            const newFiles = Array.from(e.target.files);
+            setFotoPerbaikan(prev => [...prev, ...newFiles]);
+            e.target.value = '';
         }
+    };
+
+    const removeFoto = (index: number) => {
+        setFotos(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const removeFotoPerbaikan = (index: number) => {
+        setFotoPerbaikan(prev => prev.filter((_, i) => i !== index));
     };
 
     const onSubmit = async (e: React.FormEvent) => {
@@ -355,15 +367,23 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                 </div>
 
                 <div className="space-y-4">
-                    <div className="relative group">
-                        <Input 
-                            type="file" 
-                            multiple 
-                            accept="image/*" 
-                            onChange={handleFileChange} 
-                            className="bg-white dark:bg-slate-950 pl-10 cursor-pointer h-10 text-xs pt-2.5 border-dashed border-2 border-slate-300 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors" 
-                        />
-                        <UploadCloud className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-emerald-500 transition-colors" />
+                    <div className="flex gap-2">
+                        <div className="relative flex-1 group">
+                            <Input 
+                                type="file" 
+                                multiple 
+                                accept="image/*" 
+                                onChange={handleFileChange} 
+                                className="bg-white dark:bg-slate-950 pl-10 cursor-pointer h-10 text-xs pt-2.5 border-dashed border-2 border-slate-300 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors" 
+                            />
+                            <UploadCloud className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-emerald-500 transition-colors" />
+                        </div>
+                        <div className="relative w-28 shrink-0">
+                            <Input type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" title="Buka Kamera" />
+                            <Button type="button" className="w-full h-10 text-xs gap-1 relative z-0 bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
+                                <Camera className="w-4 h-4" /> Kamera
+                            </Button>
+                        </div>
                     </div>
                     
                     {fotoPreviews.length > 0 && (
@@ -373,6 +393,9 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                 {fotoPreviews.map((src, idx) => (
                                     <div key={idx} className="w-20 h-20 border border-slate-200 dark:border-slate-700 rounded-md overflow-hidden relative bg-slate-100 dark:bg-slate-800 shadow-sm group">
                                         <img src={src} alt={`Preview ${idx}`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                        <button type="button" onClick={() => removeFoto(idx)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-[12px] opacity-0 group-hover:opacity-100 transition-opacity leading-none pb-[1px]" title="Hapus Foto">
+                                            &times;
+                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -457,15 +480,23 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                 </div>
 
                 <div className="space-y-4">
-                    <div className="relative group">
-                        <Input 
-                            type="file" 
-                            multiple 
-                            accept="image/*" 
-                            onChange={handleFotoPerbaikanChange} 
-                            className="bg-white dark:bg-slate-950 pl-10 cursor-pointer h-10 text-xs pt-2.5 border-dashed border-2 border-slate-300 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors" 
-                        />
-                        <UploadCloud className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-emerald-500 transition-colors" />
+                    <div className="flex gap-2">
+                        <div className="relative flex-1 group">
+                            <Input 
+                                type="file" 
+                                multiple 
+                                accept="image/*" 
+                                onChange={handleFotoPerbaikanChange} 
+                                className="bg-white dark:bg-slate-950 pl-10 cursor-pointer h-10 text-xs pt-2.5 border-dashed border-2 border-slate-300 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors" 
+                            />
+                            <UploadCloud className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-emerald-500 transition-colors" />
+                        </div>
+                        <div className="relative w-28 shrink-0">
+                            <Input type="file" accept="image/*" capture="environment" onChange={handleFotoPerbaikanChange} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" title="Buka Kamera" />
+                            <Button type="button" className="w-full h-10 text-xs gap-1 relative z-0 bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
+                                <Camera className="w-4 h-4" /> Kamera
+                            </Button>
+                        </div>
                     </div>
                     
                     {fotoPerbaikanPreviews.length > 0 && (
@@ -475,6 +506,9 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
                                 {fotoPerbaikanPreviews.map((src, idx) => (
                                     <div key={idx} className="w-20 h-20 border border-slate-200 dark:border-slate-700 rounded-md overflow-hidden relative bg-slate-100 dark:bg-slate-800 shadow-sm group">
                                         <img src={src} alt={`Preview Perbaikan ${idx}`} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                                        <button type="button" onClick={() => removeFotoPerbaikan(idx)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-[12px] opacity-0 group-hover:opacity-100 transition-opacity leading-none pb-[1px]" title="Hapus Foto">
+                                            &times;
+                                        </button>
                                     </div>
                                 ))}
                             </div>
