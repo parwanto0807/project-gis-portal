@@ -155,6 +155,7 @@ export default function UserManagementPage() {
                 users={users}
                 loading={loading}
                 onDelete={handleDelete}
+                onRefresh={fetchUsers}
             />
         </div>
     );

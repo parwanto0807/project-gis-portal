@@ -1,5 +1,6 @@
 import prisma from '../config/prisma.js';
 import { StatusCodes } from 'http-status-codes';
+import bcrypt from 'bcryptjs';
 
 export const getUsers = async (req, res, next) => {
   try {
@@ -139,3 +140,44 @@ export const deleteUser = async (req, res, next) => {
         next(error);
     }
 }
+
+export const updateUserDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { username, password } = req.body;
+    
+    const updateData = {};
+    if (username) {
+      // Check if username is already taken by another user
+      const existingUser = await prisma.user.findFirst({
+        where: { username, id: { not: parseInt(id) } }
+      });
+      if (existingUser) {
+        return res.status(StatusCodes.CONFLICT).json({ success: false, message: 'Username is already taken' });
+      }
+      updateData.username = username;
+    }
+    
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+    
+    if (Object.keys(updateData).length === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: 'No data provided to update' });
+    }
+    
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(id) },
+      data: updateData,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+      }
+    });
+    
+    res.json({ success: true, data: updatedUser, message: 'User details updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+};

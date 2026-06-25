@@ -16,6 +16,7 @@ import {
     ClipboardCheck,
     Database,
     History,
+    Lightbulb,
     LucideIcon
 } from "lucide-react";
 import { AppModule, Action, Role } from "@/types/rbac";
@@ -91,6 +92,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
                     module: AppModule.AUDIT_TEMUAN,
                     submenus: [
                         { label: "Temuan Peduli Bersinergi", href: "/admin/audit/temuan", icon: ShieldCheck, module: AppModule.AUDIT_TEMUAN },
+                        { label: "Suggestion System", href: "/admin/suggestions", icon: Lightbulb, module: AppModule.AUDIT_TEMUAN },
                     ]
                 }
             ]
@@ -139,7 +141,7 @@ export function getMenuList(pathname: string, user: any): MenuGroup[] {
 
             // Staff bypass for specific menus
             if (user.role?.toUpperCase() === 'STAFF') {
-                const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
+                const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/suggestions', '/admin/settings/profile'];
                 // Only keep submenus that match allowedPaths
                 item.submenus = item.submenus.filter(sub => allowedPaths.includes(sub.href));
                 if (item.submenus.length === 0 && !allowedPaths.includes(item.href || '')) {

@@ -17,6 +17,7 @@ import productRoutes from './productRoutes.js';
 import temuanPeduliRoutes from './temuanPeduliRoutes.js';
 import backupRoutes from './backupRoutes.js';
 import userLogRoutes from './userLogRoutes.js';
+import suggestionRoutes from './suggestionRoutes.js';
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -27,5 +28,6 @@ router.use('/products', productRoutes);
 router.use('/temuan-peduli', temuanPeduliRoutes);
 router.use('/backups', backupRoutes);
 router.use('/user-logs', userLogRoutes);
+router.use('/suggestions', suggestionRoutes);
 
 export default router;

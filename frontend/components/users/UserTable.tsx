@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, Shield, User, Loader2, MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import EditUserDetailsDialog from './EditUserDetailsDialog';
 
 import {
     Tooltip,
@@ -39,10 +41,13 @@ interface UserTableProps {
     users: User[];
     loading: boolean;
     onDelete?: (id: number) => void;
+    onRefresh?: () => void;
 }
 
-export default function UserTable({ users, loading, onDelete }: UserTableProps) {
+export default function UserTable({ users, loading, onDelete, onRefresh }: UserTableProps) {
     const router = useRouter();
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
     const getRoleBadgeColor = (role: string) => {
         switch (role) {
@@ -82,6 +87,7 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
     }
 
     return (
+        <>
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
             <Table>
                 <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
@@ -173,7 +179,10 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                                                         variant="ghost"
                                                         size="icon"
                                                         className="h-7 w-7 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700"
-                                                        onClick={() => router.push(`/admin/users/${user.id}`)}
+                                                        onClick={() => {
+                                                            setEditingUser(user);
+                                                            setIsEditDialogOpen(true);
+                                                        }}
                                                     >
                                                         <Pencil className="h-3.5 w-3.5" />
                                                         <span className="sr-only">Edit Details</span>
@@ -220,5 +229,18 @@ export default function UserTable({ users, loading, onDelete }: UserTableProps) 
                 </TableBody>
             </Table>
         </div>
+        <EditUserDetailsDialog 
+            isOpen={isEditDialogOpen} 
+            onClose={() => setIsEditDialogOpen(false)} 
+            user={editingUser}
+            onSuccess={() => {
+                if (onRefresh) {
+                    onRefresh();
+                } else {
+                    router.refresh();
+                }
+            }}
+        />
+        </>
     );
 }

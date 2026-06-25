@@ -413,3 +413,42 @@ model UserLog {
   @@map("user_logs")
 }
 
+model ImprovementSuggestion {
+  id                Int      @id @default(autoincrement())
+  noForm            String   @unique
+  tanggal           DateTime @db.Date
+  periode           String
+  namaKaryawan      String
+  nik               String
+  departemen        String
+  areaProses        String
+  areaTemuan        String?
+  focusDefect       String
+
+  judulIde          String
+  kondisiSaatIni    String   @db.Text
+  fotoKondisiUrls   Json?
+  akarMasalah       String   @db.Text
+  usulanImprovement String   @db.Text
+
+  ngRatioSebelum    Float?
+  ngRatioSesudah    Float?
+  impactTurun       Float?
+  kategoriApresiasi String?
+  nominalApresiasi  Float?
+  catatan           String?  @db.Text
+
+  picImplementasi   String?
+  targetSelesai     DateTime? @db.Date
+  tanggalAktual     DateTime? @db.Date
+  hasilEvaluasi     String?   @db.Text
+  fotoEvaluasiUrls  Json?
+  approvalAtasan    String?   // Signature Data URL (base64)
+  tanggalApproval   DateTime?
+  statusApproval    String    @default("PENDING") // PENDING, APPROVED, REJECTED
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("improvement_suggestions")
+}

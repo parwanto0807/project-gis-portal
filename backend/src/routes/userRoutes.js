@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.get('/', userController.getUsers);
 router.get('/:id', userController.getUserById);
+router.put('/:id', userController.updateUserDetails);
 router.put('/:id/permissions', userController.updateUserPermissions);
 router.delete('/:id', userController.deleteUser);
 
