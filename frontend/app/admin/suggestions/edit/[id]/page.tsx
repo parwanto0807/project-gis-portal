@@ -33,25 +33,14 @@ const TEMPAT_TEMUAN = {
     ]
 };
 
-const parseUrls = (urls: any): string[] => {
-    if (!urls) return [];
-    if (Array.isArray(urls)) return urls;
-    if (typeof urls === 'string') {
-        try {
-            const parsed = JSON.parse(urls);
-            if (Array.isArray(parsed)) return parsed;
-        } catch (e) {
-            return [urls];
-        }
-    }
-    return [];
+const getBaseUrl = () => {
+    return process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001';
 };
 
 const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5008';
-    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    return `${getBaseUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
 export default function EditSuggestionPage({ params }: { params: Promise<{ id: string }> }) {
@@ -116,7 +105,7 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
                         usulanImprovement: data.usulanImprovement || ''
                     });
                     if (data.fotoKondisiUrls) {
-                        setExistingPhotos(parseUrls(data.fotoKondisiUrls));
+                        setExistingPhotos(data.fotoKondisiUrls);
                     }
                 }
             } catch (error) {

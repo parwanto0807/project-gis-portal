@@ -27,25 +27,14 @@ const formatDate = (dateStr: string) => {
     return d.toLocaleDateString('id-ID');
 };
 
-const parseUrls = (urls: any): string[] => {
-    if (!urls) return [];
-    if (Array.isArray(urls)) return urls;
-    if (typeof urls === 'string') {
-        try {
-            const parsed = JSON.parse(urls);
-            if (Array.isArray(parsed)) return parsed;
-        } catch (e) {
-            return [urls];
-        }
-    }
-    return [];
+const getBaseUrl = () => {
+    return process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001';
 };
 
 const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5008';
-    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    return `${getBaseUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
 export default function SuggestionSystemPage() {
@@ -303,10 +292,10 @@ export default function SuggestionSystemPage() {
                                                     {item.namaKaryawan}
                                                 </p>
                                             </div>
-                                            {parseUrls(item.fotoKondisiUrls).length > 0 && (
+                                            {item.fotoKondisiUrls && item.fotoKondisiUrls.length > 0 && (
                                                 <div className="flex items-center gap-1 bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full mt-1.5 w-fit border border-slate-200">
                                                     <Camera className="w-3 h-3" />
-                                                    <span className="text-[10px] font-bold">{parseUrls(item.fotoKondisiUrls).length}</span>
+                                                    <span className="text-[10px] font-bold">{item.fotoKondisiUrls.length}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -374,9 +363,9 @@ export default function SuggestionSystemPage() {
                         <>
                             {/* Left Side: Photo */}
                             <div className="w-full md:w-2/5 h-64 md:h-auto relative bg-slate-100 flex-shrink-0">
-                                {parseUrls(viewDialogData.fotoKondisiUrls).length > 0 ? (
+                                {viewDialogData.fotoKondisiUrls && viewDialogData.fotoKondisiUrls.length > 0 ? (
                                     <img 
-                                        src={formatImageUrl(parseUrls(viewDialogData.fotoKondisiUrls)[0])} 
+                                        src={formatImageUrl(viewDialogData.fotoKondisiUrls[0])} 
                                         alt="Foto Temuan" 
                                         className="w-full h-full object-cover" 
                                     />
@@ -519,7 +508,7 @@ export default function SuggestionSystemPage() {
                                                     <div className="pt-2">
                                                         <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Foto Bukti Implementasi:</p>
                                                         <div className="flex gap-2 overflow-x-auto pb-2">
-                                                            {parseUrls(viewDialogData.fotoEvaluasiUrls).map((url: string, i: number) => (
+                                                            {viewDialogData.fotoEvaluasiUrls.map((url: string, i: number) => (
                                                                 <a key={i} href={formatImageUrl(url)} target="_blank" rel="noreferrer" className="flex-shrink-0">
                                                                     <img src={formatImageUrl(url)} alt={`Bukti ${i}`} className="w-16 h-16 object-cover rounded-md border border-slate-200 hover:opacity-80 transition-opacity shadow-sm" />
                                                                 </a>

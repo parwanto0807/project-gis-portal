@@ -12,25 +12,14 @@ import api from '@/lib/axios';
 import { ArrowLeft, Save, CheckCircle, XCircle, Camera } from 'lucide-react';
 import Link from 'next/link';
 
-const parseUrls = (urls: any): string[] => {
-    if (!urls) return [];
-    if (Array.isArray(urls)) return urls;
-    if (typeof urls === 'string') {
-        try {
-            const parsed = JSON.parse(urls);
-            if (Array.isArray(parsed)) return parsed;
-        } catch (e) {
-            return [urls];
-        }
-    }
-    return [];
+const getBaseUrl = () => {
+    return process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001';
 };
 
 const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5008';
-    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    return `${getBaseUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
 export default function SuggestionDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -223,11 +212,11 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                             <Label className="text-xs font-bold text-emerald-600">Usulan Improvement</Label>
                             <p className="text-sm p-3 bg-slate-50 rounded-md border border-slate-100 mt-1 whitespace-pre-wrap">{suggestion.usulanImprovement}</p>
                         </div>
-                        {parseUrls(suggestion.fotoKondisiUrls).length > 0 && (
+                        {suggestion.fotoKondisiUrls && suggestion.fotoKondisiUrls.length > 0 && (
                             <div>
                                 <Label className="text-xs font-bold text-indigo-600">Foto / Lampiran dari Karyawan</Label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 mt-2">
-                                    {parseUrls(suggestion.fotoKondisiUrls).map((url: string, i: number) => (
+                                    {suggestion.fotoKondisiUrls.map((url: string, i: number) => (
                                         <div key={i} className="relative rounded-md overflow-hidden border border-slate-200">
                                             <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
                                                 <img src={formatImageUrl(url)} alt={`Kondisi ${i}`} className="w-full h-24 object-cover hover:opacity-80 transition-opacity" />
@@ -333,13 +322,13 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                                 </Label>
                                 
                                 {/* Display existing photos if any */}
-                                {parseUrls(suggestion.fotoEvaluasiUrls).length > 0 && (
+                                {suggestion.fotoEvaluasiUrls && suggestion.fotoEvaluasiUrls.length > 0 && (
                                     <div className="space-y-3 mt-4">
                                         <Label className="text-xs font-bold text-emerald-600 flex items-center gap-2">
                                             <Camera className="w-4 h-4" /> Foto Bukti Implementasi (Existing)
                                         </Label>
                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                            {parseUrls(suggestion.fotoEvaluasiUrls).map((url: string, i: number) => (
+                                            {suggestion.fotoEvaluasiUrls.map((url: string, i: number) => (
                                                 <div key={i} className="relative rounded-md overflow-hidden border border-slate-200 group">
                                                     <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
                                                         <img src={formatImageUrl(url)} alt={`Evaluasi ${i}`} className="w-full h-24 object-cover" />
