@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import api from '@/lib/axios';
 import { useAuthStore } from '@/store/authStore';
@@ -174,7 +175,18 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Section A: KPI Summary */}
+            <Tabs defaultValue="temuan" className="w-full">
+                <TabsList className="mb-4 bg-slate-100 dark:bg-slate-900/50 p-1 rounded-xl">
+                    <TabsTrigger value="temuan" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">
+                        Audit Temuan
+                    </TabsTrigger>
+                    <TabsTrigger value="suggestion" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">
+                        Suggestion System
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="temuan" className="space-y-6">
+                    {/* Section A: KPI Summary */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <KPICard
                     title="Total Temuan"
@@ -440,12 +452,17 @@ export default function AdminDashboard() {
                     </table>
                 </div>
             </div>
+            </TabsContent>
 
+            <TabsContent value="suggestion">
+                <UserDashboardContent user={user} hideGreeting={true} />
+            </TabsContent>
+            </Tabs>
         </div>
     );
 }
 
-const UserDashboardContent = ({ user }: { user: any }) => {
+const UserDashboardContent = ({ user, hideGreeting = false }: { user: any, hideGreeting?: boolean }) => {
     const [suggestions, setSuggestions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -483,30 +500,32 @@ const UserDashboardContent = ({ user }: { user: any }) => {
 
     return (
         <div className="space-y-6 pb-20 md:pb-0 w-full animate-in fade-in duration-500">
-            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 md:p-6 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xl ring-2 ring-slate-100 dark:ring-slate-800 shadow-sm overflow-hidden shrink-0">
-                        {user?.picture ? (
-                            <img src={user.picture.startsWith('http') ? user.picture : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}/${user.picture.startsWith('/') ? user.picture.slice(1) : user.picture}`} alt="Avatar" className="w-full h-full object-cover" />
-                        ) : (
-                            (user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U').toUpperCase()
-                        )}
+            {!hideGreeting && (
+                <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 md:p-6 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xl ring-2 ring-slate-100 dark:ring-slate-800 shadow-sm overflow-hidden shrink-0">
+                            {user?.picture ? (
+                                <img src={user.picture.startsWith('http') ? user.picture : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001'}/${user.picture.startsWith('/') ? user.picture.slice(1) : user.picture}`} alt="Avatar" className="w-full h-full object-cover" />
+                            ) : (
+                                (user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U').toUpperCase()
+                            )}
+                        </div>
+                        <div>
+                            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                Halo, {user?.firstName ? `${user.firstName} ${user.lastName || ''}` : user?.username || 'User'}! 👋
+                            </h1>
+                            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                                Pantau performa Ide Improvement Anda di sini.
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                            Halo, {user?.firstName ? `${user.firstName} ${user.lastName || ''}` : user?.username || 'User'}! 👋
-                        </h1>
-                        <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                            Pantau performa Ide Improvement Anda di sini.
-                        </p>
-                    </div>
+                    <Link href="/admin/suggestions/create">
+                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-sm text-xs py-2 px-4 h-auto w-full md:w-auto">
+                            <Flame className="w-4 h-4 mr-1.5" /> Buat Ide Baru
+                        </Button>
+                    </Link>
                 </div>
-                <Link href="/admin/suggestions/create">
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-sm text-xs py-2 px-4 h-auto w-full md:w-auto">
-                        <Flame className="w-4 h-4 mr-1.5" /> Buat Ide Baru
-                    </Button>
-                </Link>
-            </div>
+            )}
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <KPICard
@@ -546,7 +565,7 @@ const UserDashboardContent = ({ user }: { user: any }) => {
             <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-sm font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200">
-                        <Activity className="w-4 h-4 text-indigo-500" /> Ide Terbaru Anda
+                        <Activity className="w-4 h-4 text-indigo-500" /> {hideGreeting ? "Ide Terbaru Karyawan" : "Ide Terbaru Anda"}
                     </h2>
                     <Link href="/admin/suggestions" className="text-[10px] font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
                         Lihat Semua <ArrowRight className="w-3 h-3" />
