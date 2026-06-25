@@ -34,9 +34,12 @@ const getBaseUrl = () => {
 const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    // /suggestions/xxx.webp → served directly at backend root (not /uploads/suggestions/)
-    // /uploads/xxx.webp → served at /uploads/
-    return `${getBaseUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
+    // Normalize old DB paths: /suggestions/xxx → /uploads/suggestions/xxx
+    // New uploads already use /uploads/suggestions/ so this is a no-op for them
+    const normalized = url.startsWith('/suggestions/')
+        ? url.replace('/suggestions/', '/uploads/suggestions/')
+        : url;
+    return `${getBaseUrl()}${normalized.startsWith('/') ? '' : '/'}${normalized}`;
 };
 
 export default function SuggestionSystemPage() {

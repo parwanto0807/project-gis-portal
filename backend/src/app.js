@@ -29,6 +29,9 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve old suggestion photos (public/suggestions/) under /uploads/suggestions/ so nginx proxy covers them
+app.use('/uploads/suggestions', express.static(path.join(__dirname, '../public/suggestions')));
+// Legacy route (kept for local dev / direct backend access)
 app.use('/suggestions', express.static(path.join(__dirname, '../public/suggestions')));
 
 // Base route

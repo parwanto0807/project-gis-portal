@@ -9,8 +9,8 @@ const processBase64Images = async (base64Array, prefixFolder) => {
     if (!base64Array || !Array.isArray(base64Array)) return [];
     const urls = [];
     
-    // Ensure directory exists
-    const dir = path.join(process.cwd(), 'public', 'suggestions');
+    // Ensure directory exists — save under src/uploads/suggestions so /uploads nginx proxy serves it
+    const dir = path.join(process.cwd(), 'src', 'uploads', 'suggestions');
     try { await fs.mkdir(dir, { recursive: true }); } catch(e){}
 
     for (let i = 0; i < base64Array.length; i++) {
@@ -28,7 +28,7 @@ const processBase64Images = async (base64Array, prefixFolder) => {
                     .webp({ quality: 80 })
                     .toFile(path.join(dir, filename));
                     
-                urls.push(`/suggestions/${filename}`);
+                urls.push(`/uploads/suggestions/${filename}`);
             } else {
                 // If it's already a URL, just keep it
                 urls.push(item);
