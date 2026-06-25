@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -90,9 +92,16 @@ export default function TemuanPeduliPage() {
         }
     };
 
+    const router = useRouter();
+    const { user } = useAuthStore();
+
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (user && user.role === 'USER') {
+            router.push('/admin/dashboard');
+        } else {
+            fetchData();
+        }
+    }, [user, router]);
 
     const triggerDelete = (id: number) => {
         setItemToDelete(id);

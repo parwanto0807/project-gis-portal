@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, AlertCircle, ShieldAlert, User } from 'lucide-react';
+import { Home, AlertCircle, ShieldAlert, User, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/axios';
@@ -48,6 +48,11 @@ export default function BottomNav() {
             icon: ShieldAlert,
         },
         {
+            name: 'Ide',
+            href: '/admin/suggestions',
+            icon: Lightbulb, // Assuming Lightbulb is imported
+        },
+        {
             name: 'Profil',
             href: '/admin/settings/profile',
             icon: User,
@@ -59,7 +64,13 @@ export default function BottomNav() {
     if (user?.role?.toUpperCase() === 'STAFF') {
         filteredNavItems = [
             navItems.find(item => item.href === '/admin/audit/temuan')!,
+            navItems.find(item => item.href === '/admin/suggestions')!,
             navItems.find(item => item.href === '/admin/dashboard')!
+        ].filter(Boolean);
+    } else if (user?.role?.toUpperCase() === 'USER') {
+        filteredNavItems = [
+            navItems.find(item => item.href === '/admin/dashboard')!,
+            navItems.find(item => item.href === '/admin/suggestions')!
         ].filter(Boolean);
     }
 
