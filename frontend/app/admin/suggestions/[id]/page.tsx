@@ -19,13 +19,9 @@ const getBaseUrl = () => {
 const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    
-    let finalUrl = url;
-    if (url.startsWith('/suggestions/')) {
-        finalUrl = `/uploads${url}`;
-    }
-    
-    return `${getBaseUrl()}${finalUrl.startsWith('/') ? '' : '/'}${finalUrl}`;
+    // /suggestions/xxx.webp → served directly at backend root (not /uploads/suggestions/)
+    // /uploads/xxx.webp → served at /uploads/
+    return `${getBaseUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
 export default function SuggestionDetailPage({ params }: { params: Promise<{ id: string }> }) {
