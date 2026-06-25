@@ -33,6 +33,27 @@ const TEMPAT_TEMUAN = {
     ]
 };
 
+const parseUrls = (urls: any): string[] => {
+    if (!urls) return [];
+    if (Array.isArray(urls)) return urls;
+    if (typeof urls === 'string') {
+        try {
+            const parsed = JSON.parse(urls);
+            if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+            return [urls];
+        }
+    }
+    return [];
+};
+
+const formatImageUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5008';
+    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 export default function EditSuggestionPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -95,7 +116,7 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
                         usulanImprovement: data.usulanImprovement || ''
                     });
                     if (data.fotoKondisiUrls) {
-                        setExistingPhotos(data.fotoKondisiUrls);
+                        setExistingPhotos(parseUrls(data.fotoKondisiUrls));
                     }
                 }
             } catch (error) {
@@ -338,9 +359,9 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
                             {existingPhotos.length > 0 && fotoKondisi.length === 0 && (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
                                     {existingPhotos.map((url, i) => (
-                                        <div key={`exist-${i}`} className="relative rounded-md overflow-hidden border border-slate-200">
-                                            <a href={url.startsWith('http') ? url : `http://localhost:5008${url}`} target="_blank" rel="noreferrer">
-                                                <img src={url.startsWith('http') ? url : `http://localhost:5008${url}`} alt={`Kondisi ${i}`} className="w-full h-24 object-cover hover:opacity-80 transition-opacity" />
+                                        <div key={i} className="relative rounded-md overflow-hidden border border-slate-200 group">
+                                            <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
+                                                <img src={formatImageUrl(url)} alt={`Kondisi ${i}`} className="w-full h-24 object-cover hover:opacity-80 transition-opacity" />
                                             </a>
                                         </div>
                                     ))}

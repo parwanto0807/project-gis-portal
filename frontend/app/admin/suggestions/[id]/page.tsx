@@ -12,6 +12,27 @@ import api from '@/lib/axios';
 import { ArrowLeft, Save, CheckCircle, XCircle, Camera } from 'lucide-react';
 import Link from 'next/link';
 
+const parseUrls = (urls: any): string[] => {
+    if (!urls) return [];
+    if (Array.isArray(urls)) return urls;
+    if (typeof urls === 'string') {
+        try {
+            const parsed = JSON.parse(urls);
+            if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+            return [urls];
+        }
+    }
+    return [];
+};
+
+const formatImageUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5008';
+    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 export default function SuggestionDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -202,14 +223,14 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                             <Label className="text-xs font-bold text-emerald-600">Usulan Improvement</Label>
                             <p className="text-sm p-3 bg-slate-50 rounded-md border border-slate-100 mt-1 whitespace-pre-wrap">{suggestion.usulanImprovement}</p>
                         </div>
-                        {suggestion.fotoKondisiUrls && suggestion.fotoKondisiUrls.length > 0 && (
+                        {parseUrls(suggestion.fotoKondisiUrls).length > 0 && (
                             <div>
                                 <Label className="text-xs font-bold text-indigo-600">Foto / Lampiran dari Karyawan</Label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 mt-2">
-                                    {suggestion.fotoKondisiUrls.map((url: string, i: number) => (
+                                    {parseUrls(suggestion.fotoKondisiUrls).map((url: string, i: number) => (
                                         <div key={i} className="relative rounded-md overflow-hidden border border-slate-200">
-                                            <a href={url.startsWith('http') ? url : `http://localhost:5008${url}`} target="_blank" rel="noreferrer">
-                                                <img src={url.startsWith('http') ? url : `http://localhost:5008${url}`} alt={`Kondisi ${i}`} className="w-full h-24 object-cover hover:opacity-80 transition-opacity" />
+                                            <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
+                                                <img src={formatImageUrl(url)} alt={`Kondisi ${i}`} className="w-full h-24 object-cover hover:opacity-80 transition-opacity" />
                                             </a>
                                         </div>
                                     ))}
@@ -312,15 +333,23 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                                 </Label>
                                 
                                 {/* Display existing photos if any */}
-                                {suggestion?.fotoEvaluasiUrls && suggestion.fotoEvaluasiUrls.length > 0 && fotoEvaluasi.length === 0 && (
-                                    <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 mt-4">
-                                        {suggestion.fotoEvaluasiUrls.map((url: string, i: number) => (
-                                            <div key={`exist-${i}`} className="relative rounded-md overflow-hidden border border-slate-200">
-                                                <a href={url.startsWith('http') ? url : `http://localhost:5008${url}`} target="_blank" rel="noreferrer">
-                                                    <img src={url.startsWith('http') ? url : `http://localhost:5008${url}`} alt={`Evaluasi ${i}`} className="w-full h-24 object-cover" />
-                                                </a>
-                                            </div>
-                                        ))}
+                                {parseUrls(suggestion.fotoEvaluasiUrls).length > 0 && (
+                                    <div className="space-y-3 mt-4">
+                                        <Label className="text-xs font-bold text-emerald-600 flex items-center gap-2">
+                                            <Camera className="w-4 h-4" /> Foto Bukti Implementasi (Existing)
+                                        </Label>
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                            {parseUrls(suggestion.fotoEvaluasiUrls).map((url: string, i: number) => (
+                                                <div key={i} className="relative rounded-md overflow-hidden border border-slate-200 group">
+                                                    <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
+                                                        <img src={formatImageUrl(url)} alt={`Evaluasi ${i}`} className="w-full h-24 object-cover" />
+                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                            <span className="text-white text-xs font-bold">Lihat Penuh</span>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
