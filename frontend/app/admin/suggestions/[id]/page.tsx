@@ -19,7 +19,13 @@ const getBaseUrl = () => {
 const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `${getBaseUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
+    
+    let finalUrl = url;
+    if (url.startsWith('/suggestions/')) {
+        finalUrl = `/uploads${url}`;
+    }
+    
+    return `${getBaseUrl()}${finalUrl.startsWith('/') ? '' : '/'}${finalUrl}`;
 };
 
 export default function SuggestionDetailPage({ params }: { params: Promise<{ id: string }> }) {
