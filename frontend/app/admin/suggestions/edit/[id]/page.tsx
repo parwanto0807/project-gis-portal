@@ -59,7 +59,8 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
     const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
     
     // Photo State
-    const [fotoKondisi, setFotoKondisi] = useState<string[]>([]);
+    const [fotoKondisiFiles, setFotoKondisiFiles] = useState<File[]>([]);
+    const [fotoKondisiPreviews, setFotoKondisiPreviews] = useState<string[]>([]);
     
     // Form State
     const [formData, setFormData] = useState({
@@ -167,19 +168,24 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
         if (!e.target.files) return;
         const files = Array.from(e.target.files);
         
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target?.result) {
-                    setFotoKondisi(prev => [...prev, event.target!.result as string]);
-                }
-            };
-            reader.readAsDataURL(file);
-        });
+        setFotoKondisiFiles(prev => [...prev, ...files]);
+        
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setFotoKondisiPreviews(prev => [...prev, ...newPreviews]);
     };
     
     const removePhoto = (index: number) => {
-        setFotoKondisi(prev => prev.filter((_, i) => i !== index));
+        setFotoKondisiFiles(prev => prev.filter((_, i) => i !== index));
+        setFotoKondisiPreviews(prev => {
+            const newPreviews = [...prev];
+            URL.revokeObjectURL(newPreviews[index]);
+            newPreviews.splice(index, 1);
+            return newPreviews;
+        });
+    };
+
+    const removeExistingPhoto = (index: number) => {
+        setExistingPhotos(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -187,18 +193,32 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
         try {
             setLoading(true);
             
-            const payload = {
-                ...formData,
-                fotoKondisiBase64: fotoKondisi.length > 0 ? fotoKondisi : undefined
-            };
+            const payload = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value) payload.append(key, value as string);
+            });
+            
+            // Keep existing photos that were not deleted
+            if (existingPhotos.length > 0) {
+                payload.append('fotoKondisiUrls', JSON.stringify(existingPhotos));
+            } else {
+                payload.append('fotoKondisiUrls', JSON.stringify([]));
+            }
+            
+            fotoKondisiFiles.forEach(file => {
+                payload.append('fotoKondisi', file);
+            });
 
-            const res = await api.put(`/suggestions/${id}`, payload);
+            const res = await api.put(`/suggestions/${id}`, payload, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
             if (res.data.success) {
                 toast.success('Ide Improvement berhasil diperbarui');
                 router.push('/admin/suggestions');
             }
         } catch (error) {
-            toast.error('Gagal menyimpan Ide Improvement. Pastikan Backend & Prisma telah sinkron.');
+            toast.error('Gagal menyimpan Ide Improvement. Pastikan form lengkap.');
             console.error(error);
         } finally {
             setLoading(false);
@@ -351,22 +371,29 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
                             </Label>
 
                             {/* Display existing photos */}
-                            {existingPhotos.length > 0 && fotoKondisi.length === 0 && (
+                            {existingPhotos.length > 0 && (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
                                     {existingPhotos.map((url, i) => (
                                         <div key={i} className="relative rounded-md overflow-hidden border border-slate-200 group">
                                             <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
                                                 <img src={formatImageUrl(url)} alt={`Kondisi ${i}`} className="w-full h-24 object-cover hover:opacity-80 transition-opacity" />
                                             </a>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => removeExistingPhoto(i)} 
+                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
                             )}
 
                             {/* Display newly selected photos */}
-                            {fotoKondisi.length > 0 && (
+                            {fotoKondisiPreviews.length > 0 && (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-                                    {fotoKondisi.map((src, i) => (
+                                    {fotoKondisiPreviews.map((src, i) => (
                                         <div key={i} className="relative group rounded-md overflow-hidden border border-slate-200">
                                             <img src={src} alt={`Preview ${i}`} className="w-full h-24 object-cover" />
                                             <button 

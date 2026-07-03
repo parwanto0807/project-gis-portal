@@ -153,3 +153,39 @@ const setTokensCookies = (res, accessToken, refreshToken) => {
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   });
 };
+
+export const forceChangePassword = async (req, res, next) => {
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password baru minimal 6 karakter' });
+    }
+
+    // req.user is set by verifyToken middleware
+    await authService.changePassword(req.user.userId, newPassword);
+
+    res.json({ success: true, message: 'Password berhasil diubah' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Password lama dan password baru wajib diisi' });
+    }
+    
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password baru minimal 6 karakter' });
+    }
+
+    await authService.changePasswordWithOld(req.user.userId, oldPassword, newPassword);
+
+    res.json({ success: true, message: 'Password berhasil diubah' });
+  } catch (error) {
+    next(error);
+  }
+};

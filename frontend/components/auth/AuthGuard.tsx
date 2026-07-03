@@ -43,12 +43,24 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }, [isAuthenticated, user, hasHydrated, router, logout]);
 
     useEffect(() => {
-        // Role-based redirect for STAFF, checked only after verification
-        if (!isVerifying && isAuthenticated && user && user.role?.toUpperCase() === 'STAFF') {
-            const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
-            if (pathname.startsWith('/admin') && !allowedPaths.includes(pathname)) {
-                console.log('AuthGuard: STAFF role restricted, redirecting to /admin/audit/temuan');
-                router.replace('/admin/audit/temuan');
+        if (!isVerifying && isAuthenticated && user) {
+            // Check for forced password change
+            if (user.mustChangePassword) {
+                console.log('AuthGuard: User must change password, redirecting');
+                router.replace('/portal/force-change-password');
+                return;
+            }
+
+            // Role-based redirect for STAFF, checked only after verification
+            if (user.role?.toUpperCase() === 'STAFF') {
+                const allowedExactPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
+                const allowedPrefixes = ['/admin/suggestions'];
+                const isAllowed = allowedExactPaths.includes(pathname) || allowedPrefixes.some(prefix => pathname.startsWith(prefix));
+                
+                if (pathname.startsWith('/admin') && !isAllowed) {
+                    console.log('AuthGuard: STAFF role restricted, redirecting to /admin/audit/temuan');
+                    router.replace('/admin/audit/temuan');
+                }
             }
         }
     }, [isVerifying, isAuthenticated, user, pathname, router]);
@@ -79,8 +91,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
     // Block render if STAFF is accessing unauthorized path
     if (user.role?.toUpperCase() === 'STAFF') {
-        const allowedPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
-        if (pathname.startsWith('/admin') && !allowedPaths.includes(pathname)) {
+        const allowedExactPaths = ['/admin/dashboard', '/admin/audit/temuan', '/admin/settings/profile'];
+        const allowedPrefixes = ['/admin/suggestions'];
+        const isAllowed = allowedExactPaths.includes(pathname) || allowedPrefixes.some(prefix => pathname.startsWith(prefix));
+
+        if (pathname.startsWith('/admin') && !isAllowed) {
             return (
                 <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-zinc-950">
                     <div className="text-center">

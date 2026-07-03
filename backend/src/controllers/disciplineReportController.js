@@ -186,7 +186,13 @@ export const createReport = async (req, res) => {
 
 export const getReports = async (req, res) => {
   try {
+    const where = {};
+    if (req.user.role === 'USER') {
+        where.reporterId = req.user.userId;
+    }
+
     const reports = await prisma.disciplineReport.findMany({
+      where,
       include: {
         reporter: {
           select: { firstName: true, lastName: true, email: true }

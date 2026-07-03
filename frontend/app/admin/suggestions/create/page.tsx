@@ -41,7 +41,8 @@ export default function CreateSuggestionPage() {
     const [showDropdown, setShowDropdown] = useState(false);
     
     // Photo State
-    const [fotoKondisi, setFotoKondisi] = useState<string[]>([]);
+    const [fotoKondisiFiles, setFotoKondisiFiles] = useState<File[]>([]);
+    const [fotoKondisiPreviews, setFotoKondisiPreviews] = useState<string[]>([]);
     
     // Form State
     const [formData, setFormData] = useState({
@@ -118,19 +119,20 @@ export default function CreateSuggestionPage() {
         if (!e.target.files) return;
         const files = Array.from(e.target.files);
         
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target?.result) {
-                    setFotoKondisi(prev => [...prev, event.target!.result as string]);
-                }
-            };
-            reader.readAsDataURL(file);
-        });
+        setFotoKondisiFiles(prev => [...prev, ...files]);
+        
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setFotoKondisiPreviews(prev => [...prev, ...newPreviews]);
     };
     
     const removePhoto = (index: number) => {
-        setFotoKondisi(prev => prev.filter((_, i) => i !== index));
+        setFotoKondisiFiles(prev => prev.filter((_, i) => i !== index));
+        setFotoKondisiPreviews(prev => {
+            const newPreviews = [...prev];
+            URL.revokeObjectURL(newPreviews[index]);
+            newPreviews.splice(index, 1);
+            return newPreviews;
+        });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -138,18 +140,25 @@ export default function CreateSuggestionPage() {
         try {
             setLoading(true);
             
-            const payload = {
-                ...formData,
-                fotoKondisiBase64: fotoKondisi
-            };
+            const payload = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value) payload.append(key, value as string);
+            });
+            
+            fotoKondisiFiles.forEach(file => {
+                payload.append('fotoKondisi', file);
+            });
 
-            const res = await api.post('/suggestions', payload);
+            const res = await api.post('/suggestions', payload, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
             if (res.data.success) {
                 toast.success('Ide Improvement berhasil disimpan');
                 router.push('/admin/suggestions');
             }
         } catch (error) {
-            toast.error('Gagal menyimpan Ide Improvement. Pastikan Backend & Prisma telah sinkron.');
+            toast.error('Gagal menyimpan Ide Improvement. Pastikan form lengkap.');
             console.error(error);
         } finally {
             setLoading(false);
@@ -253,6 +262,10 @@ export default function CreateSuggestionPage() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                        </div>
+
+                        {/* Row: Area Temuan + Focus Defect */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="space-y-2">
                                 <Label className="text-xs font-semibold">Area Temuan / Proses</Label>
                                 <Select value={formData.areaTemuan} onValueChange={(val) => setFormData({ ...formData, areaTemuan: val })} disabled={!formData.areaProses}>
@@ -266,10 +279,9 @@ export default function CreateSuggestionPage() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            
-                            <div className="space-y-2">
-                                <Label className="text-xs font-semibold">Focus Defect</Label>
-                                <Input type="text" name="focusDefect" value={formData.focusDefect} onChange={handleChange} className="h-9" />
+                            <div className="space-y-2 md:col-span-2">
+                                <Label className="text-xs font-semibold">Focus Defect / Fokus Masalah</Label>
+                                <Input type="text" name="focusDefect" value={formData.focusDefect} onChange={handleChange} placeholder="Contoh: Defect warna, NG ratio, kebersihan area..." className="h-9 w-full" />
                             </div>
                         </div>
                     </CardContent>
@@ -301,9 +313,9 @@ export default function CreateSuggestionPage() {
                                 <input id="foto-kondisi" type="file" multiple accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
                             </Label>
 
-                            {fotoKondisi.length > 0 && (
+                            {fotoKondisiPreviews.length > 0 && (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-                                    {fotoKondisi.map((src, i) => (
+                                    {fotoKondisiPreviews.map((src, i) => (
                                         <div key={i} className="relative group rounded-md overflow-hidden border border-slate-200">
                                             <img src={src} alt={`Preview ${i}`} className="w-full h-24 object-cover" />
                                             <button 

@@ -12,6 +12,7 @@ export interface User {
     picture?: string;
     role: string;
     permissions?: Permission[];
+    mustChangePassword?: boolean;
 }
 
 interface AuthState {

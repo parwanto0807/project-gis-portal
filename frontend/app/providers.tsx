@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     return (
         <GoogleOAuthProvider clientId={googleClientId}>
             <QueryClientProvider client={queryClient}>
-                <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+                <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light" enableSystem={false}>
                     {children}
                 </ThemeProvider>
             </QueryClientProvider>

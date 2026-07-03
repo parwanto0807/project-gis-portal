@@ -1,16 +1,61 @@
 'use client';
 
 import { useAuthStore } from '@/store/authStore';
-import { User, Shield, Mail, Key, Calendar } from 'lucide-react';
+import { User, Shield, Mail, Key, Calendar, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import api from '@/lib/axios';
 
 export default function ProfilePage() {
     const user = useAuthStore((state) => state.user);
     const [mounted, setMounted] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (newPassword !== confirmPassword) {
+            toast.error('Konfirmasi password tidak cocok');
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            toast.error('Password baru minimal 6 karakter');
+            return;
+        }
+
+        try {
+            setIsSubmitting(true);
+            const res = await api.post('/auth/change-password', {
+                oldPassword,
+                newPassword
+            });
+            
+            if (res.data.success) {
+                toast.success('Password berhasil diubah');
+                setOldPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+            } else {
+                toast.error(res.data.message || 'Gagal mengubah password');
+            }
+        } catch (error: any) {
+            console.error('Change password error:', error);
+            toast.error(error.response?.data?.message || 'Terjadi kesalahan saat mengubah password');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     if (!mounted) return null;
 
@@ -101,6 +146,80 @@ export default function ProfilePage() {
                         </div>
                     )}
                 </div>
+            </div>
+
+            {/* Modul Ganti Password */}
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 mt-6">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
+                    <Lock className="w-5 h-5 text-rose-600" />
+                    Ubah Password
+                </h2>
+                <form onSubmit={handleChangePassword} className="space-y-5 max-w-md">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Password Lama</label>
+                        <div className="relative">
+                            <input
+                                type={showOldPassword ? 'text' : 'password'}
+                                value={oldPassword}
+                                onChange={(e) => setOldPassword(e.target.value)}
+                                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                placeholder="Masukkan password lama"
+                                required
+                            />
+                            <button type="button" onClick={() => setShowOldPassword(!showOldPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                {showOldPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Password Baru</label>
+                        <div className="relative">
+                            <input
+                                type={showNewPassword ? 'text' : 'password'}
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                placeholder="Minimal 6 karakter"
+                                minLength={6}
+                                required
+                            />
+                            <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Konfirmasi Password Baru</label>
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className={`w-full px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${confirmPassword && confirmPassword !== newPassword ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'}`}
+                                placeholder="Ketik ulang password baru"
+                                minLength={6}
+                                required
+                            />
+                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                        </div>
+                        {confirmPassword && confirmPassword !== newPassword && (
+                            <p className="text-xs text-red-500 mt-1.5">Konfirmasi password tidak cocok.</p>
+                        )}
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                        {isSubmitting ? (
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Menyimpan...</>
+                        ) : (
+                            'Simpan Password'
+                        )}
+                    </button>
+                </form>
             </div>
         </div>
     );

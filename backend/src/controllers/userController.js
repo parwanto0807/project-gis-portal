@@ -36,7 +36,10 @@ export const getUsers = async (req, res, next) => {
           lastLoginAt: true,
           picture: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [
+          { lastLoginAt: { sort: 'desc', nulls: 'last' } },
+          { createdAt: 'desc' }
+        ],
       }),
       prisma.user.count({ where }),
     ]);

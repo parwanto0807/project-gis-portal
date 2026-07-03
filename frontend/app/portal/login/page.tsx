@@ -17,13 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function UnifiedLoginPage() {
     const router = useRouter();
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const role = useAuthStore((state) => state.user?.role);
     const login = useAuthStore((state) => state.login);
+    const user = useAuthStore((state) => state.user);
     
     // UI state
     const [loading, setLoading] = useState(false);
@@ -32,12 +33,17 @@ export default function UnifiedLoginPage() {
     // Form inputs
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            router.push(role === 'VENDOR' ? '/vendor/dashboard' : '/admin/dashboard');
+        if (isAuthenticated && user) {
+            if (user.mustChangePassword) {
+                router.push('/portal/force-change-password');
+            } else {
+                router.push(role === 'VENDOR' ? '/vendor/dashboard' : '/admin/dashboard');
+            }
         }
-    }, [isAuthenticated, role, router]);
+    }, [isAuthenticated, role, user, router]);
 
     const handleGoogleLogin = async (credential: string) => {
         setLoading(true);
@@ -121,11 +127,11 @@ export default function UnifiedLoginPage() {
                 <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 space-y-3 sm:space-y-4">
                     <div className="space-y-1.5">
-                        <Label htmlFor="username" className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ml-1">Username</Label>
+                        <Label htmlFor="username" className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ml-1">Username / NIK Karyawan</Label>
                         <Input
                             id="username"
                             className={`rounded-xl h-9 sm:h-10 px-3 text-[13px] sm:text-[13px] bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.username ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
-                            placeholder="Enter your username"
+                            placeholder="Enter your NIK or username"
                             value={username}
                             onChange={(e) => {
                                 setUsername(e.target.value);
@@ -139,17 +145,30 @@ export default function UnifiedLoginPage() {
                         <div className="ml-1">
                             <Label htmlFor="password" className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Password</Label>
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            className={`rounded-xl h-9 sm:h-10 px-3 text-[13px] sm:text-[13px] bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.password ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                                if (errors.password) setErrors({ ...errors, password: '' });
-                            }}
-                        />
+                        <div className="relative">
+                            <Input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                className={`rounded-xl h-9 sm:h-10 px-3 pr-10 text-[13px] sm:text-[13px] bg-background/50 border-white/10 dark:border-slate-800 focus-visible:ring-primary/50 transition-all ${errors.password ? 'border-destructive/50 focus-visible:ring-destructive' : ''}`}
+                                value={password}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    if (errors.password) setErrors({ ...errors, password: '' });
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 focus:outline-none"
+                            >
+                                {showPassword ? (
+                                    <EyeOff className="h-4 w-4" />
+                                ) : (
+                                    <Eye className="h-4 w-4" />
+                                )}
+                            </button>
+                        </div>
                         {errors.password && <p className="text-[11px] sm:text-xs text-destructive mt-1 font-medium ml-1">{errors.password}</p>}
                     </div>
 

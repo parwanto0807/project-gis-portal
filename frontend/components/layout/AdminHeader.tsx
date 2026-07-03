@@ -180,20 +180,7 @@ export default function AdminHeader() {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2 sm:gap-4 ml-4">
-                {/* Theme Toggle Button */}
-                {mounted && (
-                    <button 
-                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className="rounded-lg p-2 text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
-                        aria-label="Toggle Theme"
-                    >
-                        {theme === 'dark' ? (
-                            <Sun className="h-5 w-5 text-amber-500" />
-                        ) : (
-                            <Moon className="h-5 w-5 text-gray-600" />
-                        )}
-                    </button>
-                )}
+                {/* Theme Toggle Button Removed as Light Mode is forced */}
 
                 {/* Temporarily hidden as they are not used yet 
                 <button className="rounded-lg p-2 text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hidden sm:block">

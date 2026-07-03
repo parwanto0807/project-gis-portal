@@ -35,9 +35,11 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
     
     // Employee Info (Read Only)
     const [suggestion, setSuggestion] = useState<any>(null);
+    const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
     
     // Photo State
-    const [fotoEvaluasi, setFotoEvaluasi] = useState<string[]>([]);
+    const [fotoEvaluasiFiles, setFotoEvaluasiFiles] = useState<File[]>([]);
+    const [fotoEvaluasiPreviews, setFotoEvaluasiPreviews] = useState<string[]>([]);
 
     // Evaluation Form State
     const [formData, setFormData] = useState({
@@ -76,6 +78,9 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                         hasilEvaluasi: data.hasilEvaluasi || '',
                         statusApproval: data.statusApproval || 'PENDING'
                     });
+                    if (data.fotoEvaluasiUrls) {
+                        setExistingPhotos(data.fotoEvaluasiUrls);
+                    }
                 }
             } catch (error) {
                 toast.error('Gagal mengambil data suggestion');
@@ -99,37 +104,55 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
         if (!e.target.files) return;
         const files = Array.from(e.target.files);
         
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target?.result) {
-                    setFotoEvaluasi(prev => [...prev, event.target!.result as string]);
-                }
-            };
-            reader.readAsDataURL(file);
-        });
+        setFotoEvaluasiFiles(prev => [...prev, ...files]);
+        
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setFotoEvaluasiPreviews(prev => [...prev, ...newPreviews]);
     };
     
     const removePhoto = (index: number) => {
-        setFotoEvaluasi(prev => prev.filter((_, i) => i !== index));
+        setFotoEvaluasiFiles(prev => prev.filter((_, i) => i !== index));
+        setFotoEvaluasiPreviews(prev => {
+            const newPreviews = [...prev];
+            URL.revokeObjectURL(newPreviews[index]);
+            newPreviews.splice(index, 1);
+            return newPreviews;
+        });
+    };
+
+    const removeExistingPhoto = (index: number) => {
+        setExistingPhotos(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleAction = async (status: string) => {
         try {
             setSaving(true);
             
-            const payload = {
-                ...formData,
-                statusApproval: status,
-                ngRatioSebelum: formData.ngRatioSebelum ? parseFloat(formData.ngRatioSebelum) : null,
-                ngRatioSesudah: formData.ngRatioSesudah ? parseFloat(formData.ngRatioSesudah) : null,
-                impactTurun: formData.impactTurun ? parseFloat(formData.impactTurun) : null,
-                nominalApresiasi: formData.nominalApresiasi ? parseFloat(formData.nominalApresiasi) : null,
-                tanggalApproval: status !== 'PENDING' ? new Date().toISOString() : null,
-                fotoEvaluasiBase64: fotoEvaluasi
-            };
+            const payload = new FormData();
+            
+            // Text fields
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value) payload.append(key, value as string);
+            });
+            payload.append('statusApproval', status);
+            payload.append('tanggalApproval', status !== 'PENDING' ? new Date().toISOString() : '');
+            
+            // Keep existing photos that were not deleted
+            if (existingPhotos.length > 0) {
+                payload.append('fotoEvaluasiUrls', JSON.stringify(existingPhotos));
+            } else {
+                payload.append('fotoEvaluasiUrls', JSON.stringify([]));
+            }
+            
+            // New photo files
+            fotoEvaluasiFiles.forEach(file => {
+                payload.append('fotoEvaluasi', file);
+            });
 
-            const res = await api.put(`/suggestions/${id}`, payload);
+            const res = await api.put(`/suggestions/${id}`, payload, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
             if (res.data.success) {
                 toast.success(`Berhasil! Status diubah menjadi ${status}`);
                 router.push('/admin/suggestions');
@@ -327,13 +350,13 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                                 </Label>
                                 
                                 {/* Display existing photos if any */}
-                                {suggestion.fotoEvaluasiUrls && suggestion.fotoEvaluasiUrls.length > 0 && (
+                                {existingPhotos.length > 0 && (
                                     <div className="space-y-3 mt-4">
                                         <Label className="text-xs font-bold text-emerald-600 flex items-center gap-2">
                                             <Camera className="w-4 h-4" /> Foto Bukti Implementasi (Existing)
                                         </Label>
                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                            {suggestion.fotoEvaluasiUrls.map((url: string, i: number) => (
+                                            {existingPhotos.map((url, i) => (
                                                 <div key={i} className="relative rounded-md overflow-hidden border border-slate-200 group">
                                                     <a href={formatImageUrl(url)} target="_blank" rel="noreferrer">
                                                         <img src={formatImageUrl(url)} alt={`Evaluasi ${i}`} className="w-full h-24 object-cover" />
@@ -341,6 +364,13 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                                                             <span className="text-white text-xs font-bold">Lihat Penuh</span>
                                                         </div>
                                                     </a>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => removeExistingPhoto(i)} 
+                                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                                    </button>
                                                 </div>
                                             ))}
                                         </div>
@@ -348,9 +378,9 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                                 )}
 
                                 {/* Display newly selected photos */}
-                                {fotoEvaluasi.length > 0 && (
+                                {fotoEvaluasiPreviews.length > 0 && (
                                     <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 mt-4">
-                                        {fotoEvaluasi.map((src, i) => (
+                                        {fotoEvaluasiPreviews.map((src, i) => (
                                             <div key={`new-${i}`} className="relative group rounded-md overflow-hidden border border-slate-200">
                                                 <img src={src} alt={`Preview ${i}`} className="w-full h-24 object-cover" />
                                                 <button 

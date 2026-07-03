@@ -5,8 +5,9 @@ import api from '@/lib/axios';
 import { useRouter } from 'next/navigation';
 import AddUserDialog from '@/components/users/AddUserDialog';
 import UserTable from '@/components/users/UserTable';
-import { Users, RefreshCw } from 'lucide-react';
+import { Users, RefreshCw, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import {
@@ -22,14 +23,27 @@ import { Badge } from "@/components/ui/badge";
 export default function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const limit = 10;
     const router = useRouter();
 
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/users');
+            const query = new URLSearchParams({
+                page: String(page),
+                limit: String(limit),
+                ...(searchQuery && { search: searchQuery })
+            }).toString();
+            
+            const res = await api.get(`/users?${query}`);
             if (res.data.success) {
                 setUsers(res.data.data);
+                if (res.data.meta) {
+                    setTotalPages(res.data.meta.totalPages || 1);
+                }
             }
         } catch (error) {
             console.error(error);
@@ -56,7 +70,7 @@ export default function UserManagementPage() {
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [page]);
 
     const userStats = [
         {
@@ -137,17 +151,34 @@ export default function UserManagementPage() {
             </div>
 
             {/* Actions Toolbar */}
-            <div className="flex items-center justify-end gap-2 mb-2">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="hidden sm:flex h-8 text-xs"
-                    onClick={() => fetchUsers()}
-                >
-                    <RefreshCw className="mr-1.5 h-3 w-3" />
-                    Refresh
-                </Button>
-                <AddUserDialog onUserAdded={fetchUsers} />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2">
+                <div className="relative w-full sm:w-72">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                    <Input
+                        placeholder="Search by name, email..."
+                        className="pl-9 h-9 text-xs w-full bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                setPage(1);
+                                fetchUsers();
+                            }
+                        }}
+                    />
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="hidden sm:flex h-9 text-xs"
+                        onClick={() => fetchUsers()}
+                    >
+                        <RefreshCw className="mr-1.5 h-3 w-3" />
+                        Refresh
+                    </Button>
+                    <AddUserDialog onUserAdded={fetchUsers} />
+                </div>
             </div>
 
             {/* Table Section */}
@@ -157,6 +188,35 @@ export default function UserManagementPage() {
                 onDelete={handleDelete}
                 onRefresh={fetchUsers}
             />
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between px-2">
+                    <p className="text-xs text-slate-500">
+                        Showing page {page} of {totalPages}
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                        >
+                            Previous
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

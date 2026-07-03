@@ -9,6 +9,8 @@ const router = express.Router();
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/google', authController.googleLogin);
+router.post('/force-change-password', verifyToken, authController.forceChangePassword);
+router.post('/change-password', verifyToken, authController.changePassword);
 
 router.get('/me', verifyToken, (req, res) => {
   res.json({ success: true, user: req.user });

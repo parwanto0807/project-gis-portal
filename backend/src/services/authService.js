@@ -40,12 +40,22 @@ export const login = async (identifier, password) => {
   });
 
   if (!user || !user.password) {
-    throw new Error('Invalid credentials');
+    const error = new Error('Username atau NIK tidak ditemukan');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (user.status !== 'ACTIVE') {
+    const error = new Error('Akun Karyawan tidak aktif');
+    error.statusCode = 401;
+    throw error;
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
-    throw new Error('Invalid credentials');
+    const error = new Error('Password salah');
+    error.statusCode = 401;
+    throw error;
   }
 
   return user;
@@ -179,4 +189,36 @@ export const revokeRefreshToken = async (token) => {
     }).catch(() => {
         // Token might already be deleted or invalid, ignore error on logout
     });
+};
+
+export const changePassword = async (userId, newPassword) => {
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      password: hashedPassword,
+      mustChangePassword: false
+    }
+  });
+};
+
+export const changePasswordWithOld = async (userId, oldPassword, newPassword) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error('User not found');
+
+  const isValid = await bcrypt.compare(oldPassword, user.password);
+  if (!isValid) {
+    const error = new Error('Password lama tidak sesuai');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      password: hashedPassword,
+      mustChangePassword: false
+    }
+  });
 };

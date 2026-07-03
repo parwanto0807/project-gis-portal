@@ -3,7 +3,13 @@ import prisma from '../config/prisma.js';
 
 export const getAllTemuan = async (req, res, next) => {
     try {
+        const where = {};
+        if (req.user.role === 'USER') {
+            where.userId = req.user.userId;
+        }
+
         const temuanList = await prisma.temuanPeduli.findMany({
+            where,
             include: { user: { select: { id: true, firstName: true, lastName: true, email: true } } },
             orderBy: { createdAt: 'desc' }
         });

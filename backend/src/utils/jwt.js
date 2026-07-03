@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 const generateTokens = (user, companyId = null, supplierId = null) => {
   const payload = {
     userId: user.id,
+    username: user.username,
     email: user.email,
     role: user.role, // Global role
     companyId: companyId, // Specific context if selected
