@@ -11,8 +11,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Switch to "mysql" or "sqlserver" if need
-  url      = env("DATABASE_URL")
+  provider  = "postgresql" // Switch to "mysql" or "sqlserver" if need
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // Role enum for high-level categorization
@@ -231,23 +232,23 @@ model DisciplineReport {
 }
 
 model TemuanPeduli {
-  id            Int      @id @default(autoincrement())
-  area          String   // e.g. "GEDUNG 1 & 3" or "GEDUNG 2"
-  tanggal       DateTime @db.Date
-  jam           String   // Format HH:mm
-  userId        Int      // Relasi ke User
-  kategori4M    Json     // Array ["Man", "Machine", ...]
-  temuan        String   @db.Text
-  tempatTemuan      String   // Area spesifik, e.g. "Area Resepsionis"
-  fotoUrls          Json?    // Array ["url1.jpg", "url2.jpg"]
+  id                Int      @id @default(autoincrement())
+  area              String // e.g. "GEDUNG 1 & 3" or "GEDUNG 2"
+  tanggal           DateTime @db.Date
+  jam               String // Format HH:mm
+  userId            Int // Relasi ke User
+  kategori4M        Json // Array ["Man", "Machine", ...]
+  temuan            String   @db.Text
+  tempatTemuan      String // Area spesifik, e.g. "Area Resepsionis"
+  fotoUrls          Json? // Array ["url1.jpg", "url2.jpg"]
   status            String   @default("OPEN") // OPEN, IN_PROGRESS, CLOSED
   tindakanPerbaikan String?  @db.Text
   fotoPerbaikanUrls Json?
-  
-  user              User     @relation("DiInputOleh", fields: [userId], references: [id])
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+
+  user User @relation("DiInputOleh", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("temuan_peduli")
 }
@@ -275,7 +276,7 @@ model Satuan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  skus      ProductSku[]
+  skus ProductSku[]
 
   @@map("satuan")
 }
@@ -289,7 +290,7 @@ model TypeProduct {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  skus      ProductSku[]
+  skus ProductSku[]
 
   @@map("type_product")
 }
@@ -303,84 +304,84 @@ model jenisProduct {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  skus      ProductSku[]
+  skus ProductSku[]
 
   @@map("jenis_product")
 }
 
 model Gudang {
-  id         String   @id @default(uuid())
-  namaGudang String   @map("nama_gudang")
-  keterangan String?  @db.Text
-  oldId      String?  @db.Text
+  id         String  @id @default(uuid())
+  namaGudang String  @map("nama_gudang")
+  keterangan String? @db.Text
+  oldId      String? @db.Text
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  skus       ProductSku[]
+  skus ProductSku[]
 
   @@map("gudang")
 }
 
 model Product {
-  id             String  @id @default(uuid())
-  namaBarang     String  @map("nama_barang")
-  namaPanggilan  String? @map("nama_panggilan")
-  customer       String?
-  keperluan      String?
-  supplier       String?
-  mtUang         String? @map("mtuang")
-  payment        String?
-  material       String?
-  icon           String?
-  kategori       String?
+  id            String  @id @default(uuid())
+  namaBarang    String  @map("nama_barang")
+  namaPanggilan String? @map("nama_panggilan")
+  customer      String?
+  keperluan     String?
+  supplier      String?
+  mtUang        String? @map("mtuang")
+  payment       String?
+  material      String?
+  icon          String?
+  kategori      String?
 
-  skus           ProductSku[]
+  skus ProductSku[]
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("tabel_barang")
 }
 
 model ProductSku {
-  id             String  @id @default(uuid())
-  sku            String  @unique // Unique SKU code for variant
-  part           String  // Factory Part Number
-  sat            String?
-  warna          String?
-  lebar          String?
-  panjang        String?
-  jenis          String?
-  namaset        String?
-  harga          Float   @default(0.0)
-  item           Float   @default(0.0)
-  balance        Float   @default(0.0)
-  stawal         Float   @default(0.0)
-  stakhir        Float   @default(0.0)
-  tipe           String?
-  rak            String?
-  lokasi         String?
-  hargaJual      Float   @default(0.0) @map("hargajual")
-  hargaBeli      Float   @default(0.0) @map("hargabeli")
-  hargaProd      Float   @default(0.0) @map("hargaprod")
-  disc           Float   @default(0.0)
-  ppn            Float   @default(0.0)
-  ppnSo          Float   @default(0.0) @map("ppnso")
-  ukuran         String?
-  gambar         String?
-  set            String?
-  noSales        String? @map("nosales")
-  sales          String?
-  statusBarang   String? @map("statusbarang")
-  hargaInv       Float   @default(0.0) @map("hargainv")
-  gudang         String  @default("KGD-01")
-  overStock      Int     @default(0) @map("over_stock")
-  limitStock     Int     @default(0) @map("limit_stock")
+  id           String  @id @default(uuid())
+  sku          String  @unique // Unique SKU code for variant
+  part         String // Factory Part Number
+  sat          String?
+  warna        String?
+  lebar        String?
+  panjang      String?
+  jenis        String?
+  namaset      String?
+  harga        Float   @default(0.0)
+  item         Float   @default(0.0)
+  balance      Float   @default(0.0)
+  stawal       Float   @default(0.0)
+  stakhir      Float   @default(0.0)
+  tipe         String?
+  rak          String?
+  lokasi       String?
+  hargaJual    Float   @default(0.0) @map("hargajual")
+  hargaBeli    Float   @default(0.0) @map("hargabeli")
+  hargaProd    Float   @default(0.0) @map("hargaprod")
+  disc         Float   @default(0.0)
+  ppn          Float   @default(0.0)
+  ppnSo        Float   @default(0.0) @map("ppnso")
+  ukuran       String?
+  gambar       String?
+  set          String?
+  noSales      String? @map("nosales")
+  sales        String?
+  statusBarang String? @map("statusbarang")
+  hargaInv     Float   @default(0.0) @map("hargainv")
+  gudang       String  @default("KGD-01")
+  overStock    Int     @default(0) @map("over_stock")
+  limitStock   Int     @default(0) @map("limit_stock")
 
   // Parent Relation
-  productId      String
-  product        Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   // Relations (Foreign Keys)
   satuanId       Int?
@@ -389,9 +390,9 @@ model ProductSku {
   gudangId       String?
 
   // Relation mapping
-  satuan       Satuan?       @relation(fields: [satuanId], references: [id], onDelete: SetNull)
-  typeProduct  TypeProduct?  @relation(fields: [typeProductId], references: [id], onDelete: SetNull)
-  jenisProduct jenisProduct? @relation(fields: [jenisProductId], references: [id], onDelete: SetNull)
+  satuan         Satuan?       @relation(fields: [satuanId], references: [id], onDelete: SetNull)
+  typeProduct    TypeProduct?  @relation(fields: [typeProductId], references: [id], onDelete: SetNull)
+  jenisProduct   jenisProduct? @relation(fields: [jenisProductId], references: [id], onDelete: SetNull)
   gudangRelation Gudang?       @relation(fields: [gudangId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
@@ -403,8 +404,8 @@ model ProductSku {
 model UserLog {
   id          Int      @id @default(autoincrement())
   userId      Int
-  action      String   // e.g., "CREATE", "UPDATE", "DELETE"
-  module      String   // e.g., "TEMUAN_PEDULI"
+  action      String // e.g., "CREATE", "UPDATE", "DELETE"
+  module      String // e.g., "TEMUAN_PEDULI"
   description String   @db.Text
   createdAt   DateTime @default(now())
 
@@ -416,41 +417,41 @@ model UserLog {
 }
 
 model ImprovementSuggestion {
-  id                Int      @id @default(autoincrement())
-  noForm            String   @unique
-  tanggal           DateTime @db.Date
-  periode           String
-  namaKaryawan      String
-  nik               String
-  departemen        String
-  areaProses        String
-  areaTemuan        String?
-  focusDefect       String
+  id           Int      @id @default(autoincrement())
+  noForm       String   @unique
+  tanggal      DateTime @db.Date
+  periode      String
+  namaKaryawan String
+  nik          String
+  departemen   String
+  areaProses   String
+  areaTemuan   String?
+  focusDefect  String
 
   judulIde          String
-  kondisiSaatIni    String   @db.Text
+  kondisiSaatIni    String @db.Text
   fotoKondisiUrls   Json?
-  akarMasalah       String   @db.Text
-  usulanImprovement String   @db.Text
+  akarMasalah       String @db.Text
+  usulanImprovement String @db.Text
 
   ngRatioSebelum    Float?
   ngRatioSesudah    Float?
   impactTurun       Float?
   kategoriApresiasi String?
   nominalApresiasi  Float?
-  catatan           String?  @db.Text
+  catatan           String? @db.Text
 
-  picImplementasi   String?
-  targetSelesai     DateTime? @db.Date
-  tanggalAktual     DateTime? @db.Date
-  hasilEvaluasi     String?   @db.Text
-  fotoEvaluasiUrls  Json?
-  approvalAtasan    String?   // Signature Data URL (base64)
-  tanggalApproval   DateTime?
-  statusApproval    String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  picImplementasi  String?
+  targetSelesai    DateTime? @db.Date
+  tanggalAktual    DateTime? @db.Date
+  hasilEvaluasi    String?   @db.Text
+  fotoEvaluasiUrls Json?
+  approvalAtasan   String? // Signature Data URL (base64)
+  tanggalApproval  DateTime?
+  statusApproval   String    @default("PENDING") // PENDING, APPROVED, REJECTED
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("improvement_suggestions")
 }
