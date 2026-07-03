@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera } from 'lucide-react';
+import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -109,6 +111,70 @@ export default function SuggestionSystemPage() {
 
     const paginatedData = filteredData.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
+    const handlePrintPDF = () => {
+        const doc = new jsPDF({ orientation: 'landscape' });
+        
+        doc.setFontSize(14);
+        doc.text('Laporan Suggestion System (Ide Improvement)', 14, 15);
+        doc.setFontSize(10);
+        doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 21);
+        doc.text(`Total Data: ${filteredData.length}`, 260, 21, { align: 'right' });
+
+        const tableColumn = ["No", "Tanggal / No Form", "Karyawan / NIK", "Dept / Area", "Judul Ide", "Kondisi & Usulan", "Status"];
+        const tableRows: any[] = [];
+
+        filteredData.forEach((item, index) => {
+            const kondisi = item.kondisiSaatIni ? (item.kondisiSaatIni.length > 60 ? item.kondisiSaatIni.substring(0, 60) + '...' : item.kondisiSaatIni) : '-';
+            const usulan = item.usulanImprovement ? (item.usulanImprovement.length > 60 ? item.usulanImprovement.substring(0, 60) + '...' : item.usulanImprovement) : '-';
+            
+            const rowData = [
+                index + 1,
+                `${formatDate(item.tanggalIde || item.tanggal)}\n${item.noForm || '-'}`,
+                `${item.namaKaryawan}\nNIK: ${item.nik}`,
+                `${item.departemen || '-'}\n${item.areaTemuan || item.areaProses || '-'}`,
+                item.judulIde || '-',
+                `Kondisi:\n${kondisi}\n\nUsulan:\n${usulan}`,
+                item.statusApproval || 'PENDING'
+            ];
+            tableRows.push(rowData);
+        });
+
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 25,
+            theme: 'grid',
+            styles: {
+                fontSize: 7,
+                cellPadding: 1.5,
+                lineColor: [200, 200, 200],
+                lineWidth: 0.1,
+            },
+            headStyles: {
+                fillColor: [79, 70, 229], // bg-indigo-600
+                textColor: [255, 255, 255],
+                fontSize: 7,
+                fontStyle: 'bold',
+                halign: 'center'
+            },
+            columnStyles: {
+                0: { cellWidth: 10, halign: 'center' }, // No
+                1: { cellWidth: 25 }, // Tanggal/No Form
+                2: { cellWidth: 35 }, // Karyawan
+                3: { cellWidth: 30 }, // Dept/Area
+                4: { cellWidth: 40 }, // Judul Ide
+                5: { cellWidth: 'auto' }, // Kondisi & Usulan (Sisanya)
+                6: { cellWidth: 20, halign: 'center' }, // Status
+            },
+            alternateRowStyles: {
+                fillColor: [248, 250, 252] // bg-slate-50
+            }
+        });
+
+        doc.save(`Laporan_Suggestion_System_${new Date().toISOString().split('T')[0]}.pdf`);
+        toast.success('PDF berhasil diunduh');
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
@@ -135,6 +201,15 @@ export default function SuggestionSystemPage() {
                     </div>
                 </div>
                 <div className="flex sm:flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                    <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={handlePrintPDF}
+                        disabled={filteredData.length === 0}
+                        className="flex-1 sm:flex-none h-9 gap-2 border-slate-200 dark:border-slate-800 font-semibold shadow-sm rounded-lg justify-center hover:bg-slate-50 dark:hover:bg-slate-900"
+                    >
+                        <Printer className="w-4 h-4 text-slate-600 dark:text-slate-400" /> <span className="hidden sm:inline">Cetak PDF</span>
+                    </Button>
                     <Link href="/admin/suggestions/create" passHref>
                         <Button size="sm" className="flex-1 sm:flex-none h-9 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm rounded-lg justify-center">
                             <PlusCircle className="w-4 h-4" /> <span>Tambah Ide</span>
