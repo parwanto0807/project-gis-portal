@@ -181,11 +181,13 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            <Tabs defaultValue="temuan" className="w-full">
+            <Tabs defaultValue={user?.role === 'USER' ? 'suggestion' : 'temuan'} className="w-full">
                 <TabsList className="mb-4 bg-slate-100 dark:bg-slate-900/50 p-1 rounded-xl">
-                    <TabsTrigger value="temuan" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">
-                        Audit Temuan
-                    </TabsTrigger>
+                    {user?.role !== 'USER' && (
+                        <TabsTrigger value="temuan" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">
+                            Audit Temuan
+                        </TabsTrigger>
+                    )}
                     <TabsTrigger value="suggestion" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm">
                         Suggestion System
                     </TabsTrigger>
