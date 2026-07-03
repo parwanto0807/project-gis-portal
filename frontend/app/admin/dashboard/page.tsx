@@ -392,7 +392,7 @@ export default function AdminDashboard() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {topReporters.map((reporter, idx) => (
+                                        {topReporters.map((reporter: any, idx: number) => (
                                             <tr key={idx} className="border-b border-gray-50 dark:border-slate-800/50 hover:bg-gray-50/50 dark:hover:bg-slate-900/50 transition-colors">
                                                 <td className="px-3 py-2 font-semibold text-slate-700 dark:text-slate-400">#{idx + 1}</td>
                                                 <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-200">{reporter.name}</td>
@@ -436,7 +436,7 @@ export default function AdminDashboard() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {criticalFindings.map((item, idx) => (
+                                    {criticalFindings.map((item: any, idx: number) => (
                                         <tr key={item.id} className="border-b border-gray-50 dark:border-slate-800/50 hover:bg-gray-50/50 dark:hover:bg-slate-900/50">
                                             <td className="px-3 py-2 text-gray-500 whitespace-nowrap">#{item.id}</td>
                                             <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-200 max-w-[120px] sm:max-w-[200px] md:max-w-xs truncate" title={item.temuan}>{item.temuan}</td>
@@ -695,7 +695,7 @@ const SuggestionAnalyticsDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {topSubmitters.map((s, idx) => (
+                                {topSubmitters.map((s: any, idx: number) => (
                                     <tr key={idx} className="border-b border-gray-50 dark:border-slate-800/50 hover:bg-gray-50/50 dark:hover:bg-slate-900/50 transition-colors">
                                         <td className="px-3 py-2 font-bold text-slate-500 dark:text-slate-400">
                                             {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
@@ -769,7 +769,7 @@ const SuggestionAnalyticsDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {pendingLama.map((item) => (
+                                {pendingLama.map((item: any) => (
                                     <tr key={item.id} className="border-b border-gray-50 dark:border-slate-800/50 hover:bg-gray-50/50 dark:hover:bg-slate-900/50">
                                         <td className="px-3 py-2 text-indigo-600 font-semibold whitespace-nowrap">{item.noForm}</td>
                                         <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-200 max-w-[140px] truncate" title={item.judulIde}>{item.judulIde}</td>
@@ -916,7 +916,7 @@ const UserDashboardContent = ({ user, hideGreeting = false }: { user: any, hideG
                                 </tr>
                             </thead>
                             <tbody>
-                                {recentSuggestions.map((item, idx) => (
+                                {recentSuggestions.map((item: any, idx: number) => (
                                     <tr key={idx} className="border-b border-gray-50 dark:border-slate-800/50 hover:bg-gray-50/50 dark:hover:bg-slate-900/50 transition-colors">
                                         <td className="px-3 py-2 font-semibold text-slate-700 dark:text-slate-400">{item.noForm}</td>
                                         <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-200">{item.judulIde}</td>
