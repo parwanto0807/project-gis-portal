@@ -59,67 +59,196 @@ model Session {
 }
 
 model company {
-  id         String     @id @db.Uuid
-  KODE_CMPY  String     @unique @db.Char(3)
-  COMPANY    String?
-  ADDRESS1   String?
-  ADDRESS2   String?
-  ADDRESS3   String?
-  TLP        String?    @db.VarChar(20)
-  FAX        String?    @db.VarChar(20)
-  NPWP       String?    @db.VarChar(20)
-  DIRECTOR   String?
-  NPWPDIR    String?    @db.VarChar(20)
-  LOGO       String?
-  NPP        String?    @db.VarChar(30)
-  ASTEKBAYAR String?
-  EMAIL      String?    @db.VarChar(100)
-  HOMEPAGE   String?
-  HRDMNG     String?
-  NPWPMNG    String?    @db.VarChar(20)
-  created_at DateTime   @default(now()) @db.Timestamp(6)
-  updated_at DateTime   @db.Timestamp(6)
-  karyawan   karyawan[]
+  id                            String        @id @db.Uuid
+  KODE_CMPY                     String        @unique @db.Char(3)
+  COMPANY                       String?
+  ADDRESS1                      String?
+  ADDRESS2                      String?
+  ADDRESS3                      String?
+  TLP                           String?       @db.VarChar(20)
+  FAX                           String?       @db.VarChar(20)
+  NPWP                          String?       @db.VarChar(20)
+  DIRECTOR                      String?
+  NPWPDIR                       String?       @db.VarChar(20)
+  LOGO                          String?
+  NPP                           String?       @db.VarChar(30)
+  ASTEKBAYAR                    String?
+  EMAIL                         String?       @db.VarChar(100)
+  HOMEPAGE                      String?
+  HRDMNG                        String?
+  NPWPMNG                       String?       @db.VarChar(20)
+  created_at                    DateTime      @default(now()) @db.Timestamp(6)
+  updated_at                    DateTime      @db.Timestamp(6)
+  dshift                        dshift[]
+  gaji_gaji_KD_CMPYTocompany    gaji[]        @relation("gaji_KD_CMPYTocompany")
+  gaji_gaji_company_idTocompany gaji[]        @relation("gaji_company_idTocompany")
+  karyawan                      karyawan[]
+  konfig_bpjs                   konfig_bpjs[]
+  parameter                     parameter[]
+  periode                       periode[]
+  skala_upah                    skala_upah[]
+  time_work                     time_work[]
 
   @@index([KODE_CMPY])
 }
 
 model karyawan {
-  EMPL_ID    String          @id @db.VarChar(9)
-  user_id    String?         @unique
-  NIK        String?         @unique @db.VarChar(10)
-  NAMA       String?         @db.VarChar(30)
-  KD_CMPY    String?         @db.Char(3)
-  KD_FACT    String?         @db.VarChar(2)
-  KD_BAG     String?         @db.VarChar(20)
-  KD_DEPT    String?         @db.VarChar(20)
-  KD_SEKSIE  String?         @db.VarChar(6)
-  KD_PKT     String?         @db.VarChar(5)
-  KD_JAB     String?         @db.VarChar(20)
-  KD_AGM     String?         @db.VarChar(2)
-  KD_SKL     String?         @db.VarChar(2)
-  BANK_CODE  String?         @db.Char(2)
-  KD_SEX     JenisKelamin?   @default(LAKILAKI)
-  ALAMAT1    String?         @db.VarChar(100)
-  KOTA       String?         @db.VarChar(30)
-  TELPON     String?         @db.VarChar(16)
-  HANDPHONE  String?         @db.VarChar(16)
-  EMAIL      String?         @db.VarChar(50)
-  TGL_LHR    DateTime?       @db.Date
-  TGL_MSK    DateTime?       @db.Date
-  TGL_OUT    DateTime?       @db.Date
-  ALASAN_OUT String?         @db.VarChar(100)
-  KD_OUT     Boolean?        @default(false)
-  KD_JNS     StatusKaryawan? @default(TETAP)
-  KD_STS     StatusAktif?    @default(AKTIF)
-  created_at DateTime        @default(now()) @db.Timestamp(6)
-  updated_at DateTime        @db.Timestamp(6)
-
-  company company? @relation(fields: [KD_CMPY], references: [KODE_CMPY])
-  mstdept mstdept? @relation(fields: [KD_DEPT], references: [CKD_DEPT])
-  mstjab  mstjab?  @relation(fields: [KD_JAB], references: [CKD_JAB])
-  mstbag  mstbag?  @relation(fields: [KD_BAG], references: [CKD_BAG])
-  User    User?    @relation(fields: [user_id], references: [id])
+  id                                             String                @id @db.Uuid
+  user_id                                        String?               @unique
+  EMPL_ID                                        String                @unique @db.VarChar(9)
+  NIK                                            String?               @unique @db.VarChar(16)
+  ID_ABSEN                                       String?               @db.VarChar(9)
+  NAMA                                           String                @db.VarChar(50)
+  KD_CMPY                                        String?               @db.Char(3)
+  KD_FACT                                        String?               @db.VarChar(2)
+  KD_BAG                                         String?               @db.VarChar(20)
+  KD_DEPT                                        String?               @db.VarChar(20)
+  KD_SEKSIE                                      String?               @db.VarChar(6)
+  KD_PKT                                         String?               @db.VarChar(5)
+  KD_JAB                                         String?               @db.VarChar(20)
+  KD_AGM                                         String?               @db.VarChar(2)
+  KD_SKL                                         String?               @db.VarChar(2)
+  BANK_CODE                                      String?               @db.Char(2)
+  KD_SEX                                         JenisKelamin?         @default(LAKILAKI)
+  ALAMAT1                                        String?               @db.VarChar(100)
+  ALAMAT2                                        String?               @db.VarChar(100)
+  KOTA                                           String?               @db.VarChar(30)
+  KD_POS                                         String?               @db.VarChar(5)
+  TELPON                                         String?               @db.VarChar(16)
+  HANDPHONE                                      String?               @db.VarChar(16)
+  EMAIL                                          String?               @db.VarChar(50)
+  TMP_LHR                                        String?               @db.VarChar(30)
+  TGL_LHR                                        DateTime?             @db.Date
+  TGL_ANGKAT                                     DateTime?             @db.Date
+  KTPNO                                          String?               @db.VarChar(20)
+  VALID_KTP                                      DateTime?             @db.Date
+  NPWP                                           String?               @db.VarChar(20)
+  TGL_NPWP                                       DateTime?             @db.Date
+  TYPE_SIM                                       String?               @db.VarChar(2)
+  NO_SIM                                         String?               @db.VarChar(20)
+  VALID_SIM                                      DateTime?             @db.Date
+  PASPORTNO                                      String?               @db.VarChar(20)
+  KITASNO                                        String?               @db.VarChar(20)
+  VALID_KITAS                                    DateTime?             @db.Date
+  NOBPJSTK                                       String?               @db.VarChar(20)
+  NOBPJSKES                                      String?               @db.VarChar(20)
+  KD_BPJSTK                                      Boolean?              @default(true)
+  KD_BPJSKES                                     Boolean?              @default(true)
+  TGL_ASTEK                                      DateTime?             @db.Date
+  BANK_UNIT                                      String?               @db.VarChar(30)
+  BANK_REKNO                                     String?               @db.VarChar(20)
+  BANK_REKNAME                                   String?               @db.VarChar(30)
+  TGL_MSK                                        DateTime?             @db.Date
+  TGL_OUT                                        DateTime?             @db.Date
+  ALASAN_OUT                                     String?               @db.VarChar(100)
+  KD_OUT                                         Boolean?              @default(false)
+  KD_JNS                                         StatusKaryawan?       @default(TETAP)
+  HARI_KERJA                                     Int?                  @default(5)
+  GROUP_SHIFT                                    String?               @default("00") @db.VarChar(10)
+  KD_GAJI                                        Int?                  @default(1)
+  KD_WNI                                         Boolean?              @default(true)
+  KD_STS                                         StatusAktif?          @default(AKTIF)
+  TGL_NIKAH                                      DateTime?             @db.Date
+  KD_PTKP                                        Int?                  @default(1)
+  JMLANAK                                        Int?                  @default(0)
+  KD_LMB                                         Boolean?              @default(true)
+  KD_SPL                                         Boolean?              @default(true)
+  KD_PJK                                         Boolean?              @default(true)
+  TYPE_PJK                                       Int?                  @default(1)
+  KD_JAM                                         String?               @default("A") @db.VarChar(2)
+  KD_KOPERASI                                    Boolean?              @default(false)
+  KDPT_RUMAH                                     Boolean?              @default(false)
+  POT_RUMAH                                      Decimal?              @default(0) @db.Decimal(5, 0)
+  TGL_KOPERASI                                   DateTime?             @db.Date
+  No_ANGGOTA                                     String?               @db.VarChar(9)
+  KD_SPSI                                        Boolean?              @default(false)
+  UNIFORM1                                       String?               @db.Char(3)
+  UNIFORM2                                       Decimal?              @default(0) @db.Decimal(4, 0)
+  GLDARAH                                        String?               @db.VarChar(2)
+  TINGGI                                         Decimal?              @default(0) @db.Decimal(3, 0)
+  BERAT                                          Decimal?              @default(0) @db.Decimal(5, 2)
+  POKOK_BLN                                      Decimal?              @default(0) @db.Decimal(12, 0)
+  TTRANSPORT                                     Decimal?              @default(0) @db.Decimal(12, 0)
+  KD_TRANSP                                      Boolean?              @default(true)
+  TMAKAN                                         Decimal?              @default(0) @db.Decimal(12, 0)
+  KD_MAKAN                                       Boolean?              @default(true)
+  TJABATAN                                       Decimal?              @default(0) @db.Decimal(12, 0)
+  TKELUARGA                                      Decimal?              @default(0) @db.Decimal(12, 0)
+  TKOMUNIKASI                                    Decimal?              @default(0) @db.Decimal(12, 0)
+  TKHUSUS                                        Decimal?              @default(0) @db.Decimal(12, 0)
+  TLMBTETAP                                      Decimal?              @default(0) @db.Decimal(12, 0)
+  FIXOTHER                                       Decimal?              @default(0) @db.Decimal(12, 0)
+  NM_TEMAN                                       String?               @db.VarChar(30)
+  ALM_TEMAN                                      String?               @db.VarChar(40)
+  TLP_TEMAN                                      String?               @db.VarChar(12)
+  HUB_TEMAN                                      String?               @db.VarChar(10)
+  LOKASIPOTO                                     String?               @db.VarChar(100)
+  KKNO                                           String?               @db.VarChar(20)
+  IBUKANDUNG                                     String?               @db.VarChar(50)
+  ALAMATDOM1                                     String?               @db.VarChar(200)
+  ALAMATDOM2                                     String?               @db.VarChar(200)
+  ImagesName                                     String?               @db.VarChar(100)
+  ImagesSize                                     String?               @db.VarChar(50)
+  created_by                                     String?               @db.VarChar(50)
+  updated_by                                     String?               @db.VarChar(50)
+  created_at                                     DateTime              @default(now()) @db.Timestamp(6)
+  updated_at                                     DateTime              @db.Timestamp(6)
+  deleted_at                                     DateTime?             @db.Timestamp(6)
+  jnsJamKdJam                                    String?               @db.VarChar(2)
+  SUPERIOR_ID                                    String?               @db.VarChar(9)
+  SUPERIOR2_ID                                   String?               @db.VarChar(9)
+  TGL_HABIS_KONTRAK                              DateTime?             @db.Date
+  TGL_MULAI_KONTRAK                              DateTime?             @db.Date
+  absent                                         absent[]
+  approval_log                                   approval_log[]
+  att_log                                        att_log[]
+  dcuti                                          dcuti[]
+  emergency_contact                              emergency_contact[]
+  empl_shift_override                            empl_shift_override[]
+  gaji                                           gaji[]
+  hcuti                                          hcuti[]
+  bank                                           bank?                 @relation(fields: [BANK_CODE], references: [BANK_CODE])
+  groupshift                                     groupshift?           @relation(fields: [GROUP_SHIFT], references: [GROUP_SHIFT])
+  mstagm                                         mstagm?               @relation(fields: [KD_AGM], references: [CKD_AGM])
+  mstbag                                         mstbag?               @relation(fields: [KD_BAG], references: [CKD_BAG])
+  company                                        company?              @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+  mstdept                                        mstdept?              @relation(fields: [KD_DEPT], references: [CKD_DEPT])
+  mstfact                                        mstfact?              @relation(fields: [KD_FACT], references: [CKD_FACT])
+  mstjab                                         mstjab?               @relation(fields: [KD_JAB], references: [CKD_JAB])
+  mstpkt                                         mstpkt?               @relation(fields: [KD_PKT], references: [CKD_PKT])
+  mstsie                                         mstsie?               @relation(fields: [KD_SEKSIE], references: [CKD_SIE])
+  mstskl                                         mstskl?               @relation(fields: [KD_SKL], references: [CKD_SKL])
+  karyawan_karyawan_SUPERIOR2_IDTokaryawan       karyawan?             @relation("karyawan_SUPERIOR2_IDTokaryawan", fields: [SUPERIOR2_ID], references: [EMPL_ID])
+  other_karyawan_karyawan_SUPERIOR2_IDTokaryawan karyawan[]            @relation("karyawan_SUPERIOR2_IDTokaryawan")
+  karyawan_karyawan_SUPERIOR_IDTokaryawan        karyawan?             @relation("karyawan_SUPERIOR_IDTokaryawan", fields: [SUPERIOR_ID], references: [EMPL_ID])
+  other_karyawan_karyawan_SUPERIOR_IDTokaryawan  karyawan[]            @relation("karyawan_SUPERIOR_IDTokaryawan")
+  jnsjam                                         jnsjam?               @relation(fields: [jnsJamKdJam], references: [KD_JAM])
+  User                                           User?                 @relation(fields: [user_id], references: [id])
+  karyawan_dokumen                               karyawan_dokumen[]
+  keluarga                                       keluarga[]
+  kerja                                          kerja[]
+  kondite                                        kondite[]
+  kontrak                                        kontrak[]
+  kpi_employee                                   kpi_employee[]
+  kursus                                         kursus[]
+  leave_balance                                  leave_balance[]
+  lembur                                         lembur[]
+  medik_trans                                    medik_trans[]
+  mutasi                                         mutasi[]
+  pengajuan                                      pengajuan[]
+  pesangon                                       pesangon?
+  pinjamdet                                      pinjamdet[]
+  pinjamhdr                                      pinjamhdr[]
+  potongan                                       potongan[]
+  pphthn                                         pphthn[]
+  rapel                                          rapel[]
+  saldo_medic                                    saldo_medic[]
+  sekolah                                        sekolah[]
+  sertifikasi                                    sertifikasi[]
+  shift_allw                                     shift_allw[]
+  surat_peringatan                               surat_peringatan[]
+  sys_user                                       sys_user[]
+  tunjangan                                      tunjangan[]
 
   @@index([KD_BAG])
   @@index([KD_CMPY])
@@ -128,58 +257,1783 @@ model karyawan {
   @@index([KD_STS])
   @@index([NAMA])
   @@index([NIK])
+  @@index([KD_FACT])
+  @@index([KD_SEKSIE])
+  @@index([TGL_MSK])
+  @@index([TGL_OUT])
 }
 
 model mstdept {
-  id         String     @id @db.Uuid
-  CKD_DEPT   String     @unique @db.VarChar(20)
-  CNM_DEPT   String?    @db.VarChar(30)
-  created_at DateTime   @default(now()) @db.Timestamp(6)
-  updated_at DateTime   @db.Timestamp(6)
-  karyawan   karyawan[]
+  id                         String     @id @db.Uuid
+  CKD_BAG                    String?    @db.VarChar(20)
+  CKD_DEPT                   String     @unique @db.VarChar(20)
+  CNM_DEPT                   String?    @db.VarChar(30)
+  KETERANGAN                 String?    @db.VarChar(50)
+  created_at                 DateTime   @default(now()) @db.Timestamp(6)
+  updated_at                 DateTime   @db.Timestamp(6)
+  gaji_gaji_KD_DEPTTomstdept gaji[]     @relation("gaji_KD_DEPTTomstdept")
+  gaji_gaji_dept_idTomstdept gaji[]     @relation("gaji_dept_idTomstdept")
+  karyawan                   karyawan[]
+  mstbag                     mstbag?    @relation(fields: [CKD_BAG], references: [CKD_BAG])
+  mstsie                     mstsie[]
+
+  @@unique([CKD_BAG, CKD_DEPT])
+  @@index([CKD_BAG])
 }
 
 model mstjab {
+  id                       String     @id @db.Uuid
+  CKD_JAB                  String     @unique @db.VarChar(20)
+  CNM_JAB                  String?    @db.VarChar(30)
+  NTJABATAN                Decimal?   @db.Decimal(12, 0)
+  NTRANSPORT               Decimal?   @db.Decimal(12, 0)
+  NSHIFT_ALL               Decimal?   @db.Decimal(12, 0)
+  NPREMI_HDR               Decimal?   @db.Decimal(12, 0)
+  PERSEN_RMH               Decimal?   @db.Decimal(5, 2)
+  PERSEN_PPH               Decimal?   @db.Decimal(5, 2)
+  KETERANGAN               String?    @db.VarChar(50)
+  created_at               DateTime   @default(now()) @db.Timestamp(6)
+  updated_at               DateTime   @db.Timestamp(6)
+  gaji_gaji_KD_JABTomstjab gaji[]     @relation("gaji_KD_JABTomstjab")
+  gaji_gaji_jab_idTomstjab gaji[]     @relation("gaji_jab_idTomstjab")
+  karyawan                 karyawan[]
+}
+
+model mstbag {
+  id                       String     @id @db.Uuid
+  CKD_BAG                  String     @unique @db.VarChar(20)
+  CNM_BAG                  String?    @db.VarChar(30)
+  KETERANGAN               String?    @db.VarChar(50)
+  created_at               DateTime   @default(now()) @db.Timestamp(6)
+  updated_at               DateTime   @db.Timestamp(6)
+  gaji_gaji_KD_BAGTomstbag gaji[]     @relation("gaji_KD_BAGTomstbag")
+  gaji_gaji_bag_idTomstbag gaji[]     @relation("gaji_bag_idTomstbag")
+  karyawan                 karyawan[]
+  mstdept                  mstdept[]
+  mstsie                   mstsie[]
+}
+
+model AccountEmail {
+  id        String   @id
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
+
+model absent {
+  id                  String               @id @db.Uuid
+  PERIODE             String               @default("") @db.VarChar(6)
+  EMPL_ID             String               @db.VarChar(9)
+  TGL_ABSEN           DateTime             @db.Date
+  NIK                 String?              @db.VarChar(10)
+  ID_ABSEN            String?              @db.VarChar(9)
+  NAMA                String?              @db.VarChar(30)
+  KD_CMPY             String?              @db.VarChar(3)
+  KD_FACT             String?              @db.VarChar(2)
+  KD_BAG              String?              @db.VarChar(2)
+  KD_DEPT             String?              @db.VarChar(2)
+  KD_SEKSIE           String?              @db.VarChar(6)
+  KD_JAM              String?              @db.VarChar(2)
+  GROUP_SHIFT         String?              @default("") @db.Char(2)
+  STDMASUK            String?              @db.VarChar(5)
+  STDKELUAR           String?              @db.VarChar(5)
+  REALMASUK           String?              @db.VarChar(5)
+  REALKELUAR          String?              @db.VarChar(5)
+  JMASUK              String?              @db.VarChar(5)
+  JKELUAR             String?              @db.VarChar(5)
+  KD_LMB              Boolean?             @default(false)
+  KD_SPL              Boolean?             @default(true)
+  LEMBUR1             Decimal?             @default(0.00) @db.Decimal(6, 2)
+  LEMBUR2             Decimal?             @default(0.00) @db.Decimal(6, 2)
+  LEMBUR3             Decimal?             @default(0.00) @db.Decimal(6, 2)
+  LEMBUR4             Decimal?             @default(0.00) @db.Decimal(6, 2)
+  TOTKERJA            Decimal?             @default(0.00) @db.Decimal(6, 2)
+  LAMBAT              Int?                 @default(0)
+  CEPAT               Int?                 @default(0)
+  KD_HARI             Int?                 @default(1)
+  KD_ABSEN            String?              @default("H") @db.Char(1)
+  KD_SHIF             Int?                 @default(1)
+  MSK_LMB             String?              @db.VarChar(5)
+  KLR_LMB             String?              @db.VarChar(5)
+  TOT_LMB             Decimal?             @default(0.00) @db.Decimal(7, 2)
+  KET_LMB             String?              @db.VarChar(30)
+  FLAG_SHIFT          Boolean?             @default(false)
+  FLAG_MEAL           Boolean?             @default(false)
+  FLAG_SUSU           Boolean?             @default(false)
+  KODE_DESC           String?              @default("") @db.VarChar(3)
+  created_at          DateTime             @default(now()) @db.Timestamp(6)
+  updated_at          DateTime             @db.Timestamp(6)
+  special_period_id   String?              @db.Uuid
+  shift_override_id   String?              @db.Uuid
+  karyawan            karyawan             @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  jnsjam              jnsjam?              @relation(fields: [KD_JAM], references: [KD_JAM])
+  desc_absen          desc_absen?          @relation(fields: [KODE_DESC], references: [KODE_DESC])
+  periode             periode              @relation(fields: [PERIODE], references: [PERIODE_ID])
+  empl_shift_override empl_shift_override? @relation(fields: [shift_override_id], references: [id])
+  special_period      special_period?      @relation(fields: [special_period_id], references: [id])
+
+  @@unique([EMPL_ID, TGL_ABSEN])
+  @@index([EMPL_ID])
+  @@index([KD_ABSEN])
+  @@index([KD_LMB])
+  @@index([PERIODE])
+  @@index([TGL_ABSEN])
+}
+
+model approval_log {
+  id          String        @id @db.Uuid
+  pengajuanId String        @db.Uuid
+  APPROVER_ID String        @db.VarChar(9)
+  level       Int
+  status      RequestStatus
+  remarks     String?
+  action_date DateTime      @default(now())
+  karyawan    karyawan      @relation(fields: [APPROVER_ID], references: [EMPL_ID])
+  pengajuan   pengajuan     @relation(fields: [pengajuanId], references: [id])
+}
+
+model att_log {
+  id         String   @id @db.Uuid
+  empl_id    String   @default("") @db.VarChar(11)
+  nik        String   @default("") @db.VarChar(20)
+  id_absen   String   @default("") @db.VarChar(9)
+  tanggal    DateTime @default(now()) @db.Date
+  jam        String   @default("") @db.Char(5)
+  att_time   DateTime @default(now()) @db.Timestamp(6)
+  status     String?  @default("0") @db.Char(1)
+  lat        String?  @db.VarChar(50)
+  long       String?  @db.VarChar(50)
+  distance   Int?     @default(0)
+  photo      String?  @db.VarChar(100)
+  device     String?  @db.VarChar(100)
+  cflag      String   @default("") @db.Char(1)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  karyawan   karyawan @relation(fields: [nik], references: [NIK])
+
+  @@unique([nik, tanggal, jam, cflag])
+  @@index([att_time])
+  @@index([empl_id])
+  @@index([nik])
+  @@index([tanggal])
+}
+
+model bank {
   id         String     @id @db.Uuid
-  CKD_JAB    String     @unique @db.VarChar(20)
-  CNM_JAB    String?    @db.VarChar(30)
+  BANK_CODE  String     @unique @db.Char(2)
+  BANK_NAMA  String?    @db.VarChar(30)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime   @db.Timestamp(6)
   karyawan   karyawan[]
 }
 
-model mstbag {
+model bataspajak {
+  id         String   @id @db.Uuid
+  BATAS1     Decimal  @default(0) @db.Decimal(15, 0)
+  BATAS2     Decimal  @default(0) @db.Decimal(15, 0)
+  PERSEN     Decimal  @default(0.00) @db.Decimal(5, 2)
+  tahun      Int      @default(2024)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+
+  @@unique([BATAS1, BATAS2, tahun])
+  @@index([tahun])
+}
+
+model batasthr {
+  id         String   @id @db.Uuid
+  BATAS1     Decimal  @default(0.0) @db.Decimal(4, 1)
+  BATAS2     Decimal  @default(0.0) @db.Decimal(4, 1)
+  PERSEN     Decimal  @default(0.00) @db.Decimal(5, 2)
+  tahun      Int      @default(2024)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+
+  @@unique([BATAS1, BATAS2, tahun])
+  @@index([tahun])
+}
+
+model bulan {
+  NO         String   @id @db.VarChar(2)
+  NMBULAN    String   @default("") @db.VarChar(10)
+  NMBULANPDK String   @default("") @db.VarChar(3)
+  is_active  Boolean? @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model dcuti {
+  id          String      @id @db.Uuid
+  ID          String      @unique @db.VarChar(10)
+  EMPL_ID     String?     @db.VarChar(9)
+  TAHUN       Int?        @default(2000)
+  NIK         String?     @db.VarChar(10)
+  JNS_CUTI    Int?        @default(1)
+  TGL_MULAI   DateTime?   @db.Date
+  TGL_AKHIR   DateTime?   @db.Date
+  CUTI_PAKAI  Int?        @default(0)
+  KETERANGAN  String?     @default("") @db.VarChar(100)
+  STATUS      StatusCuti? @default(PENDING)
+  REMARK      String?     @default("") @db.VarChar(100)
+  approved_by String?     @db.VarChar(50)
+  approved_at DateTime?   @db.Timestamp(6)
+  created_at  DateTime    @default(now()) @db.Timestamp(6)
+  updated_at  DateTime    @db.Timestamp(6)
+  karyawan    karyawan?   @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@index([EMPL_ID])
+  @@index([STATUS])
+  @@index([TAHUN])
+  @@index([TGL_MULAI, TGL_AKHIR])
+}
+
+model desc_absen {
+  id         String    @id @db.Uuid
+  KODE_DESC  String    @unique @db.Char(3)
+  KETERANGAN String?   @db.VarChar(30)
+  color_code String?   @default("#000000") @db.VarChar(7)
+  is_active  Boolean?  @default(true)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+  absent     absent[]
+  jnscuti    jnscuti[]
+}
+
+model dshift {
+  id          String     @id @db.Uuid
+  PERIODE     String     @db.VarChar(6)
+  KD_CMPY     String     @db.VarChar(3)
+  GROUP_SHIFT String     @db.VarChar(10)
+  GROUP_NAME  String     @default("") @db.VarChar(30)
+  SHIFT01     String?    @db.VarChar(5)
+  SHIFT02     String?    @db.VarChar(5)
+  SHIFT03     String?    @db.VarChar(5)
+  SHIFT04     String?    @db.VarChar(5)
+  SHIFT05     String?    @db.VarChar(5)
+  SHIFT06     String?    @db.VarChar(5)
+  SHIFT07     String?    @db.VarChar(5)
+  SHIFT08     String?    @db.VarChar(5)
+  SHIFT09     String?    @db.VarChar(5)
+  SHIFT10     String?    @db.VarChar(5)
+  SHIFT11     String?    @db.VarChar(5)
+  SHIFT12     String?    @db.VarChar(5)
+  SHIFT13     String?    @db.VarChar(5)
+  SHIFT14     String?    @db.VarChar(5)
+  SHIFT15     String?    @db.VarChar(5)
+  SHIFT16     String?    @db.VarChar(5)
+  SHIFT17     String?    @db.VarChar(5)
+  SHIFT18     String?    @db.VarChar(5)
+  SHIFT19     String?    @db.VarChar(5)
+  SHIFT20     String?    @db.VarChar(5)
+  SHIFT21     String?    @db.VarChar(5)
+  SHIFT22     String?    @db.VarChar(5)
+  SHIFT23     String?    @db.VarChar(5)
+  SHIFT24     String?    @db.VarChar(5)
+  SHIFT25     String?    @db.VarChar(5)
+  SHIFT26     String?    @db.VarChar(5)
+  SHIFT27     String?    @db.VarChar(5)
+  SHIFT28     String?    @db.VarChar(5)
+  SHIFT29     String?    @db.VarChar(5)
+  SHIFT30     String?    @db.VarChar(5)
+  SHIFT31     String?    @db.VarChar(5)
+  HR_KERJA    Int?       @default(0)
+  created_at  DateTime   @default(now()) @db.Timestamp(6)
+  updated_at  DateTime   @db.Timestamp(6)
+  groupshift  groupshift @relation(fields: [GROUP_SHIFT], references: [GROUP_SHIFT])
+  company     company    @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+
+  @@unique([PERIODE, KD_CMPY, GROUP_SHIFT])
+  @@index([GROUP_SHIFT])
+  @@index([KD_CMPY])
+  @@index([PERIODE])
+}
+
+model emergency_contact {
+  id         String    @id @db.Uuid
+  EMPL_ID    String    @db.VarChar(9)
+  NAMA       String    @db.VarChar(50)
+  HUBUNGAN   String    @db.VarChar(30)
+  NO_TELEPON String    @db.VarChar(20)
+  ALAMAT     String?
+  IS_PRIMARY Boolean   @default(false)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+  karyawan   karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@index([EMPL_ID])
+}
+
+model empl_shift_override {
+  id         String   @id @db.Uuid
+  EMPL_ID    String   @db.VarChar(9)
+  TANGGAL    DateTime @db.Date
+  KD_JAM     String   @db.VarChar(2)
+  KETERANGAN String?  @db.VarChar(100)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  absent     absent[]
+  karyawan   karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  jnsjam     jnsjam   @relation(fields: [KD_JAM], references: [KD_JAM])
+
+  @@unique([EMPL_ID, TANGGAL])
+  @@index([EMPL_ID])
+  @@index([TANGGAL])
+}
+
+model gaji {
+  id                               String      @id @db.Uuid
+  PERIOD                           String      @db.VarChar(6)
+  EMPL_ID                          String      @db.VarChar(9)
+  TGL_PROSES                       DateTime    @db.Date
+  NIK                              String?     @db.VarChar(10)
+  NAMA                             String?     @db.VarChar(30)
+  KD_CMPY                          String?     @db.VarChar(3)
+  company_id                       String?     @db.Uuid
+  KD_FACT                          String?     @db.VarChar(20)
+  fact_id                          String?     @db.Uuid
+  KD_BAG                           String?     @db.VarChar(20)
+  bag_id                           String?     @db.Uuid
+  KD_DEPT                          String?     @db.VarChar(20)
+  dept_id                          String?     @db.Uuid
+  KD_SEKSIE                        String?     @db.VarChar(20)
+  sie_id                           String?     @db.Uuid
+  KD_JAB                           String?     @db.VarChar(20)
+  jab_id                           String?     @db.Uuid
+  TGL_MSK                          DateTime    @db.Date
+  TYPE_EMPL                        Int?        @default(0)
+  KD_PTKP                          Int?        @default(0)
+  ptkp_id                          String?     @db.Uuid
+  KD_PJK                           Int?        @default(0)
+  TYPE_PJK                         Int?        @default(0)
+  KD_BPJSTK                        Boolean?    @default(false)
+  KD_BPJSKES                       Boolean?    @default(false)
+  KD_OUT                           Boolean?    @default(false)
+  KD_JNS                           Int?        @default(0)
+  jnskary_id                       String?     @db.Uuid
+  THN_KERJA                        Int?        @default(0)
+  BLN_KERJA                        Int?        @default(0)
+  HR_KERJA                         Int?        @default(0)
+  PERSENMASA                       Decimal?    @default(0.00) @db.Decimal(5, 2)
+  PERSEN_RMH                       Decimal?    @default(0.00) @db.Decimal(5, 2)
+  HR_KERJA1                        Int?        @default(0)
+  HR_KERJA2                        Int?        @default(0)
+  POKOK_BLN                        Decimal?    @default(0) @db.Decimal(15, 0)
+  POKOK_TRM                        Decimal?    @default(0) @db.Decimal(15, 0)
+  TJABATAN                         Decimal?    @default(0) @db.Decimal(15, 0)
+  TTRANSPORT                       Decimal?    @default(0) @db.Decimal(15, 0)
+  TKHUSUS                          Decimal?    @default(0) @db.Decimal(15, 0)
+  TMAKAN                           Decimal?    @default(0) @db.Decimal(15, 0)
+  TOTUSHIFT                        Decimal?    @default(0) @db.Decimal(15, 0)
+  MEALOT                           Decimal?    @default(0) @db.Decimal(15, 0)
+  TUNJRAPEL                        Decimal?    @default(0) @db.Decimal(15, 0)
+  TUNJMEDIK                        Decimal?    @default(0) @db.Decimal(15, 0)
+  TUNJLAIN                         Decimal?    @default(0) @db.Decimal(15, 0)
+  ADM_BANK                         Decimal?    @default(0) @db.Decimal(15, 0)
+  RAPEL                            Decimal?    @default(0) @db.Decimal(15, 0)
+  TLAIN                            Decimal?    @default(0) @db.Decimal(15, 0)
+  TPPH21                           Decimal?    @default(0) @db.Decimal(15, 0)
+  UPAHTETAP                        Decimal?    @default(0) @db.Decimal(15, 0)
+  DASAR_BPJSTK                     Decimal?    @default(0) @db.Decimal(15, 0)
+  DASAR_BPJSKES                    Decimal?    @default(0) @db.Decimal(15, 0)
+  DASAR_JPN                        Decimal?    @default(0) @db.Decimal(15, 0)
+  JLEMBUR1                         Decimal?    @default(0.00) @db.Decimal(6, 2)
+  JLEMBUR2                         Decimal?    @default(0.00) @db.Decimal(6, 2)
+  JLEMBUR3                         Decimal?    @default(0.00) @db.Decimal(6, 2)
+  JLEMBUR4                         Decimal?    @default(0.00) @db.Decimal(6, 2)
+  TOTJLEMBUR                       Decimal?    @default(0.00) @db.Decimal(7, 2)
+  LEBIHJAM                         Decimal?    @default(0.00) @db.Decimal(7, 2)
+  TOTULEMBUR                       Decimal?    @default(0) @db.Decimal(15, 0)
+  TOTLMBNERUS                      Decimal?    @default(0) @db.Decimal(15, 0)
+  JKN_COMP                         Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JKN_EMPL                         Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JHT_COMP                         Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JHT_EMPL                         Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JPN_COMP                         Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JPN_EMPL                         Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  HR_SHIFT1                        Int?        @default(0)
+  HR_SHIFT2                        Int?        @default(0)
+  HR_SHIFT3                        Int?        @default(0)
+  HR_SHIFT4                        Int?        @default(0)
+  HR_SHIFT5                        Int?        @default(0)
+  HR_SHIFT6                        Int?        @default(0)
+  HR_SHIFT7                        Int?        @default(0)
+  HR_SHIFT8                        Int?        @default(0)
+  HR_SHIFT9                        Int?        @default(0)
+  HR_SHIFT10                       Int?        @default(0)
+  GKOTOR                           Decimal?    @default(0) @db.Decimal(15, 0)
+  GBERSIH                          Decimal?    @default(0) @db.Decimal(15, 0)
+  THR                              Decimal?    @default(0) @db.Decimal(15, 0)
+  PPH_THR                          Decimal?    @default(0) @db.Decimal(15, 0)
+  CLOSING                          Boolean?    @default(false)
+  paid_date                        DateTime?   @db.Date
+  paid_by                          String?     @db.VarChar(50)
+  created_at                       DateTime    @default(now()) @db.Timestamp(6)
+  updated_at                       DateTime    @db.Timestamp(6)
+  KOPERASI                         Decimal?    @default(0) @db.Decimal(15, 0)
+  PINJAM                           Decimal?    @default(0) @db.Decimal(15, 0)
+  PT_LAIN                          Decimal?    @default(0) @db.Decimal(15, 0)
+  TOTPOTONG                        Decimal?    @default(0) @db.Decimal(15, 0)
+  HR_CUTI1                         Int?        @default(0)
+  HR_CUTI2                         Int?        @default(0)
+  HR_EXTMEAL                       Int?        @default(0)
+  HR_EXTSHIFT                      Int?        @default(0)
+  HR_EXTSUSU                       Int?        @default(0)
+  HR_GANTUNG                       Int?        @default(0)
+  HR_HADIR                         Int?        @default(0)
+  HR_IZIN                          Int?        @default(0)
+  HR_LAMBAT                        Int?        @default(0)
+  HR_MAKAN                         Int?        @default(0)
+  HR_MANGKIR                       Int?        @default(0)
+  HR_OFF                           Int?        @default(0)
+  HR_PULANG                        Int?        @default(0)
+  HR_SAKIT                         Int?        @default(0)
+  HR_TRANSP                        Int?        @default(0)
+  JKK                              Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JKM                              Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  JPK                              Decimal?    @default(0.0000) @db.Decimal(14, 4)
+  MN_LAMBAT                        Int?        @default(0)
+  PPH_EMPL                         Decimal?    @default(0) @db.Decimal(15, 0)
+  PTKP                             Decimal?    @default(0) @db.Decimal(15, 0)
+  PT_ABSEN                         Decimal?    @default(0) @db.Decimal(12, 0)
+  HR_LSHIFT                        Int?        @default(0)
+  karyawan                         karyawan    @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  mstbag_gaji_KD_BAGTomstbag       mstbag?     @relation("gaji_KD_BAGTomstbag", fields: [KD_BAG], references: [CKD_BAG])
+  company_gaji_KD_CMPYTocompany    company?    @relation("gaji_KD_CMPYTocompany", fields: [KD_CMPY], references: [KODE_CMPY])
+  mstdept_gaji_KD_DEPTTomstdept    mstdept?    @relation("gaji_KD_DEPTTomstdept", fields: [KD_DEPT], references: [CKD_DEPT])
+  mstfact_gaji_KD_FACTTomstfact    mstfact?    @relation("gaji_KD_FACTTomstfact", fields: [KD_FACT], references: [CKD_FACT])
+  mstjab_gaji_KD_JABTomstjab       mstjab?     @relation("gaji_KD_JABTomstjab", fields: [KD_JAB], references: [CKD_JAB])
+  mstsie_gaji_KD_SEKSIETomstsie    mstsie?     @relation("gaji_KD_SEKSIETomstsie", fields: [KD_SEKSIE], references: [CKD_SIE])
+  periode                          periode     @relation(fields: [PERIOD], references: [PERIODE_ID])
+  mstbag_gaji_bag_idTomstbag       mstbag?     @relation("gaji_bag_idTomstbag", fields: [bag_id], references: [id])
+  company_gaji_company_idTocompany company?    @relation("gaji_company_idTocompany", fields: [company_id], references: [id])
+  mstdept_gaji_dept_idTomstdept    mstdept?    @relation("gaji_dept_idTomstdept", fields: [dept_id], references: [id])
+  mstfact_gaji_fact_idTomstfact    mstfact?    @relation("gaji_fact_idTomstfact", fields: [fact_id], references: [id])
+  mstjab_gaji_jab_idTomstjab       mstjab?     @relation("gaji_jab_idTomstjab", fields: [jab_id], references: [id])
+  jnskary                          jnskary?    @relation(fields: [jnskary_id], references: [id])
+  ptkp                             ptkp?       @relation(fields: [ptkp_id], references: [id])
+  mstsie_gaji_sie_idTomstsie       mstsie?     @relation("gaji_sie_idTomstsie", fields: [sie_id], references: [id])
+  pinjamdet                        pinjamdet[]
+  potongan                         potongan[]
+  rapel                            rapel[]
+  tunjangan                        tunjangan[]
+
+  @@unique([PERIOD, EMPL_ID])
+  @@index([CLOSING])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+  @@index([TGL_PROSES])
+}
+
+model gapok_2018 {
+  id            String   @id @db.Uuid
+  NIK           String?  @default("") @db.VarChar(4)
+  NAMA_KARYAWAN String?  @map("NAMA KARYAWAN") @db.VarChar(30)
+  GAPOK         Decimal? @db.Decimal(12, 0)
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+}
+
+model gradebonus {
+  id         String   @id @db.Uuid
+  GRADE      String   @unique @db.Char(1)
+  PERSEN     Decimal  @db.Decimal(5, 2)
+  is_active  Boolean? @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model group_empl {
+  id         String   @id @db.Uuid
+  NIK        String   @default("") @db.VarChar(10)
+  Nama       String   @default("") @db.VarChar(30)
+  GROUP      String   @default("") @db.VarChar(3)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+model groupshift {
+  id               String         @id @db.Uuid
+  GROUP_SHIFT      String         @unique @db.VarChar(10)
+  GROUP_NAME       String         @default("") @db.VarChar(30)
+  is_active        Boolean?       @default(true)
+  created_at       DateTime       @default(now()) @db.Timestamp(6)
+  updated_at       DateTime       @db.Timestamp(6)
+  pattern_id       String?        @db.Uuid
+  pattern_ref_date DateTime?      @db.Timestamp(6)
+  dshift           dshift[]
+  shift_pattern    shift_pattern? @relation(fields: [pattern_id], references: [id])
+  karyawan         karyawan[]
+
+  @@index([is_active])
+}
+
+model grphift {
+  id         String   @id @db.Uuid
+  NIK        String   @db.VarChar(10)
+  Nama       String   @db.VarChar(50)
+  GROUPSHIFT String   @db.VarChar(5)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@unique([NIK, GROUPSHIFT])
+}
+
+model hcuti {
+  id          String   @id @db.Uuid
+  TAHUN       String   @db.VarChar(4)
+  EMPL_ID     String   @db.VarChar(9)
+  NIK         String   @default("") @db.VarChar(10)
+  TGL_MSK     DateTime @db.Date
+  SALDO_CUTI  Int      @default(0)
+  TOTAL_PAKAI Int      @default(0)
+  TOTAL_SISA  Int      @default(0)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @db.Timestamp(6)
+  karyawan    karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([TAHUN, EMPL_ID])
+  @@index([EMPL_ID])
+  @@index([TAHUN])
+}
+
+model holiday {
+  id         String    @id @db.Uuid
+  TANGGAL    DateTime  @unique @db.Date
+  KETERANGAN String?   @db.VarChar(40)
+  TYPE_DAY   TipeHari? @default(LIBUR_NASIONAL)
+  is_repeat  Boolean?  @default(true)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+
+  @@index([TANGGAL])
+}
+
+model jnscuti {
   id         String     @id @db.Uuid
-  CKD_BAG    String     @unique @db.VarChar(20)
-  CNM_BAG    String?    @db.VarChar(30)
+  jns_cuti   Int        @unique
+  kd_jnscuti String     @default("") @db.VarChar(3)
+  nm_cuti    String     @default("") @db.VarChar(35)
+  jatah      Int        @default(0)
+  kode_desc  String     @default("") @db.VarChar(3)
+  is_active  Boolean?   @default(true)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  desc_absen desc_absen @relation(fields: [kode_desc], references: [KODE_DESC])
+
+  @@index([is_active])
+}
+
+model jnsjam {
+  id                  String                @id @db.Uuid
+  KD_JAM              String                @unique @db.VarChar(10)
+  JNS_JAM             String?               @db.VarChar(30)
+  JMSHIF              Int?                  @default(1)
+  JAM_MASUK           String?               @db.VarChar(5)
+  JAM_KELUAR          String?               @db.VarChar(5)
+  is_active           Boolean?              @default(true)
+  created_at          DateTime              @default(now()) @db.Timestamp(6)
+  updated_at          DateTime              @db.Timestamp(6)
+  absent              absent[]
+  empl_shift_override empl_shift_override[]
+  karyawan            karyawan[]
+  lembur              lembur[]
+}
+
+model jnskary {
+  id         String   @id @db.Uuid
+  KD_JNS     Int      @unique
+  JENIS_KARY String   @default("") @db.VarChar(15)
+  is_active  Boolean? @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  gaji       gaji[]
+
+  @@index([is_active])
+}
+
+model jnspotongan {
+  id                                          String     @id @db.Uuid
+  TRANS_CODE                                  Int        @unique @default(0)
+  JENIS                                       String     @default("") @db.VarChar(30)
+  is_active                                   Boolean?   @default(true)
+  created_at                                  DateTime   @default(now()) @db.Timestamp(6)
+  updated_at                                  DateTime   @db.Timestamp(6)
+  potongan_potongan_TRANS_CODETojnspotongan   potongan[] @relation("potongan_TRANS_CODETojnspotongan")
+  potongan_potongan_jenis_pot_idTojnspotongan potongan[] @relation("potongan_jenis_pot_idTojnspotongan")
+
+  @@index([is_active])
+}
+
+model jnsrapel {
+  id                                   String   @id @db.Uuid
+  TRANS_CODE                           Int      @unique @default(0)
+  JENIS                                String   @default("") @db.VarChar(30)
+  is_active                            Boolean? @default(true)
+  created_at                           DateTime @default(now()) @db.Timestamp(6)
+  updated_at                           DateTime @db.Timestamp(6)
+  rapel_rapel_TRANS_CODETojnsrapel     rapel[]  @relation("rapel_TRANS_CODETojnsrapel")
+  rapel_rapel_jenis_rapel_idTojnsrapel rapel[]  @relation("rapel_jenis_rapel_idTojnsrapel")
+
+  @@index([is_active])
+}
+
+model jnstunjangan {
+  id                                              String      @id @db.Uuid
+  TRANS_CODE                                      Int         @unique @default(0)
+  JENIS                                           String      @default("") @db.VarChar(30)
+  is_active                                       Boolean?    @default(true)
+  created_at                                      DateTime    @default(now()) @db.Timestamp(6)
+  updated_at                                      DateTime    @db.Timestamp(6)
+  tunjangan_tunjangan_TRANS_CODETojnstunjangan    tunjangan[] @relation("tunjangan_TRANS_CODETojnstunjangan")
+  tunjangan_tunjangan_jenis_tunj_idTojnstunjangan tunjangan[] @relation("tunjangan_jenis_tunj_idTojnstunjangan")
+
+  @@index([is_active])
+}
+
+model karyawan_copy {
+  id         String   @id @db.Uuid
+  EMPL_ID    String   @unique @db.VarChar(9)
+  NIK        String?  @db.VarChar(10)
+  NAMA       String?  @db.VarChar(30)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+model karyawan_dokumen {
+  id           String   @id @db.Uuid
+  karyawan_id  String   @db.Uuid
+  dokumen_name String   @db.VarChar(100)
+  dokumen_url  String   @db.VarChar(255)
+  note         String?
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @db.Timestamp(6)
+  karyawan     karyawan @relation(fields: [karyawan_id], references: [id], onDelete: Cascade)
+
+  @@index([karyawan_id])
+}
+
+model keluarga {
+  id         String    @id @db.Uuid
+  CHILD_NO   Int       @default(0)
+  EMPL_ID    String    @db.VarChar(9)
+  NIK        String?   @db.VarChar(10)
+  NAMA       String?   @db.VarChar(35)
+  SEX        String?   @default("L") @db.Char(1)
+  KD_HUB     Int?      @default(1)
+  TMP_LAHIR  String?   @db.VarChar(15)
+  TGL_LAHIR  DateTime? @db.Date
+  PEKERJAAN  String?   @db.VarChar(40)
+  PHOTO      String?   @db.VarChar(80)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+  karyawan   karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([CHILD_NO, EMPL_ID])
+  @@index([EMPL_ID])
+}
+
+model kerja {
+  id         String   @id @db.Uuid
+  CHILD_NO   Int      @default(0)
+  EMPL_ID    String   @db.VarChar(9)
+  NIK        String?  @db.VarChar(10)
+  PERIODE    String?  @db.VarChar(20)
+  COMPANY    String?  @db.VarChar(40)
+  JABATAN    String?  @db.VarChar(10)
+  JOBDESC    String?  @db.VarChar(80)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  karyawan   karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([CHILD_NO, EMPL_ID])
+  @@index([EMPL_ID])
+}
+
+model kondite {
+  id         String    @id @db.Uuid
+  CHILD_NO   Int       @default(0)
+  NO_SURAT   String?   @db.VarChar(40)
+  EMPL_ID    String    @db.VarChar(9)
+  TAHUN      Int?      @default(2000)
+  NIK        String?   @db.VarChar(10)
+  TGL_SURAT  DateTime? @db.Date
+  KD_SIFAT   Int?      @default(0)
+  PERIHAL    String?   @db.VarChar(40)
+  KETERANGAN String?   @db.VarChar(80)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+  karyawan   karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([CHILD_NO, EMPL_ID])
+  @@index([EMPL_ID])
+  @@index([TAHUN])
+}
+
+model konfig_bpjs {
+  id           String   @id @db.Uuid
+  KD_CMPY      String   @db.Char(3)
+  VALID_DATE   DateTime @db.Date
+  JHT_COMP     Decimal  @default(3.70) @db.Decimal(5, 2)
+  JHT_EMPL     Decimal  @default(2.00) @db.Decimal(5, 2)
+  JKK_COMP     Decimal  @default(0.24) @db.Decimal(5, 2)
+  JKM_COMP     Decimal  @default(0.30) @db.Decimal(5, 2)
+  JP_COMP      Decimal  @default(2.00) @db.Decimal(5, 2)
+  JP_EMPL      Decimal  @default(1.00) @db.Decimal(5, 2)
+  JP_MAX_WAGE  Decimal  @default(10043950) @db.Decimal(15, 0)
+  JKN_COMP     Decimal  @default(4.00) @db.Decimal(5, 2)
+  JKN_EMPL     Decimal  @default(1.00) @db.Decimal(5, 2)
+  JKN_MAX_WAGE Decimal  @default(12000000) @db.Decimal(15, 0)
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @db.Timestamp(6)
+  company      company  @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+
+  @@unique([KD_CMPY, VALID_DATE])
+  @@index([KD_CMPY])
+  @@index([VALID_DATE])
+  @@index([is_active])
+}
+
+model kontrak {
+  id         String    @id @db.Uuid
+  EMPL_ID    String    @db.VarChar(9)
+  NIK        String?   @db.VarChar(10)
+  TGL_MULAI  DateTime  @db.Date
+  TGL_AKHIR  DateTime? @db.Date
+  KETERANGAN String?   @db.VarChar(60)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+  karyawan   karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([EMPL_ID, TGL_MULAI])
+  @@index([EMPL_ID])
+  @@index([TGL_MULAI, TGL_AKHIR])
+}
+
+model kpi_employee {
+  id          String      @id @db.Uuid
+  EMPL_ID     String      @db.VarChar(9)
+  TAHUN       Int
+  PERIODE     Int
+  TOTAL_NILAI Decimal?    @db.Decimal(6, 2)
+  GRADE       String?     @db.VarChar(2)
+  STATUS      StatusKpi   @default(DRAFT)
+  ASSESSOR_ID String?     @db.VarChar(9)
+  CATATAN     String?
+  approved_at DateTime?   @db.Timestamp(6)
+  created_at  DateTime    @default(now()) @db.Timestamp(6)
+  updated_at  DateTime    @db.Timestamp(6)
+  karyawan    karyawan    @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  kpi_score   kpi_score[]
+
+  @@unique([EMPL_ID, TAHUN, PERIODE])
+  @@index([EMPL_ID])
+  @@index([STATUS])
+  @@index([TAHUN])
+}
+
+model kpi_score {
+  id              String       @id @db.Uuid
+  KPI_EMPL_ID     String       @db.Uuid
+  KPI_TEMPLATE_ID String       @db.Uuid
+  TARGET          Decimal?     @db.Decimal(12, 2)
+  REALISASI       Decimal?     @db.Decimal(12, 2)
+  NILAI           Decimal?     @db.Decimal(6, 2)
+  KETERANGAN      String?      @db.VarChar(200)
+  created_at      DateTime     @default(now()) @db.Timestamp(6)
+  updated_at      DateTime     @db.Timestamp(6)
+  kpi_employee    kpi_employee @relation(fields: [KPI_EMPL_ID], references: [id], onDelete: Cascade)
+  kpi_template    kpi_template @relation(fields: [KPI_TEMPLATE_ID], references: [id])
+
+  @@unique([KPI_EMPL_ID, KPI_TEMPLATE_ID])
+  @@index([KPI_EMPL_ID])
+  @@index([KPI_TEMPLATE_ID])
+}
+
+model kpi_template {
+  id         String      @id @db.Uuid
+  KD_JAB     String?     @db.VarChar(20)
+  NAMA_KPI   String      @db.VarChar(100)
+  INDIKATOR  String
+  SATUAN     String?     @db.VarChar(20)
+  BOBOT      Decimal     @db.Decimal(5, 2)
+  is_active  Boolean     @default(true)
+  created_at DateTime    @default(now()) @db.Timestamp(6)
+  updated_at DateTime    @db.Timestamp(6)
+  kpi_score  kpi_score[]
+
+  @@index([KD_JAB])
+  @@index([is_active])
+}
+
+model kursus {
+  id         String    @id @db.Uuid
+  CHILD_NO   Int       @default(0)
+  EMPL_ID    String    @db.VarChar(9)
+  NIK        String?   @db.VarChar(10)
+  NM_KURSUS  String?   @db.VarChar(40)
+  PERIODE1   DateTime? @db.Date
+  PERIODE2   DateTime? @db.Date
+  KET_KURSUS String?   @db.VarChar(40)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @db.Timestamp(6)
+  karyawan   karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([CHILD_NO, EMPL_ID])
+  @@index([EMPL_ID])
+}
+
+model leave_balance {
+  id          String    @id @db.Uuid
+  karyawan_id String    @db.Uuid
+  EMPL_ID     String    @db.VarChar(9)
+  TAHUN       Int
+  JENIS_CUTI  String    @db.VarChar(20)
+  SALDO_AWAL  Int       @default(0)
+  TERPAKAI    Int       @default(0)
+  SALDO_SISA  Int       @default(0)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime  @db.Timestamp(6)
+  deleted_at  DateTime? @db.Timestamp(6)
+  karyawan    karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([EMPL_ID, TAHUN, JENIS_CUTI])
+  @@index([EMPL_ID])
+}
+
+model lembur {
+  id          String   @id @db.Uuid
+  PERIODE     String   @db.VarChar(6)
+  EMPL_ID     String   @db.VarChar(9)
+  TGL_LEMBUR  DateTime @db.Date
+  NIK         String?  @db.VarChar(10)
+  NAMA        String?  @db.VarChar(30)
+  KD_CMPY     String?  @db.VarChar(3)
+  KD_FACT     String?  @db.VarChar(2)
+  KD_BAG      String?  @db.VarChar(2)
+  KD_DEPT     String?  @db.VarChar(2)
+  KD_SEKSIE   String?  @db.VarChar(6)
+  KD_JAM      String?  @db.VarChar(2)
+  KD_HARI     Int?     @default(1)
+  KD_SHIF     Int?     @default(1)
+  REAL_MULAI  String?  @db.VarChar(5)
+  REAL_AKHIR  String?  @db.VarChar(5)
+  PLAN_MULAI  String?  @db.VarChar(5)
+  PLAN_AKHIR  String?  @db.VarChar(5)
+  TYPE_OT     Int?     @default(1)
+  TOT_LEMBUR  Decimal? @default(0.00) @db.Decimal(6, 2)
+  KET_LEMBUR  String?  @db.VarChar(30)
+  LEMBUR1     Decimal? @default(0.00) @db.Decimal(6, 2)
+  LEMBUR2     Decimal? @default(0.00) @db.Decimal(6, 2)
+  LEMBUR3     Decimal? @default(0.00) @db.Decimal(6, 2)
+  LEMBUR4     Decimal? @default(0.00) @db.Decimal(6, 2)
+  approved    Boolean? @default(false)
+  approved_by String?  @db.VarChar(50)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @db.Timestamp(6)
+  jnsJamKdJam String?  @db.VarChar(2)
+  karyawan    karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  periode     periode  @relation(fields: [PERIODE], references: [PERIODE_ID])
+  jnsjam      jnsjam?  @relation(fields: [jnsJamKdJam], references: [KD_JAM])
+
+  @@unique([EMPL_ID, TGL_LEMBUR])
+  @@index([EMPL_ID])
+  @@index([PERIODE])
+  @@index([TGL_LEMBUR])
+}
+
+model masakerja {
+  id         String   @id @db.Uuid
+  BATAS1     Decimal  @default(0.0) @db.Decimal(4, 1)
+  BATAS2     Decimal  @default(0.0) @db.Decimal(4, 1)
+  VALUE      Decimal  @default(0) @db.Decimal(15, 0)
+  tahun      Int      @default(2024)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+
+  @@unique([BATAS1, BATAS2, tahun])
+  @@index([tahun])
+}
+
+model medik_trans {
+  id           String   @id @db.Uuid
+  TRANS_ID     String   @unique @db.VarChar(10)
+  PERIOD       String   @db.VarChar(6)
+  TGL_MEDIK    DateTime @db.Date
+  EMPL_ID      String   @db.VarChar(9)
+  NIK          String   @db.VarChar(10)
+  PASIEN       String   @db.VarChar(30)
+  KLINIK       String   @db.VarChar(30)
+  KODE_KLAIM   Int      @default(0)
+  BY_DOKTER    Decimal  @default(0) @db.Decimal(15, 0)
+  BY_OBAT      Decimal  @default(0) @db.Decimal(15, 0)
+  BY_LAIN      Decimal  @default(0) @db.Decimal(15, 0)
+  BY_TOTAL     Decimal  @default(0) @db.Decimal(15, 0)
+  SISA_PLAFOND Decimal  @default(0) @db.Decimal(15, 0)
+  KETERANGAN   String   @db.VarChar(40)
+  KD_BAYAR     Int      @default(0)
+  status       Boolean? @default(false)
+  approved     Boolean? @default(false)
+  approved_by  String?  @db.VarChar(50)
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @db.Timestamp(6)
+  karyawan     karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  periode      periode  @relation(fields: [PERIOD], references: [PERIODE_ID])
+
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+  @@index([TGL_MEDIK])
+  @@index([status])
+}
+
+model menus {
+  id          String       @id @db.Uuid
+  label       String       @db.VarChar(50)
+  href        String       @db.VarChar(100)
+  icon        String?      @db.VarChar(50)
+  parent_id   String?      @db.Uuid
+  order       Int          @default(0)
+  group_label String?      @db.VarChar(50)
+  is_active   Boolean      @default(true)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  menus       menus?       @relation("menusTomenus", fields: [parent_id], references: [id])
+  other_menus menus[]      @relation("menusTomenus")
+  role_menus  role_menus[]
+}
+
+model mstagm {
+  id         String     @id @db.Uuid
+  CKD_AGM    String     @unique @db.VarChar(2)
+  CNM_AGM    String?    @db.VarChar(30)
+  KETERANGAN String?    @db.VarChar(50)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime   @db.Timestamp(6)
   karyawan   karyawan[]
+}
+
+model mstfact {
+  id                         String     @id @db.Uuid
+  CKD_FACT                   String     @unique @db.VarChar(20)
+  CNM_FACT                   String?    @db.VarChar(30)
+  KETERANGAN                 String?    @db.VarChar(50)
+  LAT                        String?    @db.VarChar(50)
+  LONG                       String?    @db.VarChar(50)
+  RADIUS                     Int?       @default(50)
+  created_at                 DateTime   @default(now()) @db.Timestamp(6)
+  updated_at                 DateTime   @db.Timestamp(6)
+  JKK_RISK                   Decimal?   @default(0.24) @db.Decimal(5, 2)
+  gaji_gaji_KD_FACTTomstfact gaji[]     @relation("gaji_KD_FACTTomstfact")
+  gaji_gaji_fact_idTomstfact gaji[]     @relation("gaji_fact_idTomstfact")
+  karyawan                   karyawan[]
+}
+
+model mstpkt {
+  id         String     @id @db.Uuid
+  CKD_PKT    String     @unique @db.VarChar(5)
+  CNM_PKT    String?    @db.VarChar(30)
+  KETERANGAN String?    @db.VarChar(30)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  karyawan   karyawan[]
+}
+
+model mstsie {
+  id                          String     @id @db.Uuid
+  CKD_BAG                     String?    @db.VarChar(20)
+  CKD_DEPT                    String?    @db.VarChar(20)
+  CKD_SIE                     String     @unique @db.VarChar(6)
+  CNM_SIE                     String?    @db.VarChar(30)
+  KETERANGAN                  String?    @db.VarChar(80)
+  created_at                  DateTime   @default(now()) @db.Timestamp(6)
+  updated_at                  DateTime   @db.Timestamp(6)
+  gaji_gaji_KD_SEKSIETomstsie gaji[]     @relation("gaji_KD_SEKSIETomstsie")
+  gaji_gaji_sie_idTomstsie    gaji[]     @relation("gaji_sie_idTomstsie")
+  karyawan                    karyawan[]
+  mstbag                      mstbag?    @relation(fields: [CKD_BAG], references: [CKD_BAG])
+  mstdept                     mstdept?   @relation(fields: [CKD_DEPT], references: [CKD_DEPT])
+
+  @@unique([CKD_BAG, CKD_DEPT, CKD_SIE])
+  @@index([CKD_BAG, CKD_DEPT])
+}
+
+model mstskl {
+  id         String     @id @db.Uuid
+  CKD_SKL    String     @unique @db.VarChar(2)
+  CNM_SKL    String?    @db.VarChar(30)
+  KETERANGAN String?    @db.VarChar(50)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime   @db.Timestamp(6)
+  karyawan   karyawan[]
+}
+
+model mutasi {
+  id         String   @id @db.Uuid
+  TGL_MUTASI DateTime @db.Date
+  EMPL_ID    String   @db.VarChar(9)
+  NIK        String?  @db.VarChar(10)
+  NAMA       String?  @db.VarChar(30)
+  FACT_ASAL  String?  @db.VarChar(2)
+  BAG_ASAL   String?  @db.VarChar(2)
+  DEPT_ASAL  String?  @db.VarChar(2)
+  FACT_BARU  String?  @db.VarChar(2)
+  BAG_BARU   String?  @db.VarChar(2)
+  DEPT_BARU  String?  @db.VarChar(2)
+  REMARK     String?  @db.VarChar(100)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  NOMOR_SK   String?  @db.VarChar(50)
+  karyawan   karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([TGL_MUTASI, EMPL_ID])
+  @@index([EMPL_ID])
+  @@index([TGL_MUTASI])
+}
+
+model mysql_config {
+  id         String   @id
+  host       String   @default("localhost")
+  port       Int      @default(3306)
+  user       String   @default("root")
+  password   String?
+  database   String?
+  isActive   Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model parameter {
+  id                String   @id @db.Uuid
+  KD_CMPY           String   @db.Char(3)
+  VALID_DATE        DateTime @db.Date
+  COMPANY           String   @default("") @db.VarChar(30)
+  UMK               Decimal  @default(0) @db.Decimal(15, 0)
+  UMK_REGIONAL      Decimal? @default(0) @db.Decimal(15, 0)
+  UANG_MAKAN        Decimal? @default(0) @db.Decimal(15, 0)
+  UANG_TRANSPORT    Decimal? @default(0) @db.Decimal(15, 0)
+  PERSEN_BPJSTK     Decimal? @default(0.00) @db.Decimal(5, 2)
+  PERSEN_BPJSKES    Decimal? @default(0.00) @db.Decimal(5, 2)
+  MAX_PLAFOND_MEDIC Decimal? @default(0) @db.Decimal(15, 0)
+  is_active         Boolean? @default(true)
+  created_at        DateTime @default(now()) @db.Timestamp(6)
+  updated_at        DateTime @db.Timestamp(6)
+  company           company  @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+
+  @@unique([KD_CMPY, VALID_DATE])
+  @@index([KD_CMPY])
+  @@index([VALID_DATE])
+}
+
+model payroll_log {
+  id         String   @id @db.Uuid
+  PERIOD     String   @db.VarChar(6)
+  EMPL_ID    String   @db.VarChar(9)
+  ACTION     String   @db.VarChar(20)
+  FIELD_NAME String?  @db.VarChar(60)
+  OLD_VALUE  String?
+  NEW_VALUE  String?
+  CHANGED_BY String   @db.VarChar(50)
+  ip_address String?  @db.VarChar(45)
+  changed_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([ACTION])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+  @@index([changed_at])
+}
+
+model pengajuan {
+  id           String         @id @db.Uuid
+  EMPL_ID      String         @db.VarChar(9)
+  TYPE         RequestType
+  START_DATE   DateTime
+  END_DATE     DateTime?
+  REASON       String
+  status       RequestStatus  @default(PENDING)
+  currentStep  Int            @default(1)
+  ATTACHMENTS  String?
+  created_at   DateTime       @default(now())
+  updated_at   DateTime
+  approval_log approval_log[]
+  karyawan     karyawan       @relation(fields: [EMPL_ID], references: [EMPL_ID])
+}
+
+model periode {
+  PERIODE_ID  String        @id @db.VarChar(6)
+  AWAL        DateTime      @db.Date
+  AKHIR       DateTime      @db.Date
+  DATA_DEFA   Boolean?      @default(false)
+  TUTUP       Boolean?      @default(false)
+  tahun       Int
+  bulan       Int
+  nama        String?       @db.VarChar(50)
+  created_at  DateTime      @default(now()) @db.Timestamp(6)
+  updated_at  DateTime      @db.Timestamp(6)
+  KD_CMPY     String?       @db.Char(3)
+  absent      absent[]
+  gaji        gaji[]
+  lembur      lembur[]
+  medik_trans medik_trans[]
+  company     company?      @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+  pinjamdet   pinjamdet[]
+  potongan    potongan[]
+  rapel       rapel[]
+  saldo_medic saldo_medic[]
+  shift_allw  shift_allw[]
+  tunjangan   tunjangan[]
+
+  @@index([AWAL, AKHIR])
+  @@index([TUTUP])
+}
+
+model pesangon {
+  id           String    @id @db.Uuid
+  EMPL_ID      String    @unique @db.VarChar(9)
+  NIK          String?   @db.VarChar(10)
+  TGL_BAYAR    DateTime? @db.Date
+  TGL_PENSIUN  DateTime? @db.Date
+  MS_KERJA     Int?      @default(0)
+  JML_PESANGON Decimal?  @default(0) @db.Decimal(15, 0)
+  PENGHARGAAN  Decimal?  @default(0) @db.Decimal(15, 0)
+  PPH          Decimal?  @default(0) @db.Decimal(15, 0)
+  TOTAL_TERIMA Decimal?  @default(0) @db.Decimal(15, 0)
+  KETERANGAN   String?   @db.VarChar(50)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @db.Timestamp(6)
+  karyawan     karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@index([TGL_BAYAR])
+}
+
+model pinjamdet {
+  id           String    @id @db.Uuid
+  TRANS_ID     String    @db.VarChar(10)
+  PERIODE      String    @db.VarChar(6)
+  JNS_SUMBER   Int       @default(0)
+  TGL_BAYAR    DateTime  @db.Date
+  TGL_PINJAM   DateTime  @db.Date
+  EMPL_ID      String    @db.VarChar(9)
+  JML_BAYAR    Decimal   @default(0) @db.Decimal(15, 0)
+  SALDO_PINJAM Decimal   @default(0) @db.Decimal(15, 0)
+  KETERANGAN   String    @default("") @db.VarChar(80)
+  FLAG_LUNAS   Boolean?  @default(false)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @db.Timestamp(6)
+  pinjamhdr    pinjamhdr @relation(fields: [EMPL_ID, TGL_PINJAM], references: [EMPL_ID, TGL_PINJAM])
+  karyawan     karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  gaji         gaji      @relation(fields: [PERIODE, EMPL_ID], references: [PERIOD, EMPL_ID])
+  periode      periode   @relation(fields: [PERIODE], references: [PERIODE_ID])
+
+  @@unique([TRANS_ID, PERIODE, JNS_SUMBER, TGL_BAYAR])
+  @@index([EMPL_ID])
+  @@index([PERIODE])
+  @@index([TGL_BAYAR])
+}
+
+model pinjamhdr {
+  id           String      @id @db.Uuid
+  EMPL_ID      String      @db.VarChar(9)
+  TGL_PINJAM   DateTime    @db.Date
+  TOT_PINJAM   Decimal     @default(0) @db.Decimal(15, 0)
+  JNS_SUMBER   Int         @default(0)
+  SALDO_PINJAM Decimal     @default(0) @db.Decimal(15, 0)
+  JML_CICIL    Int         @default(0)
+  KETERANGAN   String      @default("") @db.VarChar(100)
+  status       Boolean?    @default(true)
+  approved     Boolean?    @default(false)
+  approved_by  String?     @db.VarChar(50)
+  created_at   DateTime    @default(now()) @db.Timestamp(6)
+  updated_at   DateTime    @db.Timestamp(6)
+  pinjamdet    pinjamdet[]
+  karyawan     karyawan    @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([EMPL_ID, TGL_PINJAM, TOT_PINJAM, JNS_SUMBER])
+  @@unique([EMPL_ID, TGL_PINJAM])
+  @@index([EMPL_ID])
+  @@index([TGL_PINJAM])
+  @@index([status])
+}
+
+model potongan {
+  id                                             String       @id @db.Uuid
+  PERIOD                                         String       @db.VarChar(6)
+  TRANS_ID                                       String       @db.VarChar(10)
+  TRANS_DATE                                     DateTime     @db.Date
+  TRANS_CODE                                     Int          @default(0)
+  EMPL_ID                                        String       @db.VarChar(9)
+  jenis_pot_id                                   String?      @db.Uuid
+  NIK                                            String?      @db.VarChar(10)
+  JUMLAH                                         Decimal?     @default(0) @db.Decimal(15, 0)
+  KETERANGAN                                     String?      @db.VarChar(50)
+  status                                         Boolean?     @default(true)
+  created_at                                     DateTime     @default(now()) @db.Timestamp(6)
+  updated_at                                     DateTime     @db.Timestamp(6)
+  karyawan                                       karyawan     @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  gaji                                           gaji         @relation(fields: [PERIOD, EMPL_ID], references: [PERIOD, EMPL_ID])
+  periode                                        periode      @relation(fields: [PERIOD], references: [PERIODE_ID])
+  jnspotongan_potongan_TRANS_CODETojnspotongan   jnspotongan  @relation("potongan_TRANS_CODETojnspotongan", fields: [TRANS_CODE], references: [TRANS_CODE])
+  jnspotongan_potongan_jenis_pot_idTojnspotongan jnspotongan? @relation("potongan_jenis_pot_idTojnspotongan", fields: [jenis_pot_id], references: [id])
+
+  @@unique([PERIOD, TRANS_ID])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+  @@index([TRANS_DATE])
+}
+
+model pphthn {
+  id           String   @id @db.Uuid
+  EMPL_ID      String   @db.VarChar(9)
+  THPJ         String   @db.VarChar(4)
+  NPWP         String   @default("") @db.VarChar(20)
+  KD_WNI       Boolean? @default(true)
+  NIK          String   @default("") @db.VarChar(10)
+  NAMA         String   @default("") @db.VarChar(30)
+  ALAMAT       String   @default("") @db.VarChar(100)
+  GAJI_BRUTO   Decimal? @default(0) @db.Decimal(15, 0)
+  BIAYA_JBT    Decimal? @default(0) @db.Decimal(15, 0)
+  PENGURANG    Decimal? @default(0) @db.Decimal(15, 0)
+  NETTO        Decimal? @default(0) @db.Decimal(15, 0)
+  PTKP         Decimal? @default(0) @db.Decimal(15, 0)
+  PKP          Decimal? @default(0) @db.Decimal(15, 0)
+  PPH21        Decimal? @default(0) @db.Decimal(15, 0)
+  SUDAH_BAYAR  Decimal? @default(0) @db.Decimal(15, 0)
+  KURANG_BAYAR Decimal? @default(0) @db.Decimal(15, 0)
+  status       Boolean? @default(false)
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @db.Timestamp(6)
+  karyawan     karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([EMPL_ID, THPJ])
+  @@index([EMPL_ID])
+  @@index([THPJ])
+}
+
+model ptkp {
+  id         String   @id @db.Uuid
+  KODE       Int      @unique @default(0)
+  TYPE       String   @default("") @db.VarChar(3)
+  WPAJAK     Decimal  @default(0) @db.Decimal(15, 0)
+  TKELUARGA  Decimal  @default(0) @db.Decimal(15, 0)
+  KETERANGAN String   @default("") @db.VarChar(20)
+  is_active  Boolean? @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  gaji       gaji[]
+}
+
+model rapel {
+  id                                      String    @id @db.Uuid
+  PERIOD                                  String    @db.VarChar(6)
+  TRANS_ID                                String    @db.VarChar(10)
+  TRANS_DATE                              DateTime  @db.Date
+  TRANS_CODE                              Int       @default(0)
+  EMPL_ID                                 String    @db.VarChar(9)
+  jenis_rapel_id                          String?   @db.Uuid
+  NIK                                     String?   @db.VarChar(10)
+  JUMLAH                                  Decimal?  @default(0) @db.Decimal(15, 0)
+  KETERANGAN                              String?   @db.VarChar(50)
+  status                                  Boolean?  @default(true)
+  created_at                              DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                              DateTime  @db.Timestamp(6)
+  karyawan                                karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  gaji                                    gaji      @relation(fields: [PERIOD, EMPL_ID], references: [PERIOD, EMPL_ID])
+  periode                                 periode   @relation(fields: [PERIOD], references: [PERIODE_ID])
+  jnsrapel_rapel_TRANS_CODETojnsrapel     jnsrapel  @relation("rapel_TRANS_CODETojnsrapel", fields: [TRANS_CODE], references: [TRANS_CODE])
+  jnsrapel_rapel_jenis_rapel_idTojnsrapel jnsrapel? @relation("rapel_jenis_rapel_idTojnsrapel", fields: [jenis_rapel_id], references: [id])
+
+  @@unique([PERIOD, TRANS_ID])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+  @@index([TRANS_DATE])
+}
+
+model rekening {
+  id         String   @id @db.Uuid
+  NIK        String?  @db.VarChar(9)
+  Nama       String?  @db.VarChar(30)
+  rekno      String?  @unique @db.VarChar(20)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+model role_menus {
+  id         String   @id @db.Uuid
+  role       UserRole
+  menu_id    String   @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime
+  menus      menus    @relation(fields: [menu_id], references: [id], onDelete: Cascade)
+
+  @@unique([role, menu_id])
+}
+
+model saldo_medic {
+  id         String   @id @db.Uuid
+  PERIOD     String   @db.VarChar(6)
+  EMPL_ID    String   @db.VarChar(9)
+  SALDO      Decimal  @default(0) @db.Decimal(15, 0)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  karyawan   karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  periode    periode  @relation(fields: [PERIOD], references: [PERIODE_ID])
+
+  @@unique([PERIOD, EMPL_ID])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+}
+
+model sekolah {
+  id         String   @id @db.Uuid
+  EMPL_ID    String   @db.VarChar(9)
+  CHILD_NO   Int      @default(0)
+  NIK        String?  @db.VarChar(10)
+  TINGKAT    String?  @db.VarChar(2)
+  TEMPAT     String?  @db.VarChar(50)
+  THN_MSK    Int?     @default(2000)
+  THN_LULUS  Int?     @default(2000)
+  KETERANGAN String?  @db.VarChar(60)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  karyawan   karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@unique([EMPL_ID, CHILD_NO])
+  @@index([EMPL_ID])
+}
+
+model sertifikasi {
+  id               String    @id @db.Uuid
+  EMPL_ID          String    @db.VarChar(9)
+  NAMA_SERTIFIKASI String    @db.VarChar(100)
+  NOMOR_SERTIFIKAT String?   @db.VarChar(50)
+  LEMBAGA_PENERBIT String?   @db.VarChar(100)
+  TGL_TERBIT       DateTime? @db.Date
+  VALID_UNTIL      DateTime? @db.Date
+  KETERANGAN       String?   @db.VarChar(255)
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime  @db.Timestamp(6)
+  deleted_at       DateTime? @db.Timestamp(6)
+  karyawan         karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@index([EMPL_ID])
+  @@index([VALID_UNTIL])
+}
+
+model shift_allw {
+  id         String   @id @db.Uuid
+  PERIOD     String   @db.VarChar(6)
+  SPERIOD    Int      @default(1)
+  EMPL_ID    String   @db.VarChar(9)
+  SHIFT_CODE Int?     @default(0)
+  ALLOWANCE  Decimal? @default(0) @db.Decimal(15, 0)
+  MEAL_ALLOW Decimal? @default(0) @db.Decimal(15, 0)
+  MILK_ALLOW Decimal? @default(0) @db.Decimal(15, 0)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  karyawan   karyawan @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  periode    periode  @relation(fields: [PERIOD], references: [PERIODE_ID])
+
+  @@unique([PERIOD, SPERIOD, EMPL_ID])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+}
+
+model shift_pattern {
+  id          String       @id @db.Uuid
+  name        String       @unique @db.VarChar(50)
+  description String?
+  pattern     String
+  is_active   Boolean      @default(true)
+  created_at  DateTime     @default(now()) @db.Timestamp(6)
+  updated_at  DateTime     @db.Timestamp(6)
+  groupshift  groupshift[]
+}
+
+model skala_upah {
+  id         String   @id @db.Uuid
+  KD_CMPY    String   @db.Char(3)
+  KD_JAB     String?  @db.VarChar(20)
+  GOLONGAN   String   @db.VarChar(5)
+  NAMA_GOL   String?  @db.VarChar(50)
+  UPAH_MIN   Decimal  @db.Decimal(15, 0)
+  UPAH_MID   Decimal  @db.Decimal(15, 0)
+  UPAH_MAX   Decimal  @db.Decimal(15, 0)
+  VALID_DATE DateTime @db.Date
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  company    company  @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+
+  @@unique([KD_CMPY, GOLONGAN, VALID_DATE])
+  @@index([GOLONGAN])
+  @@index([KD_CMPY])
+  @@index([VALID_DATE])
+}
+
+model special_period {
+  id           String   @id @db.Uuid
+  name         String   @db.VarChar(50)
+  startDate    DateTime @db.Date
+  endDate      DateTime @db.Date
+  adjMasuk     Int      @default(0)
+  adjKeluar    Int      @default(0)
+  isActive     Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @db.Timestamp(6)
+  targetGroups String[] @default([])
+  absent       absent[]
+}
+
+model surat_peringatan {
+  id           String    @id @db.Uuid
+  NO_SP        String    @unique @db.VarChar(40)
+  EMPL_ID      String    @db.VarChar(9)
+  TGL_SP       DateTime  @db.Date
+  JENIS_SP     JenisSP   @default(SP1)
+  SEBAB        String
+  TGL_BERLAKU  DateTime  @db.Date
+  TGL_BERAKHIR DateTime? @db.Date
+  is_active    Boolean   @default(true)
+  created_by   String?   @db.VarChar(50)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @db.Timestamp(6)
+  karyawan     karyawan  @relation(fields: [EMPL_ID], references: [EMPL_ID])
+
+  @@index([EMPL_ID])
+  @@index([JENIS_SP])
+  @@index([TGL_SP])
+  @@index([is_active])
+}
+
+model suser {
+  id         String   @id @db.Uuid
+  nama       String   @unique @default("") @db.VarChar(15)
+  kelompok   String   @default("") @db.VarChar(10)
+  pwd        String   @default("") @db.VarChar(10)
+  akses      String   @default("") @db.VarChar(5)
+  is_active  Boolean? @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model sys_event_history {
+  id         String   @id @db.Uuid
+  Id         Int      @unique
+  EventId    Int      @default(0)
+  Loguser    String   @default("") @db.VarChar(20)
+  Modul      String?  @db.VarChar(20)
+  Action     String?  @db.VarChar(20)
+  Data       String?
+  ip_address String?  @db.VarChar(45)
+  user_agent String?
+  Datetime   DateTime @default(now()) @db.Timestamp(6)
+  sys_user   sys_user @relation(fields: [Loguser], references: [Username])
+
+  @@index([Datetime])
+  @@index([Loguser])
+  @@index([Modul])
+}
+
+model sys_menu {
+  id          String        @id @db.Uuid
+  Id          Int           @unique
+  modulname   String        @default("") @db.VarChar(30)
+  Desc        String?       @default("")
+  Url         String        @default("") @db.VarChar(60)
+  Mark        Boolean?      @default(false)
+  Icon        String?       @default("") @db.VarChar(60)
+  order_no    Int?          @default(0)
+  is_active   Boolean?      @default(true)
+  created_at  DateTime      @default(now()) @db.Timestamp(6)
+  updated_at  DateTime      @db.Timestamp(6)
+  sys_submenu sys_submenu[]
+
+  @@index([is_active])
+  @@index([order_no])
+}
+
+model sys_notification {
+  id                                                String    @id @db.Uuid
+  Id                                                Int       @unique
+  CreatorUserId                                     Int       @default(0)
+  Type                                              Int       @default(0)
+  Subject                                           String    @default("") @db.VarChar(60)
+  Note                                              String
+  Url                                               String?
+  Status                                            Boolean?  @default(false)
+  is_read                                           Boolean?  @default(false)
+  recipient_id                                      Int?
+  Created_date                                      DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                                        DateTime  @db.Timestamp(6)
+  sys_user_sys_notification_CreatorUserIdTosys_user sys_user  @relation("sys_notification_CreatorUserIdTosys_user", fields: [CreatorUserId], references: [Id])
+  sys_user_sys_notification_recipient_idTosys_user  sys_user? @relation("sys_notification_recipient_idTosys_user", fields: [recipient_id], references: [Id])
+
+  @@index([Created_date])
+  @@index([CreatorUserId])
+  @@index([Status])
+  @@index([is_read])
+}
+
+model sys_privilege {
+  id                String            @id @db.Uuid
+  Id                Int               @unique
+  UserId            Int?              @default(0)
+  PositionId        Int               @default(0)
+  modul             String            @default("") @db.VarChar(200)
+  Add               Boolean?          @default(false)
+  View              Boolean?          @default(false)
+  Edit              Boolean?          @default(false)
+  Remove            Boolean?          @default(false)
+  Print             Boolean?          @default(false)
+  Approve           Boolean?          @default(false)
+  is_active         Boolean?          @default(true)
+  created_at        DateTime          @default(now()) @db.Timestamp(6)
+  updated_at        DateTime          @db.Timestamp(6)
+  sys_user_position sys_user_position @relation(fields: [PositionId], references: [Id])
+  sys_user          sys_user?         @relation(fields: [UserId], references: [Id])
+
+  @@index([PositionId])
+  @@index([UserId])
+  @@index([is_active])
+}
+
+model sys_submenu {
+  id         String   @id @db.Uuid
+  Id         Int      @unique
+  MainMenuId Int      @default(0)
+  ModulName  String   @default("") @db.VarChar(32)
+  Desc       String   @default("") @db.VarChar(32)
+  URL        String
+  Icon       String?
+  order_no   Int?     @default(0)
+  is_active  Boolean? @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  sys_menu   sys_menu @relation(fields: [MainMenuId], references: [Id])
+
+  @@index([MainMenuId])
+  @@index([is_active])
+  @@index([order_no])
+}
+
+model sys_user {
+  id                                                        String              @id @db.Uuid
+  Id                                                        Int?                @unique
+  Nik                                                       String?             @unique @default("") @db.VarChar(11)
+  Email                                                     String              @unique @default("") @db.VarChar(60)
+  Username                                                  String              @unique @default("") @db.VarChar(32)
+  Password                                                  String              @default("") @db.VarChar(64)
+  Name                                                      String              @default("") @db.VarChar(64)
+  PositionId                                                Int                 @default(0)
+  Active                                                    Boolean?            @default(true)
+  Empl_id                                                   String?             @db.VarChar(11)
+  Last_login                                                DateTime?           @db.Timestamp(6)
+  last_ip                                                   String?             @db.VarChar(45)
+  is_online                                                 Boolean?            @default(false)
+  fcm_token                                                 String?
+  Created_date                                              DateTime            @default(now()) @db.Timestamp(6)
+  updated_at                                                DateTime            @db.Timestamp(6)
+  sys_event_history                                         sys_event_history[]
+  sys_notification_sys_notification_CreatorUserIdTosys_user sys_notification[]  @relation("sys_notification_CreatorUserIdTosys_user")
+  sys_notification_sys_notification_recipient_idTosys_user  sys_notification[]  @relation("sys_notification_recipient_idTosys_user")
+  sys_privilege                                             sys_privilege[]
+  karyawan                                                  karyawan?           @relation(fields: [Empl_id], references: [EMPL_ID])
+  sys_user_position                                         sys_user_position   @relation(fields: [PositionId], references: [Id])
+
+  @@index([Active])
+  @@index([Email])
+  @@index([Username])
+}
+
+model sys_user_position {
+  id            String          @id @db.Uuid
+  Id            Int             @unique
+  PositionCode  String          @unique @default("") @db.VarChar(11)
+  PositionName  String          @default("") @db.VarChar(32)
+  Remark        String?
+  Active        Boolean?        @default(true)
+  level         Int?            @default(0)
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+  updated_at    DateTime        @db.Timestamp(6)
+  sys_privilege sys_privilege[]
+  sys_user      sys_user[]
+
+  @@index([Active])
+  @@index([PositionCode])
+  @@index([level])
+}
+
+model tarif_ter {
+  id         String   @id @db.Uuid
+  KATEGORI   String   @db.VarChar(1)
+  BATAS_MIN  Decimal  @db.Decimal(15, 0)
+  BATAS_MAX  Decimal  @db.Decimal(15, 0)
+  TARIF      Decimal  @db.Decimal(6, 4)
+  tahun      Int      @default(2024)
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+
+  @@unique([KATEGORI, BATAS_MIN, tahun])
+  @@index([KATEGORI])
+  @@index([is_active])
+  @@index([tahun])
+}
+
+model time_work {
+  id            String   @id @db.Uuid
+  TANGGAL       DateTime @db.Date
+  KD_CMPY       String   @db.VarChar(3)
+  TYPE_TIME     String   @db.VarChar(2)
+  DAY_CODE      Int      @default(0)
+  SHIFT_CODE    Int      @default(0)
+  DAY_NAME      String?  @db.VarChar(20)
+  TIME_IN       String?  @db.VarChar(5)
+  TIME_OUT      String?  @db.VarChar(5)
+  STR_REST1     String?  @db.VarChar(5)
+  FNS_REST1     String?  @db.VarChar(5)
+  TTL_REST1     Int?     @default(0)
+  STR_REST2     String?  @db.VarChar(5)
+  FNS_REST2     String?  @db.VarChar(5)
+  TTL_REST2     Int?     @default(0)
+  STR_REST3     String?  @db.VarChar(5)
+  FNS_REST3     String?  @db.VarChar(5)
+  TTL_REST3     Int?     @default(0)
+  TOTAL_WORK    Int?     @default(0)
+  JM_BIASA1     Int?     @default(0)
+  JM_BIASA2     Int?     @default(0)
+  JM_SABTU      Int?     @default(0)
+  JML_HARI      Int?     @default(0)
+  LATE_TOLERANT Int?     @default(0)
+  ROUND_JAM     Int?     @default(30)
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  updated_at    DateTime @db.Timestamp(6)
+  company       company  @relation(fields: [KD_CMPY], references: [KODE_CMPY])
+
+  @@unique([TANGGAL, KD_CMPY, TYPE_TIME, DAY_CODE, SHIFT_CODE])
+  @@index([KD_CMPY])
+  @@index([TANGGAL])
+}
+
+model tunjangan {
+  id                                                 String        @id @db.Uuid
+  PERIOD                                             String        @db.VarChar(6)
+  TRANS_ID                                           String        @db.VarChar(10)
+  TRANS_DATE                                         DateTime      @db.Date
+  TRANS_CODE                                         Int           @default(0)
+  EMPL_ID                                            String        @db.VarChar(9)
+  jenis_tunj_id                                      String?       @db.Uuid
+  NIK                                                String?       @db.VarChar(10)
+  JUMLAH                                             Decimal?      @default(0) @db.Decimal(15, 0)
+  KETERANGAN                                         String?       @db.VarChar(50)
+  status                                             Boolean?      @default(true)
+  created_at                                         DateTime      @default(now()) @db.Timestamp(6)
+  updated_at                                         DateTime      @db.Timestamp(6)
+  karyawan                                           karyawan      @relation(fields: [EMPL_ID], references: [EMPL_ID])
+  gaji                                               gaji          @relation(fields: [PERIOD, EMPL_ID], references: [PERIOD, EMPL_ID])
+  periode                                            periode       @relation(fields: [PERIOD], references: [PERIODE_ID])
+  jnstunjangan_tunjangan_TRANS_CODETojnstunjangan    jnstunjangan  @relation("tunjangan_TRANS_CODETojnstunjangan", fields: [TRANS_CODE], references: [TRANS_CODE])
+  jnstunjangan_tunjangan_jenis_tunj_idTojnstunjangan jnstunjangan? @relation("tunjangan_jenis_tunj_idTojnstunjangan", fields: [jenis_tunj_id], references: [id])
+
+  @@unique([PERIOD, TRANS_ID])
+  @@index([EMPL_ID])
+  @@index([PERIOD])
+  @@index([TRANS_DATE])
 }
 
 enum UserRole {
   SUPER_ADMIN
   ADMIN
-  MANAGER
-  USER
+  HR_MANAGER
+  DEPARTMENT_MANAGER
   EMPLOYEE
+  GUEST
 }
 
 enum StatusAktif {
-  AKTIF
   TIDAK_AKTIF
-  SUSPENDED
+  AKTIF
 }
 
 enum StatusKaryawan {
   TETAP
   KONTRAK
+  PERCOBAAN
+  HONORER
   OUTSOURCING
-  MAGANG
-  PROBATION
 }
 
 enum JenisKelamin {
   LAKILAKI
   PEREMPUAN
+}
+
+enum JenisPotongan {
+  PINJAMAN
+  KOPERASI
+  BPJS
+  PPH21
+  LAINNYA
+}
+
+enum JenisSP {
+  SP1
+  SP2
+  SP3
+  PHK
+}
+
+enum JenisTunjangan {
+  TRANSPORT
+  MAKAN
+  JABATAN
+  KELUARGA
+  KHUSUS
+  RAPEL
+}
+
+enum RequestStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum RequestType {
+  CUTI
+  IJIN
+  PULANG_CEPAT
+  DINAS_LUAR
+  SAKIT
+}
+
+enum ShiftType {
+  PAGI
+  SIANG
+  MALAM
+  LIBUR
+}
+
+enum StatusCuti {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum StatusKpi {
+  DRAFT
+  REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum StatusPernikahan {
+  BELUM_MENIKAH
+  MENIKAH
+  JANDA
+  DUDA
+}
+
+enum TipeHari {
+  KERJA
+  LIBUR
+  LIBUR_NASIONAL
+  CUTI_BERSAMA
 }
