@@ -124,8 +124,8 @@ export default function SuggestionSystemPage() {
         const tableRows: any[] = [];
 
         filteredData.forEach((item, index) => {
-            const kondisi = item.kondisiSaatIni ? (item.kondisiSaatIni.length > 60 ? item.kondisiSaatIni.substring(0, 60) + '...' : item.kondisiSaatIni) : '-';
-            const usulan = item.usulanImprovement ? (item.usulanImprovement.length > 60 ? item.usulanImprovement.substring(0, 60) + '...' : item.usulanImprovement) : '-';
+            const kondisi = item.kondisiSaatIni || '-';
+            const usulan = item.usulanImprovement || '-';
             
             const rowData = [
                 index + 1,
