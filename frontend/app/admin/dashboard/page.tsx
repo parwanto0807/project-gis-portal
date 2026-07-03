@@ -285,7 +285,7 @@ export default function AdminDashboard() {
                                             dataKey="value"
                                             stroke="none"
                                         >
-                                            {kategoriData.map((entry, index) => (
+                                            {kategoriData.map((entry: any, index: number) => (
                                                 <Cell key={`cell-${index}`} fill={(COLORS.kategori as any)[entry.name] || '#94A3B8'} />
                                             ))}
                                         </Pie>
@@ -348,7 +348,7 @@ export default function AdminDashboard() {
                                             stroke="white"
                                             strokeWidth={2}
                                         >
-                                            {statusData.map((entry, index) => (
+                                            {statusData.map((entry: any, index: number) => (
                                                 <Cell key={`cell-${index}`} fill={(COLORS.status as any)[entry.name] || '#94A3B8'} />
                                             ))}
                                         </Pie>
@@ -370,7 +370,7 @@ export default function AdminDashboard() {
                                         <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                                         <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{ fill: '#f1f5f9' }} />
                                         <Bar dataKey="value" name="Total">
-                                            {agingData.map((entry, index) => (
+                                            {agingData.map((entry: any, index: number) => (
                                                 <Cell key={`cell-${index}`} fill={entry.fill} />
                                             ))}
                                         </Bar>
@@ -605,7 +605,7 @@ const SuggestionAnalyticsDashboard = () => {
                                     dataKey="value"
                                     stroke="none"
                                 >
-                                    {statusData.map((entry, index) => (
+                                    {statusData.map((entry: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                     ))}
                                 </Pie>
@@ -651,7 +651,7 @@ const SuggestionAnalyticsDashboard = () => {
                                     dataKey="value"
                                     stroke="none"
                                 >
-                                    {defectData.map((entry, index) => (
+                                    {defectData.map((entry: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={DEFECT_COLORS[index % DEFECT_COLORS.length]} />
                                     ))}
                                 </Pie>
@@ -732,7 +732,7 @@ const SuggestionAnalyticsDashboard = () => {
                                     <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
                                     <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{ fill: '#f1f5f9' }} />
                                     <Bar dataKey="value" name="Jumlah">
-                                        {apresiasiData.map((entry, index) => (
+                                        {apresiasiData.map((entry: any, index: number) => (
                                             <Cell key={`cell-${index}`} fill={entry.fill} />
                                         ))}
                                     </Bar>
