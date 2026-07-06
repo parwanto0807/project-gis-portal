@@ -30,6 +30,21 @@ export const verifyToken = (req, res, next) => {
   }
 };
 
+// Allows access if a valid API Key is provided OR a valid JWT token
+export const verifyApiKeyOrToken = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+  const validApiKey = process.env.API_KEY;
+
+  if (apiKey && validApiKey && apiKey === validApiKey) {
+    // Mock user for roleMiddleware to pass
+    req.user = { role: 'ADMIN', source: 'api_key' };
+    return next();
+  }
+
+  // Fallback to JWT token verification
+  return verifyToken(req, res, next);
+};
+
 export const roleMiddleware = (allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
