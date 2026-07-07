@@ -123,7 +123,7 @@ export const createSuggestion = async (req, res, next) => {
 
 export const getSuggestions = async (req, res, next) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 10, search = '' } = req.query;
         const skip = (page - 1) * limit;
 
         const where = {};
@@ -135,6 +135,15 @@ export const getSuggestions = async (req, res, next) => {
                 nik = userObj?.username;
             }
             where.nik = nik || 'UNKNOWN'; 
+        }
+
+        // Search filter
+        if (search.trim()) {
+            where.OR = [
+                { noForm: { contains: search.trim(), mode: 'insensitive' } },
+                { namaKaryawan: { contains: search.trim(), mode: 'insensitive' } },
+                { judulIde: { contains: search.trim(), mode: 'insensitive' } },
+            ];
         }
 
         const [suggestions, total] = await Promise.all([

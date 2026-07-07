@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer } from 'lucide-react';
+import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/badge';
@@ -53,16 +53,23 @@ export default function SuggestionSystemPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
     const [viewDialogData, setViewDialogData] = useState<any>(null);
     const [isViewOpen, setIsViewOpen] = useState(false);
+
     const ITEMS_PER_PAGE = 10;
 
-    const fetchData = async () => {
+    const fetchData = async (currentPage: number, query: string) => {
         try {
             setLoading(true);
-            const res = await api.get('/suggestions');
+            const res = await api.get('/suggestions', {
+                params: { page: currentPage, limit: ITEMS_PER_PAGE, search: query },
+            });
             if (res.data.success) {
                 setData(res.data.data);
+                setTotalPages(res.data.meta?.totalPages ?? 1);
+                setTotalItems(res.data.meta?.total ?? 0);
             }
         } catch (error) {
             toast.error('Gagal mengambil data suggestion');
@@ -71,9 +78,21 @@ export default function SuggestionSystemPage() {
         }
     };
 
+    // Fetch when page changes (but not when search changes — search has its own debounce)
     useEffect(() => {
-        fetchData();
-    }, []);
+        fetchData(page, searchQuery);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page]);
+
+    // Debounced search: reset to page 1 then fetch
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPage(1);
+            fetchData(1, searchQuery);
+        }, 400);
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchQuery]);
 
     const handleDelete = async (id: string) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus data Ide Improvement ini?')) {
@@ -81,7 +100,7 @@ export default function SuggestionSystemPage() {
                 const res = await api.delete(`/suggestions/${id}`);
                 if (res.data.success) {
                     toast.success('Data berhasil dihapus');
-                    fetchData();
+                    fetchData(page, searchQuery);
                 }
             } catch (error) {
                 toast.error('Gagal menghapus data');
@@ -100,80 +119,78 @@ export default function SuggestionSystemPage() {
         }
     };
 
-    const filteredData = data.filter(item => {
-        const searchLower = searchQuery.toLowerCase();
-        return (
-            item.judulIde?.toLowerCase().includes(searchLower) ||
-            item.namaKaryawan?.toLowerCase().includes(searchLower) ||
-            item.noForm?.toLowerCase().includes(searchLower)
-        );
-    });
+    const handlePrintPDF = async () => {
+        try {
+            toast.info('Memuat semua data untuk cetak PDF...');
+            const res = await api.get('/suggestions', { params: { page: 1, limit: 9999 } });
+            if (!res.data.success) return;
+            const allData: any[] = res.data.data;
 
-    const paginatedData = filteredData.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+            const doc = new jsPDF({ orientation: 'landscape' });
+            doc.setFontSize(14);
+            doc.text('Laporan Suggestion System (Ide Improvement)', 14, 15);
+            doc.setFontSize(10);
+            doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 21);
+            doc.text(`Total Data: ${allData.length}`, 260, 21, { align: 'right' });
 
-    const handlePrintPDF = () => {
-        const doc = new jsPDF({ orientation: 'landscape' });
-        
-        doc.setFontSize(14);
-        doc.text('Laporan Suggestion System (Ide Improvement)', 14, 15);
-        doc.setFontSize(10);
-        doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 21);
-        doc.text(`Total Data: ${filteredData.length}`, 260, 21, { align: 'right' });
+            const tableColumn = ["No", "Tanggal / No Form", "Karyawan / NIK", "Dept / Area", "Judul Ide", "Kondisi & Usulan", "Status"];
+            const tableRows: any[] = [];
 
-        const tableColumn = ["No", "Tanggal / No Form", "Karyawan / NIK", "Dept / Area", "Judul Ide", "Kondisi & Usulan", "Status"];
-        const tableRows: any[] = [];
+            allData.forEach((item, index) => {
+                const rowData = [
+                    index + 1,
+                    `${formatDate(item.tanggalIde || item.tanggal)}\n${item.noForm || '-'}`,
+                    `${item.namaKaryawan}\nNIK: ${item.nik}`,
+                    `${item.departemen || '-'}\n${item.areaTemuan || item.areaProses || '-'}`,
+                    item.judulIde || '-',
+                    `Kondisi:\n${item.kondisiSaatIni || '-'}\n\nUsulan:\n${item.usulanImprovement || '-'}`,
+                    item.statusApproval || 'PENDING'
+                ];
+                tableRows.push(rowData);
+            });
 
-        filteredData.forEach((item, index) => {
-            const kondisi = item.kondisiSaatIni || '-';
-            const usulan = item.usulanImprovement || '-';
-            
-            const rowData = [
-                index + 1,
-                `${formatDate(item.tanggalIde || item.tanggal)}\n${item.noForm || '-'}`,
-                `${item.namaKaryawan}\nNIK: ${item.nik}`,
-                `${item.departemen || '-'}\n${item.areaTemuan || item.areaProses || '-'}`,
-                item.judulIde || '-',
-                `Kondisi:\n${kondisi}\n\nUsulan:\n${usulan}`,
-                item.statusApproval || 'PENDING'
-            ];
-            tableRows.push(rowData);
-        });
+            autoTable(doc, {
+                head: [tableColumn],
+                body: tableRows,
+                startY: 25,
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 1.5, lineColor: [200, 200, 200], lineWidth: 0.1 },
+                headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontSize: 7, fontStyle: 'bold', halign: 'center' },
+                columnStyles: {
+                    0: { cellWidth: 10, halign: 'center' },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 35 },
+                    3: { cellWidth: 30 },
+                    4: { cellWidth: 40 },
+                    5: { cellWidth: 'auto' },
+                    6: { cellWidth: 20, halign: 'center' },
+                },
+                alternateRowStyles: { fillColor: [248, 250, 252] }
+            });
 
-        autoTable(doc, {
-            head: [tableColumn],
-            body: tableRows,
-            startY: 25,
-            theme: 'grid',
-            styles: {
-                fontSize: 7,
-                cellPadding: 1.5,
-                lineColor: [200, 200, 200],
-                lineWidth: 0.1,
-            },
-            headStyles: {
-                fillColor: [79, 70, 229], // bg-indigo-600
-                textColor: [255, 255, 255],
-                fontSize: 7,
-                fontStyle: 'bold',
-                halign: 'center'
-            },
-            columnStyles: {
-                0: { cellWidth: 10, halign: 'center' }, // No
-                1: { cellWidth: 25 }, // Tanggal/No Form
-                2: { cellWidth: 35 }, // Karyawan
-                3: { cellWidth: 30 }, // Dept/Area
-                4: { cellWidth: 40 }, // Judul Ide
-                5: { cellWidth: 'auto' }, // Kondisi & Usulan (Sisanya)
-                6: { cellWidth: 20, halign: 'center' }, // Status
-            },
-            alternateRowStyles: {
-                fillColor: [248, 250, 252] // bg-slate-50
-            }
-        });
-
-        doc.save(`Laporan_Suggestion_System_${new Date().toISOString().split('T')[0]}.pdf`);
-        toast.success('PDF berhasil diunduh');
+            doc.save(`Laporan_Suggestion_System_${new Date().toISOString().split('T')[0]}.pdf`);
+            toast.success('PDF berhasil diunduh');
+        } catch {
+            toast.error('Gagal membuat PDF');
+        }
     };
+
+    // Pagination: generate page numbers with ellipsis
+    const getPageNumbers = (): (number | '...')[] => {
+        const delta = 2;
+        const range: (number | '...')[] = [];
+        for (let i = Math.max(2, page - delta); i <= Math.min(totalPages - 1, page + delta); i++) {
+            range.push(i);
+        }
+        if (page - delta > 2) range.unshift('...');
+        if (page + delta < totalPages - 1) range.push('...');
+        if (totalPages > 0) range.unshift(1);
+        if (totalPages > 1) range.push(totalPages);
+        return range;
+    };
+
+    const startItem = totalItems === 0 ? 0 : (page - 1) * ITEMS_PER_PAGE + 1;
+    const endItem = Math.min(page * ITEMS_PER_PAGE, totalItems);
 
     return (
         <div className="space-y-6">
@@ -205,7 +222,7 @@ export default function SuggestionSystemPage() {
                         size="sm" 
                         variant="outline" 
                         onClick={handlePrintPDF}
-                        disabled={filteredData.length === 0}
+                        disabled={data.length === 0}
                         className="flex-1 sm:flex-none h-9 gap-2 border-slate-200 dark:border-slate-800 font-semibold shadow-sm rounded-lg justify-center hover:bg-slate-50 dark:hover:bg-slate-900"
                     >
                         <Printer className="w-4 h-4 text-slate-600 dark:text-slate-400" /> <span className="hidden sm:inline">Cetak PDF</span>
@@ -228,16 +245,24 @@ export default function SuggestionSystemPage() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
+                {!loading && totalItems > 0 && (
+                    <p className="text-xs text-slate-500 dark:text-slate-400 sm:ml-auto shrink-0">
+                        Menampilkan{' '}
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">{startItem}–{endItem}</span>
+                        {' '}dari{' '}
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">{totalItems}</span> data
+                    </p>
+                )}
             </div>
 
             <Card className="bg-white dark:bg-slate-950 shadow-md border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
                 <CardContent className="p-0">
-                    {/* Desktop Table View */}
                     <div className="hidden md:block overflow-x-auto min-h-[400px]">
                         <Table className="w-full">
                             <TableHeader className="bg-slate-100/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
                                 <TableRow className="hover:bg-transparent">
-                                    <TableHead className="w-[120px] font-bold text-slate-600 text-xs h-10 py-2 pl-5">No. Form</TableHead>
+                                    <TableHead className="w-[44px] font-bold text-slate-600 text-xs h-10 py-2 pl-5 text-center">No</TableHead>
+                                    <TableHead className="w-[130px] font-bold text-slate-600 text-xs h-10 py-2">No. Form</TableHead>
                                     <TableHead className="font-bold text-slate-600 text-xs h-10 py-2 w-[120px]">Tanggal</TableHead>
                                     <TableHead className="font-bold text-slate-600 text-xs h-10 py-2 w-[180px]">Nama Karyawan</TableHead>
                                     <TableHead className="font-bold text-slate-600 text-xs h-10 py-2">Judul Ide</TableHead>
@@ -248,20 +273,23 @@ export default function SuggestionSystemPage() {
                             <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-12 text-slate-400 font-medium text-sm">
+                                        <TableCell colSpan={7} className="text-center py-12 text-slate-400 font-medium text-sm">
                                             Memuat data...
                                         </TableCell>
                                     </TableRow>
-                                ) : paginatedData.length === 0 ? (
+                                ) : data.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-12 text-slate-400 font-medium text-sm">
+                                        <TableCell colSpan={7} className="text-center py-12 text-slate-400 font-medium text-sm">
                                             Belum ada data suggestion.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    paginatedData.map((item) => (
+                                    data.map((item, index) => (
                                         <TableRow key={item.id} className="hover:bg-slate-50/80 transition-colors">
-                                            <TableCell className="py-3 pl-5 text-xs font-semibold text-slate-700">{item.noForm}</TableCell>
+                                            <TableCell className="py-3 pl-5 text-xs font-semibold text-slate-400 text-center w-[44px]">
+                                                {startItem + index}
+                                            </TableCell>
+                                            <TableCell className="py-3 text-xs font-semibold text-slate-700">{item.noForm}</TableCell>
                                             <TableCell className="py-3 text-xs">{formatDate(item.tanggal)}</TableCell>
                                             <TableCell className="py-3 text-xs font-medium">{item.namaKaryawan}</TableCell>
                                             <TableCell className="py-3 text-xs">{item.judulIde}</TableCell>
@@ -320,16 +348,14 @@ export default function SuggestionSystemPage() {
                         </Table>
                     </div>
 
-                    {/* Mobile Card View */}
                     <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50 min-h-[400px]">
                         {loading ? (
                             <div className="text-center py-12 text-slate-400 font-medium text-sm">Memuat data...</div>
-                        ) : paginatedData.length === 0 ? (
+                        ) : data.length === 0 ? (
                             <div className="text-center py-12 text-slate-400 font-medium text-sm">Belum ada data suggestion.</div>
                         ) : (
-                            paginatedData.map((item) => (
+                            data.map((item) => (
                                 <div key={item.id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                                    {/* Card Header */}
                                     <div className="p-4 border-b border-slate-100 flex justify-between items-start gap-2">
                                         <div className="flex gap-3 items-start">
                                             <div className="mt-0.5">{getStatusBadge(item.statusApproval)}</div>
@@ -343,8 +369,6 @@ export default function SuggestionSystemPage() {
                                             <p className="text-[10px] text-slate-400">{item.noForm}</p>
                                         </div>
                                     </div>
-                                    
-                                    {/* Card Body */}
                                     <div className="p-4 space-y-4">
                                         <div>
                                             <div className="flex items-center gap-1.5 mb-1.5">
@@ -355,43 +379,12 @@ export default function SuggestionSystemPage() {
                                                 <p className="text-xs text-slate-700 font-medium">{item.judulIde}</p>
                                             </div>
                                         </div>
-
-                                        <div>
-                                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Focus Defect</h4>
-                                            <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 text-[10px] border-none">
-                                                {item.focusDefect || 'Umum'}
-                                            </Badge>
-                                        </div>
-
-                                        <div className="flex items-center justify-between pt-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
-                                                    {item.namaKaryawan ? item.namaKaryawan.charAt(0).toUpperCase() : 'U'}
-                                                </div>
-                                                <p className="text-xs font-semibold text-slate-700 truncate max-w-[120px]">
-                                                    {item.namaKaryawan}
-                                                </p>
-                                            </div>
-                                            {item.fotoKondisiUrls && item.fotoKondisiUrls.length > 0 && (
-                                                <div className="flex items-center gap-1 bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full mt-1.5 w-fit border border-slate-200">
-                                                    <Camera className="w-3 h-3" />
-                                                    <span className="text-[10px] font-bold">{item.fotoKondisiUrls.length}</span>
-                                                </div>
-                                            )}
-                                        </div>
                                     </div>
-
-                                    {/* Card Footer (Actions) */}
                                     <div className={`grid border-t border-slate-100 divide-x divide-slate-100 bg-slate-50/50 ${isSuperAdmin ? 'grid-cols-4' : isEvaluator ? 'grid-cols-3' : 'grid-cols-2'}`}>
-                                        <button 
-                                            onClick={() => { setViewDialogData(item); setIsViewOpen(true); }}
-                                            className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors"
-                                        >
+                                        <button onClick={() => { setViewDialogData(item); setIsViewOpen(true); }} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors">
                                             <Eye className="w-4 h-4" />
                                             <span className="text-[10px] font-bold">Detail</span>
                                         </button>
-                                        
-                                        {/* Edit Action */}
                                         {item.statusApproval === 'PENDING' ? (
                                             <Link href={`/admin/suggestions/edit/${item.id}`} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-indigo-50 text-indigo-600 transition-colors">
                                                 <Edit className="w-4 h-4" />
@@ -403,8 +396,6 @@ export default function SuggestionSystemPage() {
                                                 <span className="text-[10px] font-bold">Edit</span>
                                             </div>
                                         )}
-
-                                        {/* Evaluate Action */}
                                         {isEvaluator && (
                                             <Link href={`/admin/suggestions/${item.id}`} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-blue-50 text-blue-600 transition-colors">
                                                 {item.statusApproval === 'PENDING' ? (
@@ -420,8 +411,6 @@ export default function SuggestionSystemPage() {
                                                 )}
                                             </Link>
                                         )}
-
-                                        {/* Delete Action */}
                                         {isSuperAdmin && (
                                             <button onClick={() => handleDelete(item.id)} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
                                                 <Trash2 className="w-4 h-4" />
@@ -433,6 +422,51 @@ export default function SuggestionSystemPage() {
                             ))
                         )}
                     </div>
+                    {/* Pagination Bar */}
+                    {!loading && totalPages > 1 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 order-2 sm:order-1">
+                                Halaman <span className="font-semibold text-slate-700 dark:text-slate-300">{page}</span> dari <span className="font-semibold text-slate-700 dark:text-slate-300">{totalPages}</span>
+                            </p>
+                            <div className="flex items-center gap-1 order-1 sm:order-2">
+                                <Button
+                                    variant="outline" size="sm"
+                                    disabled={page === 1}
+                                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                    className="h-8 px-3 text-xs font-semibold border-slate-200 dark:border-slate-700 disabled:opacity-40 rounded-lg"
+                                >
+                                    <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Prev
+                                </Button>
+                                <div className="flex items-center gap-1">
+                                    {getPageNumbers().map((p, i) =>
+                                        p === '...' ? (
+                                            <span key={`el-${i}`} className="px-1.5 text-xs text-slate-400 select-none">…</span>
+                                        ) : (
+                                            <button
+                                                key={p}
+                                                onClick={() => setPage(p as number)}
+                                                className={`h-8 min-w-[32px] px-2 rounded-lg text-xs font-semibold transition-colors ${
+                                                    page === p
+                                                        ? 'bg-indigo-600 text-white shadow-sm'
+                                                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700'
+                                                }`}
+                                            >
+                                                {p}
+                                            </button>
+                                        )
+                                    )}
+                                </div>
+                                <Button
+                                    variant="outline" size="sm"
+                                    disabled={page === totalPages}
+                                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                                    className="h-8 px-3 text-xs font-semibold border-slate-200 dark:border-slate-700 disabled:opacity-40 rounded-lg"
+                                >
+                                    Next <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -441,166 +475,75 @@ export default function SuggestionSystemPage() {
                     <DialogTitle className="sr-only">Detail Ide Improvement</DialogTitle>
                     {viewDialogData && (
                         <>
-                            {/* Left Side: Photo */}
                             <div className="w-full md:w-2/5 h-64 md:h-auto relative bg-slate-100 flex-shrink-0">
                                 {viewDialogData.fotoKondisiUrls && viewDialogData.fotoKondisiUrls.length > 0 ? (
-                                    <img 
-                                        src={formatImageUrl(viewDialogData.fotoKondisiUrls[0])} 
-                                        alt="Foto Temuan" 
-                                        className="w-full h-full object-cover" 
-                                    />
+                                    <img src={formatImageUrl(viewDialogData.fotoKondisiUrls[0])} alt="Foto Temuan" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
                                         <Lightbulb className="w-16 h-16 mb-4 opacity-20" />
                                         <p className="text-sm font-medium">Tidak ada foto lampiran</p>
                                     </div>
                                 )}
-                                
-                                {/* Area Badge */}
                                 <div className="absolute top-4 left-4 z-10">
-                                    <Badge className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-3 py-1 text-xs border-none shadow-md">
-                                        {viewDialogData.areaProses}
-                                    </Badge>
+                                    <Badge className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-3 py-1 text-xs border-none shadow-md">{viewDialogData.areaProses}</Badge>
                                 </div>
                             </div>
-
-                            {/* Right Side: Content */}
                             <div className="w-full md:w-3/5 overflow-y-auto p-6 md:p-8 bg-white relative">
-                                {/* Custom Close Button */}
-                                <button 
-                                    onClick={() => setIsViewOpen(false)}
-                                    className="absolute top-6 right-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors"
-                                >
+                                <button onClick={() => setIsViewOpen(false)} className="absolute top-6 right-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
-
-                                {/* Header */}
                                 <div className="mb-6 pr-10">
                                     <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-1">{viewDialogData.judulIde}</h2>
                                     <p className="text-xs font-bold text-slate-400 tracking-wider uppercase">Detail Ide Improvement &bull; Peduli Bersinergi</p>
                                 </div>
-
-                                {/* Info Grid */}
                                 <div className="border border-slate-200 rounded-xl p-4 mb-6 grid grid-cols-2 gap-y-5 gap-x-4 bg-white shadow-sm">
                                     <div>
-                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-                                            <MapPin className="w-3.5 h-3.5" />
-                                            <span className="text-[10px] font-bold uppercase tracking-wide">Tempat Temuan</span>
-                                        </div>
+                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1"><MapPin className="w-3.5 h-3.5" /><span className="text-[10px] font-bold uppercase tracking-wide">Tempat Temuan</span></div>
                                         <p className="text-sm font-semibold text-slate-900">{viewDialogData.areaTemuan}</p>
                                     </div>
                                     <div>
-                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-                                            <Calendar className="w-3.5 h-3.5" />
-                                            <span className="text-[10px] font-bold uppercase tracking-wide">Waktu Temuan</span>
-                                        </div>
+                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1"><Calendar className="w-3.5 h-3.5" /><span className="text-[10px] font-bold uppercase tracking-wide">Waktu Temuan</span></div>
                                         <p className="text-sm font-semibold text-slate-900">{formatDate(viewDialogData.tanggal)}</p>
                                     </div>
                                     <div>
-                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-                                            <User className="w-3.5 h-3.5" />
-                                            <span className="text-[10px] font-bold uppercase tracking-wide">Pelapor</span>
-                                        </div>
+                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1"><User className="w-3.5 h-3.5" /><span className="text-[10px] font-bold uppercase tracking-wide">Pelapor</span></div>
                                         <p className="text-sm font-semibold text-slate-900">{viewDialogData.namaKaryawan}</p>
                                     </div>
                                     <div>
-                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-                                            <Tag className="w-3.5 h-3.5" />
-                                            <span className="text-[10px] font-bold uppercase tracking-wide">Focus Defect</span>
-                                        </div>
-                                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium border-0">
-                                            {viewDialogData.focusDefect || '-'}
-                                        </Badge>
+                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1"><Tag className="w-3.5 h-3.5" /><span className="text-[10px] font-bold uppercase tracking-wide">Focus Defect</span></div>
+                                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium border-0">{viewDialogData.focusDefect || '-'}</Badge>
                                     </div>
                                 </div>
-
-                                {/* Deskripsi Temuan */}
                                 <div className="mb-8">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Info className="w-4 h-4 text-slate-500" />
-                                        <h3 className="text-xs font-bold text-slate-600 tracking-wide uppercase">Kondisi & Akar Masalah</h3>
-                                    </div>
+                                    <div className="flex items-center gap-2 mb-3"><Info className="w-4 h-4 text-slate-500" /><h3 className="text-xs font-bold text-slate-600 tracking-wide uppercase">Kondisi & Akar Masalah</h3></div>
                                     <div className="border border-slate-100 bg-slate-50/50 rounded-xl p-5 relative overflow-hidden">
-                                        {/* Decorative watermark icon */}
                                         <Info className="absolute -left-4 top-1/2 -translate-y-1/2 w-32 h-32 text-slate-100 opacity-50" />
-                                        
                                         <div className="relative z-10 space-y-4">
-                                            <div>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Kondisi Saat Ini:</p>
-                                                <p className="text-sm text-slate-700 font-medium italic whitespace-pre-wrap leading-relaxed">
-                                                    "{viewDialogData.kondisiSaatIni}"
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Akar Masalah:</p>
-                                                <p className="text-sm text-slate-700 font-medium whitespace-pre-wrap leading-relaxed">
-                                                    {viewDialogData.akarMasalah}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Usulan Improvement:</p>
-                                                <p className="text-sm text-indigo-700 font-semibold whitespace-pre-wrap leading-relaxed">
-                                                    {viewDialogData.usulanImprovement}
-                                                </p>
-                                            </div>
+                                            <div><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Kondisi Saat Ini:</p><p className="text-sm text-slate-700 font-medium italic whitespace-pre-wrap leading-relaxed">"{viewDialogData.kondisiSaatIni}"</p></div>
+                                            <div><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Akar Masalah:</p><p className="text-sm text-slate-700 font-medium whitespace-pre-wrap leading-relaxed">{viewDialogData.akarMasalah}</p></div>
+                                            <div><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Usulan Improvement:</p><p className="text-sm text-indigo-700 font-semibold whitespace-pre-wrap leading-relaxed">{viewDialogData.usulanImprovement}</p></div>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Tindak Lanjut & Evaluasi */}
                                 <div>
                                     <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-2">
-                                            <Wrench className="w-4 h-4 text-slate-500" />
-                                            <h3 className="text-xs font-bold text-slate-600 tracking-wide uppercase">Tindak Lanjut & Evaluasi</h3>
-                                        </div>
-                                        <div>
-                                            {getStatusBadge(viewDialogData.statusApproval)}
-                                        </div>
+                                        <div className="flex items-center gap-2"><Wrench className="w-4 h-4 text-slate-500" /><h3 className="text-xs font-bold text-slate-600 tracking-wide uppercase">Tindak Lanjut & Evaluasi</h3></div>
+                                        <div>{getStatusBadge(viewDialogData.statusApproval)}</div>
                                     </div>
-                                    
                                     <div className="border border-indigo-100 bg-indigo-50/30 rounded-xl p-5 relative overflow-hidden">
                                         {viewDialogData.statusApproval === 'PENDING' ? (
                                             <p className="text-sm text-slate-400 font-medium italic text-center py-4">Belum ada evaluasi atau tindak lanjut.</p>
                                         ) : (
                                             <div className="relative z-10 space-y-4">
                                                 <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Kategori Apresiasi:</p>
-                                                        <p className="text-sm text-slate-800 font-bold">{viewDialogData.kategoriApresiasi || '-'}</p>
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Nominal Apresiasi:</p>
-                                                        <p className="text-sm text-emerald-600 font-bold">
-                                                            {viewDialogData.nominalApresiasi ? `Rp ${viewDialogData.nominalApresiasi.toLocaleString('id-ID')}` : '-'}
-                                                        </p>
-                                                    </div>
+                                                    <div><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Kategori Apresiasi:</p><p className="text-sm text-slate-800 font-bold">{viewDialogData.kategoriApresiasi || '-'}</p></div>
+                                                    <div><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Nominal Apresiasi:</p><p className="text-sm text-emerald-600 font-bold">{viewDialogData.nominalApresiasi ? `Rp ${viewDialogData.nominalApresiasi.toLocaleString('id-ID')}` : '-'}</p></div>
                                                 </div>
-                                                <div>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Catatan Evaluasi / Target Implementasi:</p>
-                                                    <p className="text-sm text-slate-700 font-medium whitespace-pre-wrap leading-relaxed">
-                                                        {viewDialogData.catatanEvaluasi || '-'}
-                                                    </p>
-                                                </div>
-
-                                                {/* Evaluasi Photos */}
-                                                {viewDialogData.fotoEvaluasiUrls && viewDialogData.fotoEvaluasiUrls.length > 0 && (
-                                                    <div className="pt-2">
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Foto Bukti Implementasi:</p>
-                                                        <div className="flex gap-2 overflow-x-auto pb-2">
-                                                            {viewDialogData.fotoEvaluasiUrls.map((url: string, i: number) => (
-                                                                <a key={i} href={formatImageUrl(url)} target="_blank" rel="noreferrer" className="flex-shrink-0">
-                                                                    <img src={formatImageUrl(url)} alt={`Bukti ${i}`} className="w-16 h-16 object-cover rounded-md border border-slate-200 hover:opacity-80 transition-opacity shadow-sm" />
-                                                                </a>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
+                                                <div><p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Catatan Evaluasi / Target Implementasi:</p><p className="text-sm text-slate-700 font-medium whitespace-pre-wrap leading-relaxed">{viewDialogData.catatanEvaluasi || '-'}</p></div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
-                                
                             </div>
                         </>
                     )}
