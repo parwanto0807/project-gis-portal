@@ -274,27 +274,41 @@ export default function AdminDashboard() {
                         {/* Section C: Distribusi 4M */}
                         <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                             <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-purple-500" /> Distribusi Kategori 4M</h2>
-                            <div className="h-[250px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={kategoriData}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={70}
-                                            outerRadius={100}
-                                            paddingAngle={5}
-                                            dataKey="value"
-                                            stroke="none"
-                                        >
-                                            {kategoriData.map((entry: any, index: number) => (
-                                                <Cell key={`cell-${index}`} fill={(COLORS.kategori as any)[entry.name] || '#94A3B8'} />
-                                            ))}
-                                        </Pie>
-                                        <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                                        <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-                                    </PieChart>
-                                </ResponsiveContainer>
+                            <div className="flex flex-col items-center">
+                                <div className="w-full h-[200px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={kategoriData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={65}
+                                                outerRadius={95}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                                stroke="none"
+                                            >
+                                                {kategoriData.map((entry: any, index: number) => (
+                                                    <Cell key={`cell-${index}`} fill={(COLORS.kategori as any)[entry.name] || '#94A3B8'} />
+                                                ))}
+                                            </Pie>
+                                            <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1 px-2">
+                                    {kategoriData.map((entry: any, index: number) => (
+                                        <div key={index} className="flex items-center gap-1.5">
+                                            <div
+                                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                                style={{ backgroundColor: (COLORS.kategori as any)[entry.name] || '#94A3B8' }}
+                                            />
+                                            <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                                {entry.name} ({entry.value})
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -337,47 +351,88 @@ export default function AdminDashboard() {
                         {/* Section F: Status Distribution */}
                         <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                             <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-500" /> Status Distribution</h2>
-                            <div className="h-[200px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={statusData}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={0}
-                                            outerRadius={80}
-                                            dataKey="value"
-                                            stroke="white"
-                                            strokeWidth={2}
-                                        >
-                                            {statusData.map((entry: any, index: number) => (
-                                                <Cell key={`cell-${index}`} fill={(COLORS.status as any)[entry.name] || '#94A3B8'} />
-                                            ))}
-                                        </Pie>
-                                        <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                                        <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-                                    </PieChart>
-                                </ResponsiveContainer>
+                            <div className="flex flex-col items-center">
+                                <div className="w-full h-[170px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={statusData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={0}
+                                                outerRadius={70}
+                                                dataKey="value"
+                                                stroke="white"
+                                                strokeWidth={2}
+                                            >
+                                                {statusData.map((entry: any, index: number) => (
+                                                    <Cell key={`cell-${index}`} fill={(COLORS.status as any)[entry.name] || '#94A3B8'} />
+                                                ))}
+                                            </Pie>
+                                            <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1 px-2">
+                                    {statusData.map((entry: any, index: number) => (
+                                        <div key={index} className="flex items-center gap-1.5">
+                                            <div
+                                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                                style={{ backgroundColor: (COLORS.status as any)[entry.name] || '#94A3B8' }}
+                                            />
+                                            <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                                {entry.name} ({entry.value})
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
                         {/* Section H: Aging Analysis */}
                         <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                             <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><Clock className="w-4 h-4 text-orange-500" /> Aging Analysis</h2>
-                            <div className="h-[200px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={agingData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }} barSize={40}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#94a3b8" strokeOpacity={0.2} />
-                                        <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                                        <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                                        <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{ fill: '#f1f5f9' }} />
-                                        <Bar dataKey="value" name="Total">
-                                            {agingData.map((entry: any, index: number) => (
-                                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
+                            <div className="flex flex-col items-center">
+                                <div className="w-full h-[180px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={agingData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }} barSize={30}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#94a3b8" strokeOpacity={0.2} />
+                                            <XAxis
+                                                dataKey="name"
+                                                tick={{ fontSize: 10 }}
+                                                axisLine={false}
+                                                tickLine={false}
+                                                interval={0}
+                                                height={40}
+                                            />
+                                            <YAxis
+                                                tick={{ fontSize: 10 }}
+                                                axisLine={false}
+                                                tickLine={false}
+                                                width={30}
+                                            />
+                                            <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{ fill: '#f1f5f9' }} />
+                                            <Bar dataKey="value" name="Total">
+                                                {agingData.map((entry: any, index: number) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1 px-2">
+                                    {agingData.map((entry: any, index: number) => (
+                                        <div key={index} className="flex items-center gap-1.5">
+                                            <div
+                                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                                style={{ backgroundColor: entry.fill }}
+                                            />
+                                            <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                                {entry.name} ({entry.value})
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
@@ -594,27 +649,41 @@ const SuggestionAnalyticsDashboard = () => {
                 {/* Status Distribution */}
                 <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                     <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-500" /> Distribusi Status</h2>
-                    <div className="h-[250px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={statusData}
-                                    cx="50%"
-                                    cy="45%"
-                                    innerRadius={60}
-                                    outerRadius={90}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                    stroke="none"
-                                >
-                                    {statusData.map((entry: any, index: number) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                                    ))}
-                                </Pie>
-                                <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <div className="flex flex-col items-center">
+                        <div className="w-full h-[200px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={statusData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={55}
+                                        outerRadius={80}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                        stroke="none"
+                                    >
+                                        {statusData.map((entry: any, index: number) => (
+                                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        ))}
+                                    </Pie>
+                                    <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1 px-2">
+                            {statusData.map((entry: any, index: number) => (
+                                <div key={index} className="flex items-center gap-1.5">
+                                    <div
+                                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                                        style={{ backgroundColor: entry.fill }}
+                                    />
+                                    <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                        {entry.name} ({entry.value})
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -640,27 +709,41 @@ const SuggestionAnalyticsDashboard = () => {
                 {/* Focus Defect */}
                 <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                     <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-purple-500" /> Distribusi Focus Defect</h2>
-                    <div className="h-[220px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={defectData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={55}
-                                    outerRadius={85}
-                                    paddingAngle={4}
-                                    dataKey="value"
-                                    stroke="none"
-                                >
-                                    {defectData.map((entry: any, index: number) => (
-                                        <Cell key={`cell-${index}`} fill={DEFECT_COLORS[index % DEFECT_COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                                <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <div className="flex flex-col items-center">
+                        <div className="w-full h-[180px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={defectData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={45}
+                                        outerRadius={75}
+                                        paddingAngle={4}
+                                        dataKey="value"
+                                        stroke="none"
+                                    >
+                                        {defectData.map((entry: any, index: number) => (
+                                            <Cell key={`cell-${index}`} fill={DEFECT_COLORS[index % DEFECT_COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1 px-2">
+                            {defectData.map((entry: any, index: number) => (
+                                <div key={index} className="flex items-center gap-1.5">
+                                    <div
+                                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                                        style={{ backgroundColor: DEFECT_COLORS[index % DEFECT_COLORS.length] }}
+                                    />
+                                    <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                        {entry.name} ({entry.value})
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
