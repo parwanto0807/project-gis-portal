@@ -710,15 +710,15 @@ const SuggestionAnalyticsDashboard = () => {
                 <div className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                     <h2 className="text-sm font-bold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-purple-500" /> Distribusi Focus Defect</h2>
                     <div className="flex flex-col items-center">
-                        <div className="w-full h-[180px]">
+                        <div className="w-full h-[160px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
                                         data={defectData}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={45}
-                                        outerRadius={75}
+                                        innerRadius={40}
+                                        outerRadius={68}
                                         paddingAngle={4}
                                         dataKey="value"
                                         stroke="none"
@@ -731,15 +731,16 @@ const SuggestionAnalyticsDashboard = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
-                        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1 px-2">
+                        {/* Legend - 2 column grid, truncated, no overflow */}
+                        <div className="w-full grid grid-cols-2 gap-x-3 gap-y-1.5 mt-2 px-1 max-h-[140px] overflow-y-auto">
                             {defectData.map((entry: any, index: number) => (
-                                <div key={index} className="flex items-center gap-1.5">
+                                <div key={index} className="flex items-center gap-1.5 min-w-0" title={`${entry.name} (${entry.value})`}>
                                     <div
-                                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                                        className="w-2 h-2 rounded-full shrink-0"
                                         style={{ backgroundColor: DEFECT_COLORS[index % DEFECT_COLORS.length] }}
                                     />
-                                    <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                                        {entry.name} ({entry.value})
+                                    <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 truncate">
+                                        {entry.name} <span className="font-bold text-gray-800 dark:text-gray-200">({entry.value})</span>
                                     </span>
                                 </div>
                             ))}
