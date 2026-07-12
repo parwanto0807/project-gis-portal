@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, ChevronLeft, ChevronRight } from 'lucide-react';
+import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, ChevronLeft, ChevronRight, CheckSquare, Square } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/badge';
@@ -57,8 +57,62 @@ export default function SuggestionSystemPage() {
     const [totalItems, setTotalItems] = useState(0);
     const [viewDialogData, setViewDialogData] = useState<any>(null);
     const [isViewOpen, setIsViewOpen] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [selectAll, setSelectAll] = useState(false);
 
     const ITEMS_PER_PAGE = 10;
+
+    const getStatusDisplay = (status: string) => {
+        switch (status) {
+            case 'RECEIVED': return 'DITERIMA';
+            case 'EVALUATED': return 'DIEVALUSI';
+            case 'APPROVED': return 'APPROVED';
+            case 'REJECTED': return 'DITOLAK';
+            case 'PENDING': return 'PENDING';
+            default: return status;
+        }
+    };
+
+    const bulkUpdateSuggestions = async (status: string) => {
+        if (selectedIds.size === 0) {
+            toast.error('Pilih data yang akan diperbarui terlebih dahulu');
+            return;
+        }
+
+        const displayStatus = getStatusDisplay(status);
+        if (!window.confirm(`Apakah Anda yakin ingin mengubah status ${selectedIds.size} data menjadi ${displayStatus}?`)) {
+            return;
+        }
+
+        try {
+            const res = await api.post('/suggestions/bulk-update', {
+                ids: Array.from(selectedIds),
+                status
+            });
+            if (res.data.success) {
+                toast.success(res.data.message);
+                setSelectedIds(new Set());
+                setSelectAll(false);
+                fetchData(page, searchQuery);
+            }
+        } catch (error) {
+            toast.error('Gagal memperbarui data');
+        }
+    };
+
+    const bulkUpdateSuggestion = async (id: string, status: string) => {
+        try {
+            const res = await api.post('/suggestions/bulk-update', { ids: [id], status });
+            if (res.data.success) {
+                toast.success(res.data.message);
+                setSelectedIds(new Set());
+                setSelectAll(false);
+                fetchData(page, searchQuery);
+            }
+        } catch (error) {
+            toast.error('Gagal memperbarui data');
+        }
+    };
 
     const fetchData = async (currentPage: number, query: string) => {
         try {
@@ -100,6 +154,8 @@ export default function SuggestionSystemPage() {
                 const res = await api.delete(`/suggestions/${id}`);
                 if (res.data.success) {
                     toast.success('Data berhasil dihapus');
+                    setSelectedIds(new Set());
+                    setSelectAll(false);
                     fetchData(page, searchQuery);
                 }
             } catch (error) {
@@ -108,8 +164,40 @@ export default function SuggestionSystemPage() {
         }
     };
 
+    // Reset selection when data/page changes
+    useEffect(() => {
+        setSelectedIds(new Set());
+        setSelectAll(false);
+    }, [data]);
+
+    const toggleSelectAll = () => {
+        if (selectAll) {
+            setSelectedIds(new Set());
+            setSelectAll(false);
+        } else {
+            setSelectedIds(new Set(data.map((item: any) => item.id.toString())));
+            setSelectAll(true);
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    };
+
     const getStatusBadge = (status: string) => {
         switch (status) {
+            case 'RECEIVED':
+                return <Badge className="bg-sky-100 text-sky-700 hover:bg-sky-200 border-none">Diterima</Badge>;
+            case 'EVALUATED':
+                return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none">Dievaluasi</Badge>;
             case 'APPROVED':
                 return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none">Approved</Badge>;
             case 'REJECTED':
@@ -235,6 +323,35 @@ export default function SuggestionSystemPage() {
                 </div>
             </div>
 
+            {/* Bulk Action Bar - hanya untuk evaluator */}
+            {isEvaluator && selectedIds.size > 0 && (
+                <div className="flex flex-wrap items-center gap-2 px-4 py-2.5 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                    <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 whitespace-nowrap shrink-0">
+                        {selectedIds.size} data dipilih
+                    </span>
+                    <div className="flex gap-2 flex-wrap items-center">
+                        {role !== 'SUPER_ADMIN' && (
+                            <Button size="sm" onClick={() => bulkUpdateSuggestions('RECEIVED')} className="h-8 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-lg">
+                                <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Ide Diterima
+                            </Button>
+                        )}
+                        {role !== 'SUPER_ADMIN' && (
+                            <Button size="sm" onClick={() => bulkUpdateSuggestions('EVALUATED')} className="h-8 px-4 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded-lg">
+                                <Eye className="w-3.5 h-3.5 mr-1.5" /> Ide Dievaluasi
+                            </Button>
+                        )}
+                        {isSuperAdmin && (
+                            <Button size="sm" onClick={() => bulkUpdateSuggestions('REJECTED')} className="h-8 px-4 text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm rounded-lg">
+                                <X className="w-3.5 h-3.5 mr-1.5" /> Tolak Ide
+                            </Button>
+                        )}
+                        <Button size="sm" variant="outline" onClick={() => { setSelectedIds(new Set()); setSelectAll(false); }} className="h-8 px-3 text-xs font-bold border-slate-300 text-slate-600 hover:bg-slate-100 rounded-lg">
+                            <X className="w-3.5 h-3.5 mr-1" /> Batal
+                        </Button>
+                    </div>
+                </div>
+            )}
+
             <div className="flex flex-col sm:flex-row gap-2 sm:items-center pb-2 w-full">
                 <div className="relative w-full sm:w-[250px] shrink-0">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
@@ -261,7 +378,13 @@ export default function SuggestionSystemPage() {
                         <Table className="w-full">
                             <TableHeader className="bg-slate-100/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
                                 <TableRow className="hover:bg-transparent">
-                                    <TableHead className="w-[44px] font-bold text-slate-600 text-xs h-10 py-2 pl-5 text-center">No</TableHead>
+                                    <TableHead className={`w-[44px] font-bold text-slate-600 text-xs h-10 py-2 pl-5 text-center ${!isEvaluator ? 'hidden' : ''}`}>
+                                        {isEvaluator && (
+                                            <button onClick={toggleSelectAll} className="hover:scale-110 transition-transform">
+                                                {selectAll ? <CheckSquare className="w-4 h-4 text-indigo-600" /> : <Square className="w-4 h-4 text-slate-400" />}
+                                            </button>
+                                        )}
+                                    </TableHead>
                                     <TableHead className="w-[130px] font-bold text-slate-600 text-xs h-10 py-2">No. Form</TableHead>
                                     <TableHead className="font-bold text-slate-600 text-xs h-10 py-2 w-[120px]">Tanggal</TableHead>
                                     <TableHead className="font-bold text-slate-600 text-xs h-10 py-2 w-[180px]">Nama Karyawan</TableHead>
@@ -285,9 +408,14 @@ export default function SuggestionSystemPage() {
                                     </TableRow>
                                 ) : (
                                     data.map((item, index) => (
-                                        <TableRow key={item.id} className="hover:bg-slate-50/80 transition-colors">
-                                            <TableCell className="py-3 pl-5 text-xs font-semibold text-slate-400 text-center w-[44px]">
-                                                {startItem + index}
+                                        <TableRow key={item.id} className={`hover:bg-slate-50/80 transition-colors ${selectedIds.has(item.id.toString()) ? 'bg-indigo-50/60' : ''}`}>
+                                            <TableCell className={`py-3 pl-5 text-xs font-semibold text-slate-400 text-center w-[44px] ${!isEvaluator ? 'cursor-default' : ''}`}>                                                {isEvaluator ? (
+                                                    <button onClick={() => toggleSelect(item.id.toString())} className="hover:scale-110 transition-transform">
+                                                        {selectedIds.has(item.id.toString()) ? <CheckSquare className="w-4 h-4 text-indigo-600" /> : <Square className="w-4 h-4 text-slate-400" />}
+                                                    </button>
+                                                ) : (
+                                                    <div className="w-4 h-4" />
+                                                )}
                                             </TableCell>
                                             <TableCell className="py-3 text-xs font-semibold text-slate-700">{item.noForm}</TableCell>
                                             <TableCell className="py-3 text-xs">{formatDate(item.tanggal)}</TableCell>
@@ -386,31 +514,27 @@ export default function SuggestionSystemPage() {
                                             <span className="text-[10px] font-bold">Detail</span>
                                         </button>
                                         {item.statusApproval === 'PENDING' ? (
-                                            <Link href={`/admin/suggestions/edit/${item.id}`} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-indigo-50 text-indigo-600 transition-colors">
-                                                <Edit className="w-4 h-4" />
-                                                <span className="text-[10px] font-bold">Edit</span>
-                                            </Link>
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center gap-1 p-2 text-slate-400 opacity-50 cursor-not-allowed">
-                                                <Edit className="w-4 h-4" />
-                                                <span className="text-[10px] font-bold">Edit</span>
-                                            </div>
-                                        )}
-                                        {isEvaluator && (
-                                            <Link href={`/admin/suggestions/${item.id}`} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-blue-50 text-blue-600 transition-colors">
-                                                {item.statusApproval === 'PENDING' ? (
-                                                    <>
-                                                        <Wrench className="w-4 h-4" />
-                                                        <span className="text-[10px] font-bold">Evaluasi</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <CheckCircle className="w-4 h-4" />
-                                                        <span className="text-[10px] font-bold">Hasil</span>
-                                                    </>
-                                                )}
-                                            </Link>
-                                        )}
+                                            <button onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DITERIMA?') && bulkUpdateSuggestion(item.id, 'RECEIVED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-indigo-50 text-indigo-600 transition-colors">
+                                                <CheckCircle className="w-4 h-4" />
+                                                <span className="text-[10px] font-bold">Diterima</span>
+                                            </button>
+                                        ) : item.statusApproval === 'RECEIVED' ? (
+                                            <button onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DIEVALUSI?') && bulkUpdateSuggestion(item.id, 'EVALUATED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-blue-50 text-blue-600 transition-colors">
+                                                <Wrench className="w-4 h-4" />
+                                                <span className="text-[10px] font-bold">Dievaluasi</span>
+                                            </button>
+                                        ) : item.statusApproval === 'EVALUATED' ? (
+                                            <>
+                                                <button onClick={() => window.confirm('Apakah Anda yakin ingin menyetujui ide ini?') && bulkUpdateSuggestion(item.id, 'APPROVED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors">
+                                                    <CheckCircle className="w-4 h-4" />
+                                                    <span className="text-[10px] font-bold">Di Approve</span>
+                                                </button>
+                                                <button onClick={() => window.confirm('Apakah Anda yakin ingin menolak ide ini?') && bulkUpdateSuggestion(item.id, 'REJECTED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
+                                                    <AlertCircle className="w-4 h-4" />
+                                                    <span className="text-[10px] font-bold">Di Tolak</span>
+                                                </button>
+                                            </>
+                                        ) : null}
                                         {isSuperAdmin && (
                                             <button onClick={() => handleDelete(item.id)} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
                                                 <Trash2 className="w-4 h-4" />
@@ -510,8 +634,8 @@ export default function SuggestionSystemPage() {
                                         <p className="text-sm font-semibold text-slate-900">{viewDialogData.namaKaryawan}</p>
                                     </div>
                                     <div>
-                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1"><Tag className="w-3.5 h-3.5" /><span className="text-[10px] font-bold uppercase tracking-wide">Focus Defect</span></div>
-                                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium border-0">{viewDialogData.focusDefect || '-'}</Badge>
+                                        <div className="flex items-center gap-1.5 text-slate-500 mb-1"><Tag className="w-3.5 h-3.5 shrink-0" /><span className="text-[10px] font-bold uppercase tracking-wide">Focus Defect</span></div>
+                                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium border-0 whitespace-normal text-left break-words">{viewDialogData.focusDefect || '-'}</Badge>
                                     </div>
                                 </div>
                                 <div className="mb-8">
@@ -543,6 +667,31 @@ export default function SuggestionSystemPage() {
                                             </div>
                                         )}
                                     </div>
+                                    {/* Status Action Buttons for Evaluators */}
+                                    {isEvaluator && (
+                                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-200">
+                                            {viewDialogData.statusApproval === 'PENDING' && (
+                                                <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DITERIMA?') && bulkUpdateSuggestion(String(viewDialogData.id), 'RECEIVED')} className="h-8 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-lg">
+                                                    <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Terima Ide
+                                                </Button>
+                                            )}
+                                            {viewDialogData.statusApproval === 'RECEIVED' && (
+                                                <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DIEVALUSI?') && bulkUpdateSuggestion(String(viewDialogData.id), 'EVALUATED')} className="h-8 px-4 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded-lg">
+                                                    <Wrench className="w-3.5 h-3.5 mr-1.5" /> Evaluasi Ide
+                                                </Button>
+                                            )}
+                                            {viewDialogData.statusApproval === 'EVALUATED' && (
+                                                <>
+                                                    <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin menyetujui ide ini?') && bulkUpdateSuggestion(String(viewDialogData.id), 'APPROVED')} className="h-8 px-4 text-xs font-bold bg-green-600 hover:bg-green-700 text-white shadow-sm rounded-lg">
+                                                        <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Approve Ide
+                                                    </Button>
+                                                    <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin menolak ide ini?') && bulkUpdateSuggestion(String(viewDialogData.id), 'REJECTED')} className="h-8 px-4 text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm rounded-lg">
+                                                        <AlertCircle className="w-3.5 h-3.5 mr-1.5" /> Tolak Ide
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </>

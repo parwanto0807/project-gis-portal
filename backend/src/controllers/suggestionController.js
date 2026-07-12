@@ -115,7 +115,7 @@ export const createSuggestion = async (req, res, next) => {
         delete data.fotoKondisiBase64; 
         
         const newSuggestion = await prisma.improvementSuggestion.create({ data });
-        res.status(StatusCodes.CREATED).json({ success: true, data: newSuggestion, message: 'Suggestion created successfully' });
+res.status(StatusCodes.CREATED).json({ success: true, data: newSuggestion, message: 'Suggestion created successfully' });
     } catch (error) {
         next(error);
     }
@@ -277,9 +277,13 @@ export const getSuggestionAnalytics = async (req, res, next) => {
         const totalApresiasi = aggApresiasi._sum.nominalApresiasi || 0;
 
         // 2. Status Data
+        const received = await prisma.improvementSuggestion.count({ where: { statusApproval: 'RECEIVED' } });
+        const evaluated = await prisma.improvementSuggestion.count({ where: { statusApproval: 'EVALUATED' } });
         const statusData = [
             { name: 'Pending', value: pending, fill: '#F59E0B' },
-            { name: 'Approved', value: approved, fill: '#10B981' },
+            { name: 'Diterima', value: received, fill: '#10B981' },
+            { name: 'Dievaluasi', value: evaluated, fill: '#3B82F6' },
+            { name: 'Approved', value: approved, fill: '#06B6D4' },
             { name: 'Rejected', value: rejected, fill: '#EF4444' }
         ].filter(i => i.value > 0);
 
@@ -427,7 +431,7 @@ export const getSuggestionAnalytics = async (req, res, next) => {
         res.json({
             success: true,
             data: {
-                kpi: { total, pending, approved, rejected, approvalRate, totalApresiasi },
+                kpi: { total, pending, received, evaluated, approved, rejected, approvalRate, totalApresiasi },
                 statusData,
                 deptData,
                 areaData,

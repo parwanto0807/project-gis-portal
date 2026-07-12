@@ -5,6 +5,38 @@ import { OAuth2Client } from 'google-auth-library';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// ─── Brute-Force Protection ──────────────────────────────────────────────
+const loginAttempts = new Map(); // key → { count, lockedUntil }
+const MAX_ATTEMPTS = 5;
+const LOCK_DURATION_MS = 5 * 60 * 1000; // 5 menit
+
+const checkLoginAttempts = (identifier) => {
+  const record = loginAttempts.get(identifier);
+  if (!record) return null;
+  if (record.lockedUntil && Date.now() < record.lockedUntil) {
+    const remaining = Math.ceil((record.lockedUntil - Date.now()) / 1000);
+    return remaining; // masih terkunci
+  }
+  if (record.lockedUntil && Date.now() >= record.lockedUntil) {
+    loginAttempts.delete(identifier); // expired, reset
+  }
+  return null;
+};
+
+const recordFailedAttempt = (identifier) => {
+  const record = loginAttempts.get(identifier) || { count: 0 };
+  record.count += 1;
+  if (record.count >= MAX_ATTEMPTS) {
+    record.lockedUntil = Date.now() + LOCK_DURATION_MS;
+  }
+  loginAttempts.set(identifier, record);
+  return MAX_ATTEMPTS - record.count; // remaining attempts
+};
+
+const resetLoginAttempts = (identifier) => {
+  loginAttempts.delete(identifier);
+};
+
 export const register = async (data) => {
   const { email, password, username, firstName, lastName } = data;
 
@@ -32,11 +64,19 @@ export const register = async (data) => {
 };
 
 export const login = async (identifier, password) => {
+  // ⛔ Check if this identifier is locked due to too many failed attempts
+  const lockRemaining = checkLoginAttempts(identifier);
+  if (lockRemaining !== null) {
+    const error = new Error('Terlalu banyak percobaan login. Tunggu beberapa menit sebelum mencoba lagi.');
+    error.statusCode = 429;
+    throw error;
+  }
+
   const user = await prisma.user.findFirst({
     where: {
       OR: [{ email: identifier }, { username: identifier }],
     },
-    include: { permissions: true } 
+    include: { permissions: true }
   });
 
   if (!user || !user.password) {
@@ -53,9 +93,44 @@ export const login = async (identifier, password) => {
 
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
-    const error = new Error('Password salah');
+    const remaining = recordFailedAttempt(identifier);
+    let msg = 'Password salah';
+    if (remaining !== null) {
+      msg = `Password salah. Percobaan login tersisa: ${remaining}`;
+    }
+    const error = new Error(msg);
     error.statusCode = 401;
+
+    // ✅ Log failed attempt
+    try {
+      await prisma.loginAttempt.create({
+        data: {
+          identifier,
+          userId: user.id,
+          success: false,
+          reason: 'failed_login',
+        }
+      });
+    } catch (logError) {};
+
     throw error;
+  }
+
+  // ✅ Success – clear attempts map
+  resetLoginAttempts(identifier);
+
+  // ✅ Log successful login attempt
+  try {
+    await prisma.loginAttempt.create({
+      data: {
+        identifier,
+        userId: user.id,
+        success: true,
+        reason: 'successful_login',
+      }
+    });
+  } catch (logError) {
+    console.error('Failed to log successful login:', logError);
   }
 
   return user;

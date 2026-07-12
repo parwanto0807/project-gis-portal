@@ -80,6 +80,7 @@ model User {
   reports        DisciplineReport[] @relation("Reporter")
   handledReports DisciplineReport[] @relation("Handler")
   temuanPeduli   TemuanPeduli[]     @relation("DiInputOleh")
+  loginRecords   LoginAttempt[]     @relation("LoginAttempts")
   userLogs       UserLog[]          @relation("UserLogs")
 
   createdAt DateTime @default(now())
@@ -416,6 +417,24 @@ model UserLog {
   @@map("user_logs")
 }
 
+model LoginAttempt {
+  id         Int      @id @default(autoincrement())
+  identifier String   // username, email, or NIK
+  userId     Int?     // null for unknown identifiers (e.g., invalid emails)
+  ip         String?
+  userAgent  String?
+  success    Boolean
+  reason     String? // e.g., "invalid_credentials", "locked_out", "ip_rejected"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User? @relation("LoginAttempts", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([identifier])
+  @@index([createdAt])
+  @@map("login_attempts")
+}
+
 model ImprovementSuggestion {
   id           Int      @id @default(autoincrement())
   noForm       String   @unique
@@ -448,7 +467,7 @@ model ImprovementSuggestion {
   fotoEvaluasiUrls Json?
   approvalAtasan   String? // Signature Data URL (base64)
   tanggalApproval  DateTime?
-  statusApproval   String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  statusApproval   String    @default("PENDING") // PENDING → RECEIVED → EVALUATED → APPROVED / REJECTED
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

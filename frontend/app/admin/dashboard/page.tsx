@@ -7,9 +7,9 @@ import {
     XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import {
-    AlertCircle, CheckCircle2, Clock, Activity, FileSearch,
+    AlertCircle, CheckCircle2, Clock, Activity, FileSearch, Eye,
     TrendingUp, CalendarDays, ArrowRight, Building, MapPin, Target, Flame, AlertTriangle,
-    Lightbulb, DollarSign, Users, Award, BadgePercent, BarChart2
+    Lightbulb, DollarSign, Users, Award, BadgePercent, BarChart2, Trash2, Wrench, CheckCircle
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -569,7 +569,7 @@ const SuggestionAnalyticsDashboard = () => {
         <div className="space-y-6 animate-in fade-in duration-500">
 
             {/* ── Section A: KPI Cards ─────────────────────────────────── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
                 <KPICard
                     title="Total Ide Submitted"
                     value={kpi.total}
@@ -579,28 +579,44 @@ const SuggestionAnalyticsDashboard = () => {
                     bgClass="bg-indigo-50 dark:bg-indigo-900/30"
                 />
                 <KPICard
-                    title="Approval Rate"
-                    value={`${kpi.approvalRate}%`}
-                    subtext={`${kpi.approved} dari ${kpi.total} ide diterima`}
-                    icon={BadgePercent}
-                    colorClass="text-emerald-600"
-                    bgClass="bg-emerald-50 dark:bg-emerald-900/30"
-                />
-                <KPICard
-                    title="Total Apresiasi"
-                    value={kpi.totalApresiasi > 0 ? formatRupiah(kpi.totalApresiasi) : 'Rp 0'}
-                    subtext="Nilai apresiasi diberikan"
-                    icon={DollarSign}
-                    colorClass="text-amber-600"
-                    bgClass="bg-amber-50 dark:bg-amber-900/30"
-                />
-                <KPICard
                     title="Menunggu Review"
                     value={kpi.pending}
                     subtext="Ide status PENDING"
                     icon={Clock}
                     colorClass="text-rose-600"
                     bgClass="bg-rose-50 dark:bg-rose-900/30"
+                />
+                <KPICard
+                    title="Ide Diterima"
+                    value={kpi.received || 0}
+                    subtext="Ide status RECEIVED"
+                    icon={CheckCircle2}
+                    colorClass="text-emerald-600"
+                    bgClass="bg-emerald-50 dark:bg-emerald-900/30"
+                />
+                <KPICard
+                    title="Ide Dievaluasi"
+                    value={kpi.evaluated || 0}
+                    subtext="Ide status EVALUATED"
+                    icon={Eye}
+                    colorClass="text-blue-600"
+                    bgClass="bg-blue-50 dark:bg-blue-900/30"
+                />
+                <KPICard
+                    title="Ide Di Approve"
+                    value={kpi.approved || 0}
+                    subtext="Ide status APPROVED"
+                    icon={CheckCircle2}
+                    colorClass="text-green-600"
+                    bgClass="bg-green-50 dark:bg-green-900/30"
+                />
+                <KPICard
+                    title="Ide Ditolak"
+                    value={kpi.rejected || 0}
+                    subtext="Ide status REJECTED"
+                    icon={AlertCircle}
+                    colorClass="text-red-600"
+                    bgClass="bg-red-50 dark:bg-red-900/30"
                 />
             </div>
 

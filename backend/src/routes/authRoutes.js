@@ -16,6 +16,8 @@ router.get('/me', verifyToken, (req, res) => {
   res.json({ success: true, user: req.user });
 });
 
+router.get('/login-attempts', verifyToken, authController.getLoginAttempts);
+
 router.get('/test-me', async (req, res) => {
   try {
     const email = 'parwanto0807@gmail.com';
@@ -27,9 +29,6 @@ router.get('/test-me', async (req, res) => {
     res.json({ error: err.message });
   }
 });
-
-// Add auth middleware for this
-// router.get('/companies', authMiddleware, authController.getMyCompanies);
 
 router.post('/refresh', authController.refreshToken);
 router.post('/logout', authController.logout);

@@ -32,9 +32,32 @@ router.route('/:id')
         upload.fields([
             { name: 'fotoKondisi', maxCount: 3 },
             { name: 'fotoEvaluasi', maxCount: 3 }
-        ]), 
+        ]),
         updateSuggestion
     )
     .delete(deleteSuggestion); // optionally authorize('ADMIN')
+
+// Bulk update endpoint
+router.post('/bulk-update', async (req, res, next) => {
+    const { ids, status } = req.body;
+
+    try {
+        const updatePromises = ids.map(id => {
+            return prisma.improvementSuggestion.update({
+                where: { id: parseInt(id) },
+                data: { statusApproval: status }
+            });
+        });
+
+        const updatedSuggestions = await Promise.all(updatePromises);
+        res.json({
+            success: true,
+            data: updatedSuggestions,
+            message: `${ids.length} suggestion(s) updated successfully to ${status}`
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default router;

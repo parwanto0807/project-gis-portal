@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import * as authService from '../services/authService.js';
+import prisma from '../config/prisma.js';
 
 export const register = async (req, res, next) => {
   try {
@@ -79,6 +80,62 @@ export const googleLogin = async (req, res, next) => {
   }
 };
 
+export const getLoginAttempts = async (req, res, next) => {
+  try {
+    // Only admins or specific roles can access this endpoint
+    const userRole = req.user?.role;
+    if (!['ADMIN', 'SUPER_ADMIN'].includes(userRole || '')) {
+      return res.status(StatusCodes.FORBIDDEN).json({ success: false, message: 'Access denied: insufficient permissions' });
+    }
+
+    const limit = parseInt(req.query.limit) || 50;
+    const skip = parseInt(req.query.skip) || 0;
+    const successOnly = req.query.success === 'true';
+    const identifier = req.query.identifier;
+
+    const where = {};
+    if (successOnly) {
+      where.success = true;
+    }
+    if (identifier) {
+      where.identifier = identifier;
+    }
+
+    const attempts = await prisma.loginAttempt.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            username: true,
+            firstName: true,
+            lastName: true,
+            role: true
+          }
+        }
+      }
+    });
+
+    const total = await prisma.loginAttempt.count({ where });
+
+    res.json({
+      success: true,
+      data: attempts,
+      meta: {
+        total,
+        limit,
+        skip,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const refreshToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
@@ -87,12 +144,12 @@ export const refreshToken = async (req, res, next) => {
     }
 
     const result = await authService.refreshAccessToken(refreshToken);
-    
+
     // Rotate Refresh Token and Access Token
     setTokensCookies(res, result.accessToken, result.refreshToken);
-    
-    res.json({ 
-      success: true 
+
+    res.json({
+      success: true
       // accessToken is now in cookie, not in body
     });
 
