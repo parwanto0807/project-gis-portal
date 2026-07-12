@@ -1,5 +1,5 @@
 import express from 'express';
-import { 
+import {
     createSuggestion,
     getSuggestions,
     getSuggestionById,
@@ -9,6 +9,7 @@ import {
 } from '../controllers/suggestionController.js';
 import { verifyToken } from '../middlewares/authMiddleware.js';
 import { upload } from '../middlewares/uploadMiddleware.js';
+import prisma from '../config/prisma.js';
 
 const router = express.Router();
 
