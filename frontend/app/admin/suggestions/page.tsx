@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, ChevronLeft, ChevronRight, CheckSquare, Square } from 'lucide-react';
+import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, ChevronLeft, ChevronRight, CheckSquare, Square, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/badge';
