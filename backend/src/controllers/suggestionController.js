@@ -273,6 +273,9 @@ export const deleteSuggestion = async (req, res, next) => {
 export const exportSuggestionsExcel = async (req, res, next) => {
     try {
         const ExcelJS = (await import('exceljs')).default;
+        const fs = (await import('fs/promises')).default;
+        const path = (await import('path')).default;
+        const os = (await import('os')).default;
         const suggestions = await prisma.improvementSuggestion.findMany({
             orderBy: [{ tanggal: 'asc' }, { noForm: 'asc' }]
         });
@@ -420,8 +423,13 @@ export const exportSuggestionsExcel = async (req, res, next) => {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=Suggestion_System_${new Date().toISOString().split('T')[0]}.xlsx`);
 
-        await workbook.xlsx.write(res);
-        res.end();
+        // Write to temp file first — antivirus trusts physical files more than in-memory streams
+        const tmpDir = os.tmpdir();
+        const tmpFile = path.join(tmpDir, `suggestion-${Date.now()}.xlsx`);
+        await workbook.xlsx.writeFile(tmpFile);
+        const buffer = await fs.readFile(tmpFile);
+        res.send(buffer);
+        await fs.unlink(tmpFile).catch(() => {});
     } catch (error) {
         next(error);
     }
