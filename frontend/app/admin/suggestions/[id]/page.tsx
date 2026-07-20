@@ -134,8 +134,8 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
             Object.entries(formData).forEach(([key, value]) => {
                 if (value) payload.append(key, value as string);
             });
-            payload.append('statusApproval', status);
-            payload.append('tanggalApproval', status !== 'PENDING' ? new Date().toISOString() : '');
+            payload.set('statusApproval', status);
+            payload.set('tanggalApproval', status !== 'PENDING' ? new Date().toISOString() : '');
             
             // Keep existing photos that were not deleted
             if (existingPhotos.length > 0) {

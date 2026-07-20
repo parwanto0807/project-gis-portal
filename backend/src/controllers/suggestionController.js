@@ -193,10 +193,20 @@ export const updateSuggestion = async (req, res, next) => {
         const { id } = req.params;
         
         const data = { ...req.body };
+        if (Array.isArray(data.statusApproval)) data.statusApproval = data.statusApproval[data.statusApproval.length - 1];
+        
         if (req.body.tanggal) data.tanggal = new Date(req.body.tanggal);
+        else delete data.tanggal; // Required field, do not update if empty
+
         if (req.body.targetSelesai) data.targetSelesai = new Date(req.body.targetSelesai);
+        else data.targetSelesai = null;
+
         if (req.body.tanggalAktual) data.tanggalAktual = new Date(req.body.tanggalAktual);
-        if (req.body.tanggalApproval) data.tanggalApproval = new Date(req.body.tanggalApproval);
+        else data.tanggalAktual = null;
+
+        let tglApprovalRaw = Array.isArray(req.body.tanggalApproval) ? req.body.tanggalApproval[req.body.tanggalApproval.length - 1] : req.body.tanggalApproval;
+        if (tglApprovalRaw) data.tanggalApproval = new Date(tglApprovalRaw);
+        else data.tanggalApproval = null;
         
         // Handle numeric fields from form-data
         if (data.ngRatioSebelum) data.ngRatioSebelum = parseFloat(data.ngRatioSebelum);
