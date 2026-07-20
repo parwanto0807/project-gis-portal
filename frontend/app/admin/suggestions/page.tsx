@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, ChevronLeft, ChevronRight, CheckSquare, Square, AlertCircle } from 'lucide-react';
+import { PlusCircle, Search, Lightbulb, Trash2, Eye, Edit, MapPin, Calendar, User, Tag, Info, Wrench, X, CheckCircle, Camera, Printer, FileSpreadsheet, ChevronLeft, ChevronRight, CheckSquare, Square, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/badge';
@@ -263,6 +263,29 @@ export default function SuggestionSystemPage() {
         }
     };
 
+    const handleExportExcel = async () => {
+        try {
+            toast.info('Menyiapkan file Excel...');
+            const baseUrl = getBaseUrl();
+            const response = await fetch(`${baseUrl}/api/v1/suggestions/export/excel`, {
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Export failed');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Suggestion_System_${new Date().toISOString().split('T')[0]}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            toast.success('File Excel berhasil diunduh');
+        } catch {
+            toast.error('Gagal export Excel');
+        }
+    };
+
     // Pagination: generate page numbers with ellipsis
     const getPageNumbers = (): (number | '...')[] => {
         const delta = 2;
@@ -306,15 +329,28 @@ export default function SuggestionSystemPage() {
                     </div>
                 </div>
                 <div className="flex sm:flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                    <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={handlePrintPDF}
-                        disabled={data.length === 0}
-                        className="flex-1 sm:flex-none h-9 gap-2 border-slate-200 dark:border-slate-800 font-semibold shadow-sm rounded-lg justify-center hover:bg-slate-50 dark:hover:bg-slate-900"
-                    >
-                        <Printer className="w-4 h-4 text-slate-600 dark:text-slate-400" /> <span className="hidden sm:inline">Cetak PDF</span>
-                    </Button>
+                    {isEvaluator && (
+                        <>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handleExportExcel}
+                                disabled={data.length === 0}
+                                className="flex-1 sm:flex-none h-9 gap-2 border-emerald-200 dark:border-emerald-800 font-semibold shadow-sm rounded-lg justify-center hover:bg-emerald-50 dark:hover:bg-emerald-950 text-emerald-700 dark:text-emerald-300"
+                            >
+                                <FileSpreadsheet className="w-4 h-4" /> <span className="hidden sm:inline">Export Excel</span>
+                            </Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handlePrintPDF}
+                                disabled={data.length === 0}
+                                className="flex-1 sm:flex-none h-9 gap-2 border-slate-200 dark:border-slate-800 font-semibold shadow-sm rounded-lg justify-center hover:bg-slate-50 dark:hover:bg-slate-900"
+                            >
+                                <Printer className="w-4 h-4 text-slate-600 dark:text-slate-400" /> <span className="hidden sm:inline">Cetak PDF</span>
+                            </Button>
+                        </>
+                    )}
                     <Link href="/admin/suggestions/create" passHref>
                         <Button size="sm" className="flex-1 sm:flex-none h-9 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm rounded-lg justify-center">
                             <PlusCircle className="w-4 h-4" /> <span>Tambah Ide</span>

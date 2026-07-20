@@ -270,6 +270,163 @@ export const deleteSuggestion = async (req, res, next) => {
     }
 };
 
+export const exportSuggestionsExcel = async (req, res, next) => {
+    try {
+        const ExcelJS = (await import('exceljs')).default;
+        const suggestions = await prisma.improvementSuggestion.findMany({
+            orderBy: [{ tanggal: 'asc' }, { noForm: 'asc' }]
+        });
+
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'GIS Portal';
+        workbook.created = new Date();
+
+        const sheet = workbook.addWorksheet('Evaluasi Ide SS');
+
+        // Title row
+        sheet.mergeCells('A1:U1');
+        const titleCell = sheet.getCell('A1');
+        titleCell.value = 'EVALUASI IDE SUGGESTION SYSTEM - SELEKSI TOP 3';
+        titleCell.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40AF' } };
+        titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        sheet.getRow(1).height = 36;
+
+        // Sub-header
+        sheet.mergeCells('A2:U2');
+        const subCell = sheet.getCell('A2');
+        subCell.value = 'Cara pakai: isi data ide pada kolom putih. Kolom score, total score, ranking, dan keputusan akan otomatis terhitung.';
+        subCell.font = { name: 'Calibri', size: 9, italic: true, color: { argb: 'FF475569' } };
+        subCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
+        subCell.alignment = { horizontal: 'left', vertical: 'middle' };
+        sheet.getRow(2).height = 20;
+
+        sheet.mergeCells('A3:U3');
+        const subCell2 = sheet.getCell('A3');
+        subCell2.value = 'Skala score otomatis: semakin tinggi potensi turunnya NG Ratio, semakin murah biaya, dan semakin cepat implementasi = score semakin tinggi.';
+        subCell2.font = { name: 'Calibri', size: 9, italic: true, color: { argb: 'FF475569' } };
+        subCell2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
+        subCell2.alignment = { horizontal: 'left', vertical: 'middle' };
+        sheet.getRow(3).height = 20;
+
+        // Header columns
+        const headers = [
+            'No', 'Tanggal Masuk', 'Nama Pengusul', 'Dept/Area', 'Judul Ide SS',
+            'Kondisi & usulan', 'Ide Perbaikan', 'PIC Aplikasi',
+            'Potensi Penurunan NG Ratio (%)', 'Score NG',
+            'Est. Biaya Implementasi (Rp)', 'Score Biaya',
+            'Est. Waktu Implementasi (hari)', 'Score Kemudahan',
+            'Total Score', 'Ranking', 'Keputusan', 'Status',
+            'Catatan Evaluasi', 'Target Start', 'Target Finish'
+        ];
+
+        const headerRow = sheet.getRow(5);
+        headers.forEach((h, i) => {
+            const cell = headerRow.getCell(i + 1);
+            cell.value = h;
+            cell.font = { name: 'Calibri', size: 9, bold: true, color: { argb: 'FFFFFFFF' } };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40AF' } };
+            cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        });
+        headerRow.height = 32;
+
+        // Column widths
+        const colWidths = [5, 18, 24, 20, 30, 35, 35, 16, 16, 10, 18, 10, 16, 10, 10, 8, 18, 12, 25, 14, 14];
+        colWidths.forEach((w, i) => { sheet.getColumn(i + 1).width = w; });
+
+        // Keputusan mapping
+        const keputusanMap = {
+            'PENDING': 'Pending',
+            'RECEIVED': 'Diterima',
+            'EVALUATED': 'Dievaluasi',
+            'APPROVED': 'Approved',
+            'REJECTED': 'Ditolak'
+        };
+
+        // Data rows
+        suggestions.forEach((item, idx) => {
+            const rowIdx = idx + 6;
+            const row = sheet.getRow(rowIdx);
+            const noFormYear = item.noForm ? item.noForm.split('-')[1] : '';
+            const tglMasuk = item.tanggal
+                ? `${item.tanggal.toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric' })}\n${item.noForm || ''}`
+                : item.noForm || '';
+
+            const namaUsul = `${item.namaKaryawan || ''}${item.nik ? `\nNIK: ${item.nik}` : ''}`;
+            const deptArea = `${item.departemen || ''}${item.areaProses ? `\n${item.areaProses}` : ''}`;
+            const keputusan = keputusanMap[item.statusApproval] || item.statusApproval || '';
+
+            row.getCell(1).value = idx + 1;
+            row.getCell(2).value = tglMasuk;
+            row.getCell(3).value = namaUsul;
+            row.getCell(4).value = deptArea;
+            row.getCell(5).value = item.judulIde || '';
+            row.getCell(6).value = item.kondisiSaatIni || '';
+            row.getCell(7).value = item.usulanImprovement || '';
+            row.getCell(8).value = item.picImplementasi || '';
+            row.getCell(9).value = item.impactTurun != null ? item.impactTurun : (item.ngRatioSesudah != null ? item.ngRatioSesudah : '');
+            // Score fields — not in DB, left empty for manual input
+            row.getCell(10).value = '';
+            row.getCell(11).value = '';
+            row.getCell(12).value = '';
+            row.getCell(13).value = '';
+            row.getCell(14).value = '';
+            row.getCell(15).value = '';
+            row.getCell(16).value = '';
+            row.getCell(17).value = keputusan;
+            row.getCell(18).value = '';
+            row.getCell(19).value = item.catatan || '';
+            row.getCell(20).value = ''; // Target Start — not in DB
+            row.getCell(21).value = item.targetSelesai
+                ? item.targetSelesai.toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric' })
+                : '';
+
+            // Style data cells
+            for (let c = 1; c <= 21; c++) {
+                const cell = row.getCell(c);
+                cell.font = { name: 'Calibri', size: 9 };
+                cell.alignment = { vertical: 'top', wrapText: true };
+                if (c === 1) cell.alignment = { horizontal: 'center', vertical: 'top' };
+            }
+
+            row.height = 60;
+        });
+
+        // Apply alternating row colors and border
+        suggestions.forEach((_, idx) => {
+            const rowIdx = idx + 6;
+            const row = sheet.getRow(rowIdx);
+            const isOdd = idx % 2 === 0;
+            for (let c = 1; c <= 21; c++) {
+                const cell = row.getCell(c);
+                if (isOdd) {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+                }
+                cell.border = {
+                    top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                    right: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                };
+            }
+        });
+
+        // Freeze panes
+        sheet.views = [{ state: 'frozen', ySplit: 5 }];
+
+        // Auto-filter
+        sheet.autoFilter = { from: { row: 5, column: 1 }, to: { row: suggestions.length + 5, column: 21 } };
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=Suggestion_System_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getSuggestionAnalytics = async (req, res, next) => {
     try {
         // 1. KPI
