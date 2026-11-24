@@ -5,10 +5,9 @@ import * as backupController from '../controllers/backupController.js';
 
 const router = express.Router();
 
-// Require login and super admin (or specific role) for backups
+// Require login and super admin / admin for backups
 router.use(verifyToken);
-// You can uncomment this if you strictly want SUPER_ADMIN only
-// router.use(roleMiddleware(['SUPER_ADMIN']));
+router.use(roleMiddleware(['SUPER_ADMIN', 'ADMIN']));
 
 router.get('/', backupController.listBackups);
 router.post('/', backupController.createBackup);

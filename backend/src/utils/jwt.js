@@ -10,13 +10,17 @@ const generateTokens = (user, companyId = null, supplierId = null) => {
     supplierId: supplierId,
   };
 
-  const accessToken = jwt.sign(payload, process.env.JWT_SECRET || 'secret', {
+  if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
+    throw new Error('JWT_SECRET and JWT_REFRESH_SECRET must be configured');
+  }
+
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: '15m',
   });
 
   const refreshToken = jwt.sign(
     { userId: user.id },
-    process.env.JWT_REFRESH_SECRET || 'refresh_secret',
+    process.env.JWT_REFRESH_SECRET,
     { expiresIn: '7d' }
   );
 

@@ -17,11 +17,8 @@ import { verifyToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// In production enable auth middleware; allow open access in local dev for testing
-const productAuthEnabled = process.env.NODE_ENV === 'production';
-if (productAuthEnabled) {
-    router.use(verifyToken);
-}
+// Require authentication for all product endpoints
+router.use(verifyToken);
 
 // Product Parent Endpoints
 router.get('/', getProducts);

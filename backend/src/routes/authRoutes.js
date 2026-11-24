@@ -1,12 +1,10 @@
 import express from 'express';
 import * as authController from '../controllers/authController.js';
-import prisma from '../config/prisma.js';
-import * as authService from '../services/authService.js';
-import { verifyToken } from '../middlewares/authMiddleware.js';
+import { verifyToken, roleMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/register', authController.register);
+router.post('/register', verifyToken, roleMiddleware(['SUPER_ADMIN', 'ADMIN']), authController.register);
 router.post('/login', authController.login);
 router.post('/google', authController.googleLogin);
 router.post('/force-change-password', verifyToken, authController.forceChangePassword);
@@ -17,18 +15,6 @@ router.get('/me', verifyToken, (req, res) => {
 });
 
 router.get('/login-attempts', verifyToken, authController.getLoginAttempts);
-
-router.get('/test-me', async (req, res) => {
-  try {
-    const email = 'parwanto0807@gmail.com';
-    let user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.json({ error: 'not found' });
-    const session = await authService.createSession(user);
-    res.json(session);
-  } catch (err) {
-    res.json({ error: err.message });
-  }
-});
 
 router.post('/refresh', authController.refreshToken);
 router.post('/logout', authController.logout);

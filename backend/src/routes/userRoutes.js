@@ -1,12 +1,11 @@
 import express from 'express';
 import * as userController from '../controllers/userController.js';
-// import { authMiddleware, roleMiddleware } from '../middlewares/authMiddleware.js'; // Assuming you have these
+import { verifyToken, roleMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// TODO: Restore middleware once AuthMiddleware is ready
-// router.use(authMiddleware); 
-// router.use(roleMiddleware(['SUPER_ADMIN', 'ADMIN']));
+router.use(verifyToken);
+router.use(roleMiddleware(['SUPER_ADMIN', 'ADMIN']));
 
 router.get('/', userController.getUsers);
 router.get('/:id', userController.getUserById);

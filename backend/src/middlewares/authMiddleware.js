@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { StatusCodes } from 'http-status-codes';
 
 export const verifyToken = (req, res, next) => {
@@ -18,8 +19,15 @@ export const verifyToken = (req, res, next) => {
     });
   }
 
+  if (!process.env.JWT_SECRET) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: 'Server configuration error'
+    });
+  }
+
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // Contains userId, email, role, companyId
     next();
   } catch (error) {
@@ -35,10 +43,13 @@ export const verifyApiKeyOrToken = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];
   const validApiKey = process.env.API_KEY;
 
-  if (apiKey && validApiKey && apiKey === validApiKey) {
-    // Mock user for roleMiddleware to pass
-    req.user = { role: 'ADMIN', source: 'api_key' };
-    return next();
+  if (apiKey && validApiKey && typeof apiKey === 'string') {
+    const bufA = Buffer.from(apiKey);
+    const bufB = Buffer.from(validApiKey);
+    if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
+      req.user = { role: 'ADMIN', source: 'api_key' };
+      return next();
+    }
   }
 
   // Fallback to JWT token verification

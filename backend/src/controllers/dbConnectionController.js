@@ -80,7 +80,17 @@ export const getTableDetails = async (req, res, next) => {
 export const getSavedConnections = async (req, res, next) => {
     try {
         const saved = await prisma.savedDatabaseConnection.findMany({
-            orderBy: { createdAt: 'desc' }
+            orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                name: true,
+                host: true,
+                port: true,
+                user: true,
+                database: true,
+                createdAt: true,
+                updatedAt: true
+            }
         });
         res.json({ success: true, data: saved });
     } catch (error) {

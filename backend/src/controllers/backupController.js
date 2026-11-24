@@ -66,9 +66,17 @@ export const createBackup = async (req, res, next) => {
     }
 };
 
+const sanitizeBackupFilename = (name) => {
+    const base = path.basename(String(name || ''));
+    if (!/^[a-zA-Z0-9._-]+\.(dump|sql|backup)$/i.test(base)) {
+        throw new Error('Invalid backup filename');
+    }
+    return base;
+};
+
 export const downloadBackup = async (req, res, next) => {
     try {
-        const { filename } = req.params;
+        const filename = sanitizeBackupFilename(req.params.filename);
         const filepath = path.join(BACKUP_DIR, filename);
 
         if (!fs.existsSync(filepath)) {
@@ -83,7 +91,7 @@ export const downloadBackup = async (req, res, next) => {
 
 export const deleteBackup = async (req, res, next) => {
     try {
-        const { filename } = req.params;
+        const filename = sanitizeBackupFilename(req.params.filename);
         const filepath = path.join(BACKUP_DIR, filename);
 
         if (fs.existsSync(filepath)) {
@@ -105,9 +113,11 @@ export const restoreBackup = async (req, res, next) => {
         
         // Check if an uploaded file exists or an existing filename was provided
         if (req.file) {
-            filepath = path.join(process.cwd(), 'src/uploads', req.file.filename);
+            const safeUploadName = sanitizeBackupFilename(req.file.filename);
+            filepath = path.join(process.cwd(), 'src/uploads', safeUploadName);
         } else if (req.body.filename) {
-            filepath = path.join(BACKUP_DIR, req.body.filename);
+            const safeBackupName = sanitizeBackupFilename(req.body.filename);
+            filepath = path.join(BACKUP_DIR, safeBackupName);
         } else {
             return res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: 'No backup file provided' });
         }

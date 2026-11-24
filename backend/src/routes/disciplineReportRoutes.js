@@ -19,7 +19,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage,
-  limits: { fileSize: 25 * 1024 * 1024 } // 25MB limit
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype && file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Format file tidak didukung. Hanya file gambar yang diizinkan.'));
+    }
+  }
 });
 
 // Routes

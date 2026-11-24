@@ -8,7 +8,7 @@ import {
     getSuggestionAnalytics,
     exportSuggestionsExcel
 } from '../controllers/suggestionController.js';
-import { verifyToken } from '../middlewares/authMiddleware.js';
+import { verifyToken, roleMiddleware } from '../middlewares/authMiddleware.js';
 import { upload } from '../middlewares/uploadMiddleware.js';
 import prisma from '../config/prisma.js';
 
@@ -40,10 +40,10 @@ router.route('/:id')
         ]),
         updateSuggestion
     )
-    .delete(deleteSuggestion); // optionally authorize('ADMIN')
+    .delete(roleMiddleware(['SUPER_ADMIN', 'ADMIN']), deleteSuggestion);
 
-// Bulk update endpoint
-router.post('/bulk-update', async (req, res, next) => {
+// Bulk update endpoint (Evaluators only)
+router.post('/bulk-update', roleMiddleware(['STAFF', 'ADMIN', 'SUPER_ADMIN', 'MANAGER']), async (req, res, next) => {
     const { ids, status } = req.body;
 
     try {

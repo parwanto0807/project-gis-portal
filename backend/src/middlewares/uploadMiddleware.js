@@ -2,13 +2,16 @@ import multer from 'multer';
 import path from 'path';
 import crypto from 'crypto';
 
+const ALLOWED_IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'src/uploads/');
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = crypto.randomBytes(8).toString('hex');
-        const ext = path.extname(file.originalname);
+        const rawExt = path.extname(file.originalname).toLowerCase();
+        const ext = ALLOWED_IMAGE_EXTS.includes(rawExt) ? rawExt : '.jpg';
         cb(null, `${Date.now()}-${uniqueSuffix}${ext}`);
     }
 });
