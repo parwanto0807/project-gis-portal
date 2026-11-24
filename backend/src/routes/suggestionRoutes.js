@@ -5,7 +5,8 @@ import {
     getSuggestionById,
     updateSuggestion,
     deleteSuggestion,
-    getSuggestionAnalytics
+    getSuggestionAnalytics,
+    exportSuggestionsExcel
 } from '../controllers/suggestionController.js';
 import { verifyToken } from '../middlewares/authMiddleware.js';
 import { upload } from '../middlewares/uploadMiddleware.js';
@@ -17,6 +18,9 @@ router.use(verifyToken); // Require authentication for all suggestion routes
 
 // Analytics
 router.get('/analytics', getSuggestionAnalytics);
+
+// Export Excel
+router.get('/export/excel', exportSuggestionsExcel);
 
 // List and Create
 router.route('/')
