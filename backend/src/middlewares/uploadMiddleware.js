@@ -15,13 +15,20 @@ const storage = multer.diskStorage({
 
 export const upload = multer({
     storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB per file limit
+    limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB per file limit (supports large smartphone photos)
     fileFilter: (req, file, cb) => {
-        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        if (allowedMimeTypes.includes(file.mimetype)) {
+        const allowedMimeTypes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/webp',
+            'image/heic',
+            'image/heif'
+        ];
+        if (allowedMimeTypes.includes(file.mimetype.toLowerCase()) || file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
-            cb(new Error('Invalid file type. Only JPEG, PNG, and WebP are allowed.'));
+            cb(new Error('Format file tidak didukung. Gunakan foto format JPEG, PNG, WebP, atau HEIC.'));
         }
     }
 });

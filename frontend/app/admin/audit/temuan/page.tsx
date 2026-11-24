@@ -13,12 +13,13 @@ import {
     ArrowLeft, ArrowRight, Eye, MapPin, Calendar, User, Clock, Wrench,
     AlertTriangle, CheckCircle2, TrendingUp, Activity, BarChart3,
     SortAsc, SortDesc, ChevronDown, Timer, ListChecks, Info, Tags,
-    RefreshCw, Shield, Flame, Target, Layers
+    RefreshCw, Shield, Flame, Target, Layers, Printer
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { generateSingleTemuanPDF, fetchActiveCompany } from '@/utils/pdfGenerator';
 import { TemuanForm } from '@/components/temuan/TemuanForm';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -140,7 +141,7 @@ export default function TemuanPeduliPage() {
     // Search, Filter, Sort, Pagination
     const [searchQuery, setSearchQuery] = useState('');
     const [filterKategori, setFilterKategori] = useState('');
-    const [filterStatus, setFilterStatus] = useState('');
+    const [filterStatus, setFilterStatus] = useState('ALL');
     const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
     const [page, setPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
@@ -192,7 +193,7 @@ export default function TemuanPeduliPage() {
                 const pelapor = item.user ? `${item.user.firstName} ${item.user.lastName}` : item.diInputOleh;
                 const matchSearch = !q || [item.area, item.tempatTemuan, item.temuan, pelapor].some(s => s?.toLowerCase().includes(q));
                 const matchKategori = !filterKategori || (Array.isArray(item.kategori4M) ? item.kategori4M.includes(filterKategori) : item.kategori4M === filterKategori);
-                const matchStatus = !filterStatus || (filterStatus === 'OPEN' ? (!item.status || item.status === 'OPEN') : item.status === filterStatus);
+                const matchStatus = !filterStatus || filterStatus === 'ALL' || (filterStatus === 'OPEN' ? (!item.status || item.status === 'OPEN') : item.status === filterStatus);
                 return matchSearch && matchKategori && matchStatus;
             })
             .sort((a, b) => {
@@ -222,11 +223,23 @@ export default function TemuanPeduliPage() {
     const handleViewDetail = (item: any) => { setSelectedDetail(item); setIsDetailOpen(true); };
     const viewPhotos = (urls: string[]) => { setPreviewImages(urls); setIsPreviewOpen(true); };
 
+    const handlePrintRowPDF = async (item: any) => {
+        const tId = toast.loading('Menyiapkan laporan PDF beserta foto...');
+        try {
+            await generateSingleTemuanPDF(item);
+            toast.success('Laporan PDF berhasil dibuat', { id: tId });
+        } catch (e) {
+            console.error(e);
+            toast.error('Gagal membuat laporan PDF', { id: tId });
+        }
+    };
+
     // ─── PDF Export ───────────────────────────────────────────────────────────
 
     const exportToPDF = async () => {
         if (data.length === 0) { toast.error('Tidak ada data untuk diexport'); return; }
 
+        const company = await fetchActiveCompany();
         const doc = new jsPDF('l', 'mm', 'a4');
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
@@ -236,7 +249,7 @@ export default function TemuanPeduliPage() {
         // Header Logo
         try {
             const img = new window.Image();
-            img.src = '/logo-md.png';
+            img.src = company.logo || '/logo-md.png';
             await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
             const logoW = 20, logoH = logoW * (img.height / img.width);
             doc.addImage(img, 'PNG', margin, 8, logoW, logoH);
@@ -244,10 +257,11 @@ export default function TemuanPeduliPage() {
 
         const textX = margin + 28;
         doc.setFontSize(14); doc.setTextColor(30, 30, 30); doc.setFont("helvetica", "bold");
-        doc.text('PT. GRAFINDO MITRASEMESTA', textX, 14);
+        doc.text((company.name || 'PT. GRAFINDO MITRASEMESTA').toUpperCase(), textX, 14);
         doc.setFontSize(8); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
-        doc.text('Cikarang Industrial Estate Jababeka 1 Block U 8D, U 8C & U 7A', textX, 19);
-        doc.text('Cikarang Utara, Bekasi Regency, West Java 17530 | Telp: (021) 8934714', textX, 23);
+        doc.text(company.address || 'Cikarang Industrial Estate Jababeka 1 Block U 8D, U 8C & U 7A', textX, 19);
+        const contactLine = [company.phone ? `Telp: ${company.phone}` : '', company.email ? `Email: ${company.email}` : '', company.website ? `Web: ${company.website}` : ''].filter(Boolean).join(' | ');
+        doc.text(contactLine || 'Cikarang Utara, Bekasi Regency, West Java 17530 | Telp: (021) 8934714', textX, 23);
         doc.setFontSize(8); doc.setTextColor(100, 100, 100);
         doc.text(formatPrintDateTime(), pageWidth - margin, 14, { align: 'right' });
 
@@ -538,7 +552,7 @@ export default function TemuanPeduliPage() {
                             <SelectValue placeholder="Semua Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Semua Status</SelectItem>
+                            <SelectItem value="ALL">Semua Status</SelectItem>
                             <SelectItem value="OPEN">Open</SelectItem>
                             <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
                             <SelectItem value="CLOSED">Closed</SelectItem>
@@ -579,7 +593,7 @@ export default function TemuanPeduliPage() {
                 <div className="flex items-center gap-2 -mt-2">
                     <span className="text-[11px] text-slate-500">
                         Menampilkan <span className="font-bold text-slate-900 dark:text-slate-50">{filteredData.length}</span> dari {data.length} temuan
-                        {(searchQuery || filterKategori || filterStatus) && <span className="text-indigo-600 font-semibold"> (filter aktif)</span>}
+                        {(searchQuery || filterKategori || (filterStatus && filterStatus !== 'ALL')) && <span className="text-indigo-600 font-semibold"> (filter aktif)</span>}
                     </span>
                 </div>
 
@@ -729,6 +743,14 @@ export default function TemuanPeduliPage() {
                                                     {/* Aksi */}
                                                     <TableCell className="text-right py-3 pr-4">
                                                         <div className="flex justify-end gap-1">
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <Button variant="outline" size="sm" className="h-7 px-2 text-[10px] font-bold rounded-md text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 shadow-sm" onClick={() => handlePrintRowPDF(item)}>
+                                                                        <Printer className="w-3.5 h-3.5 mr-1" />PDF
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>Cetak Raport PDF Lengkap + Foto & Tanda Tangan</TooltipContent>
+                                                            </Tooltip>
                                                             <Button variant="outline" size="sm" className="h-7 px-2.5 text-[10px] font-bold rounded-md text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 shadow-sm" onClick={() => handleViewDetail(item)}>
                                                                 <Eye className="w-3.5 h-3.5 mr-1" />Detail
                                                             </Button>
@@ -859,6 +881,9 @@ export default function TemuanPeduliPage() {
                                             </div>
 
                                             <div className="flex border-t border-slate-100 dark:border-slate-800">
+                                                <Button variant="ghost" className="flex-1 h-9 rounded-none text-[10px] font-bold text-indigo-600 hover:bg-indigo-50 border-r border-slate-100 dark:border-slate-800" onClick={() => handlePrintRowPDF(item)}>
+                                                    <Printer className="w-3.5 h-3.5 mr-1" />PDF
+                                                </Button>
                                                 <Button variant="ghost" className="flex-1 h-9 rounded-none text-[10px] font-bold text-emerald-600 hover:bg-emerald-50 border-r border-slate-100 dark:border-slate-800" onClick={() => handleViewDetail(item)}>
                                                     <Eye className="w-3.5 h-3.5 mr-1" />Detail
                                                 </Button>
@@ -1055,7 +1080,10 @@ export default function TemuanPeduliPage() {
                                     </div>
 
                                     {/* Detail Footer Actions */}
-                                    <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex gap-2 justify-end">
+                                    <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex gap-2 justify-end flex-wrap">
+                                        <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs font-bold text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100" onClick={() => handlePrintRowPDF(selectedDetail)}>
+                                            <Printer className="w-3.5 h-3.5" />Cetak Raport PDF
+                                        </Button>
                                         <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs font-bold text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100" onClick={() => { setIsDetailOpen(false); handleEdit(selectedDetail); }}>
                                             <Wrench className="w-3.5 h-3.5" />Improve / Edit
                                         </Button>

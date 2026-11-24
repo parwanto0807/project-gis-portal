@@ -44,6 +44,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { compressImage } from '@/utils/imageCompressor';
 
 export default function NewDisciplineReportPage() {
     const router = useRouter();
@@ -103,13 +104,10 @@ export default function NewDisciplineReportPage() {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                toast.error('File size exceeds 5MB limit');
-                return;
-            }
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const rawFile = e.target.files?.[0];
+        if (rawFile) {
+            const file = await compressImage(rawFile);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setCapturedImage(reader.result as string);

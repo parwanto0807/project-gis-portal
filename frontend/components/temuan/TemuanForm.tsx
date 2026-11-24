@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MapPin, CalendarClock, Tags, FileText, Camera, UploadCloud, CheckCircle, Mic, AlertCircle, Wrench, Info, X } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { compressImages } from '@/utils/imageCompressor';
 
 const AREAS = ['GEDUNG 1 & 3', 'GEDUNG 2'];
 const TEMPAT_TEMUAN = {
@@ -161,19 +162,21 @@ export function TemuanForm({ open, onOpenChange, onSuccess, initialData }: Temua
         }));
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            const newFiles = Array.from(e.target.files);
-            setFotos(prev => [...prev, ...newFiles]);
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const rawFiles = Array.from(e.target.files);
             e.target.value = '';
+            const compressed = await compressImages(rawFiles);
+            setFotos(prev => [...prev, ...compressed]);
         }
     };
 
-    const handleFotoPerbaikanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            const newFiles = Array.from(e.target.files);
-            setFotoPerbaikan(prev => [...prev, ...newFiles]);
+    const handleFotoPerbaikanChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const rawFiles = Array.from(e.target.files);
             e.target.value = '';
+            const compressed = await compressImages(rawFiles);
+            setFotoPerbaikan(prev => [...prev, ...compressed]);
         }
     };
 

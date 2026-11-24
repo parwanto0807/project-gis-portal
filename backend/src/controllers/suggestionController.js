@@ -20,8 +20,10 @@ const processUploadedFiles = async (filesArray, prefixFolder) => {
             const filename = `${prefixFolder}-${Date.now()}-${i}.webp`;
             const destPath = path.join(dir, filename);
             
-            // Convert to webp
+            // Convert to webp with auto-orient and max 1920px resize
             await sharp(file.path)
+                .rotate()
+                .resize({ width: 1920, height: 1920, fit: 'inside', withoutEnlargement: true })
                 .webp({ quality: 80 })
                 .toFile(destPath);
                 

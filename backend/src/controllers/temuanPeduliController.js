@@ -1,5 +1,39 @@
 import { StatusCodes } from 'http-status-codes';
 import prisma from '../config/prisma.js';
+import sharp from 'sharp';
+import fs from 'fs/promises';
+import path from 'path';
+
+const processTemuanFiles = async (filesArray, prefix) => {
+    if (!filesArray || !Array.isArray(filesArray)) return [];
+    const urls = [];
+    const dir = path.join(process.cwd(), 'src', 'uploads');
+    try { await fs.mkdir(dir, { recursive: true }); } catch (e) {}
+
+    for (let i = 0; i < filesArray.length; i++) {
+        const file = filesArray[i];
+        try {
+            const filename = `${prefix}-${Date.now()}-${i}.webp`;
+            const destPath = path.join(dir, filename);
+
+            await sharp(file.path)
+                .rotate() // Auto-orient based on EXIF
+                .resize({ width: 1920, height: 1920, fit: 'inside', withoutEnlargement: true })
+                .webp({ quality: 80 })
+                .toFile(destPath);
+
+            urls.push(`/uploads/${filename}`);
+
+            if (file.path !== destPath) {
+                await fs.unlink(file.path).catch(() => {});
+            }
+        } catch (err) {
+            console.error('Error compressing temuan image, falling back to original:', err);
+            urls.push(`/uploads/${file.filename}`);
+        }
+    }
+    return urls;
+};
 
 export const getAllTemuan = async (req, res, next) => {
     try {
@@ -35,8 +69,8 @@ export const createTemuan = async (req, res, next) => {
             kategoriArray = kategori4M;
         }
 
-        const fotoUrls = req.files && req.files['fotos'] ? req.files['fotos'].map(file => `/uploads/${file.filename}`) : [];
-        const fotoPerbaikanUrls = req.files && req.files['fotoPerbaikan'] ? req.files['fotoPerbaikan'].map(file => `/uploads/${file.filename}`) : [];
+        const fotoUrls = req.files && req.files['fotos'] ? await processTemuanFiles(req.files['fotos'], 'temuan') : [];
+        const fotoPerbaikanUrls = req.files && req.files['fotoPerbaikan'] ? await processTemuanFiles(req.files['fotoPerbaikan'], 'perbaikan') : [];
 
         const newTemuan = await prisma.temuanPeduli.create({
             data: {
@@ -113,10 +147,10 @@ export const updateTemuan = async (req, res, next) => {
             }
         }
 
-        const newFotoUrls = req.files && req.files['fotos'] ? req.files['fotos'].map(file => `/uploads/${file.filename}`) : [];
+        const newFotoUrls = req.files && req.files['fotos'] ? await processTemuanFiles(req.files['fotos'], 'temuan') : [];
         const finalFotoUrls = [...parsedExistingFotos, ...newFotoUrls];
 
-        const newFotoPerbaikanUrls = req.files && req.files['fotoPerbaikan'] ? req.files['fotoPerbaikan'].map(file => `/uploads/${file.filename}`) : [];
+        const newFotoPerbaikanUrls = req.files && req.files['fotoPerbaikan'] ? await processTemuanFiles(req.files['fotoPerbaikan'], 'perbaikan') : [];
         const finalFotoPerbaikanUrls = [...parsedExistingFotoPerbaikan, ...newFotoPerbaikanUrls];
 
         const updatedTemuan = await prisma.temuanPeduli.update({

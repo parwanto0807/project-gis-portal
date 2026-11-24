@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { compressImages } from '@/utils/imageCompressor';
 import { ArrowLeft, Save, Search, User as UserIcon, Camera } from 'lucide-react';
 import Link from 'next/link';
 
@@ -164,9 +165,11 @@ export default function EditSuggestionPage({ params }: { params: Promise<{ id: s
         }));
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-        const files = Array.from(e.target.files);
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const rawFiles = Array.from(e.target.files);
+        e.target.value = '';
+        const files = await compressImages(rawFiles);
         
         setFotoKondisiFiles(prev => [...prev, ...files]);
         

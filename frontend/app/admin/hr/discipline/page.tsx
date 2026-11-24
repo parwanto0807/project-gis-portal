@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import api from '@/lib/axios';
 import { useRouter } from 'next/navigation';
-import { generateDisciplineReportPDF } from '@/utils/pdfGenerator';
+import { generateDisciplineReportPDF, generateSingleDisciplinePDF } from '@/utils/pdfGenerator';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -31,7 +31,8 @@ import {
     AlertTriangle,
     ArrowUpRight,
     X,
-    FileDown
+    FileDown,
+    Printer
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -58,6 +59,7 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { compressImage } from '@/utils/imageCompressor';
 
 export default function DisciplineReportsPage() {
     const [reports, setReports] = useState<any[]>([]);
@@ -136,6 +138,18 @@ export default function DisciplineReportsPage() {
         }
     };
 
+    const handlePrintSinglePDF = async (report: any, e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
+        const tId = toast.loading('Menyiapkan laporan PDF beserta foto...');
+        try {
+            await generateSingleDisciplinePDF(report);
+            toast.success('Laporan PDF berhasil dibuat', { id: tId });
+        } catch (err) {
+            console.error(err);
+            toast.error('Gagal membuat laporan PDF', { id: tId });
+        }
+    };
+
     const handleViewDetail = (report: any) => {
         setSelectedReport(report);
         setActionTaken(report.actionTaken || '');
@@ -169,7 +183,8 @@ export default function DisciplineReportsPage() {
         formData.append('actionDate', actionDate);
 
         if (resolutionFileRef.current?.files?.[0]) {
-            formData.append('resolutionPhoto', resolutionFileRef.current.files[0]);
+            const compressed = await compressImage(resolutionFileRef.current.files[0]);
+            formData.append('resolutionPhoto', compressed);
         }
         
         try {
@@ -405,6 +420,14 @@ export default function DisciplineReportsPage() {
                                             <Calendar className="w-2.5 h-2.5" />
                                             {format(new Date(report.createdAt), 'MMM dd')}
                                         </span>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={(e) => handlePrintSinglePDF(report, e)}
+                                            className="h-5 px-1.5 text-[9px] font-bold bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
+                                        >
+                                            <Printer className="w-2.5 h-2.5 mr-0.5" /> PDF
+                                        </Button>
                                         <ArrowUpRight className="w-3 h-3 text-slate-400" />
                                     </div>
                                 </div>
@@ -495,14 +518,25 @@ export default function DisciplineReportsPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right pr-4 py-2">
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm"
-                                                className="h-7 px-2.5 text-[10px] font-semibold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-50"
-                                                onClick={() => handleViewDetail(report)}
-                                            >
-                                                View
-                                            </Button>
+                                            <div className="flex justify-end gap-1">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    title="Cetak Raport PDF Lengkap + Foto & Tanda Tangan"
+                                                    className="h-7 px-2 text-[10px] font-bold bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100"
+                                                    onClick={() => handlePrintSinglePDF(report)}
+                                                >
+                                                    <Printer className="w-3.5 h-3.5 mr-1" /> PDF
+                                                </Button>
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm"
+                                                    className="h-7 px-2.5 text-[10px] font-semibold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-50"
+                                                    onClick={() => handleViewDetail(report)}
+                                                >
+                                                    View
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -551,8 +585,18 @@ export default function DisciplineReportsPage() {
                                             </DialogTitle>
                                             <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Incident Log</p>
                                         </DialogHeader>
-                                        <div className="w-8 h-8 bg-slate-50 dark:bg-slate-900 rounded-lg flex items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-800">
-                                            <ShieldAlert className="w-4 h-4" />
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handlePrintSinglePDF(selectedReport)}
+                                                className="h-8 px-2.5 text-xs font-bold bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 gap-1"
+                                            >
+                                                <Printer className="w-3.5 h-3.5" /> Cetak PDF
+                                            </Button>
+                                            <div className="w-8 h-8 bg-slate-50 dark:bg-slate-900 rounded-lg flex items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-800">
+                                                <ShieldAlert className="w-4 h-4" />
+                                            </div>
                                         </div>
                                     </div>
 

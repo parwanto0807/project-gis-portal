@@ -9,8 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
-import { ArrowLeft, Save, CheckCircle, XCircle, Camera } from 'lucide-react';
+import { compressImages } from '@/utils/imageCompressor';
+import { ArrowLeft, Save, CheckCircle, XCircle, Camera, Printer } from 'lucide-react';
 import Link from 'next/link';
+import { generateSingleSuggestionPDF } from '@/utils/pdfGenerator';
 
 const getBaseUrl = () => {
     return process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace('/api', '') || 'http://localhost:5001';
@@ -100,9 +102,11 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
         }));
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-        const files = Array.from(e.target.files);
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const rawFiles = Array.from(e.target.files);
+        e.target.value = '';
+        const files = await compressImages(rawFiles);
         
         setFotoEvaluasiFiles(prev => [...prev, ...files]);
         
@@ -184,6 +188,23 @@ export default function SuggestionDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 
                 <div className="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                            const tId = toast.loading('Menyiapkan raport PDF...');
+                            try {
+                                await generateSingleSuggestionPDF({ ...suggestion, ...formData, fotoEvaluasiUrls: existingPhotos });
+                                toast.success('Raport PDF berhasil dibuat', { id: tId });
+                            } catch {
+                                toast.error('Gagal membuat raport PDF', { id: tId });
+                            }
+                        }}
+                        className="h-8 px-3 text-xs font-bold bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 gap-1.5"
+                    >
+                        <Printer className="w-3.5 h-3.5" /> Cetak Raport PDF
+                    </Button>
                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         suggestion.statusApproval === 'APPROVED' ? 'bg-green-100 text-green-700' : 
                         suggestion.statusApproval === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'

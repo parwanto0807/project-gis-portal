@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { generateSingleSuggestionPDF, fetchActiveCompany } from '@/utils/pdfGenerator';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -207,19 +208,37 @@ export default function SuggestionSystemPage() {
         }
     };
 
+    const handlePrintRowPDF = async (item: any) => {
+        const tId = toast.loading('Menyiapkan laporan PDF beserta foto...');
+        try {
+            await generateSingleSuggestionPDF(item);
+            toast.success('Laporan PDF berhasil dibuat', { id: tId });
+        } catch (e) {
+            console.error(e);
+            toast.error('Gagal membuat laporan PDF', { id: tId });
+        }
+    };
+
     const handlePrintPDF = async () => {
         try {
             toast.info('Memuat semua data untuk cetak PDF...');
-            const res = await api.get('/suggestions', { params: { page: 1, limit: 9999 } });
+            const [res, company] = await Promise.all([
+                api.get('/suggestions', { params: { page: 1, limit: 9999 } }),
+                fetchActiveCompany()
+            ]);
             if (!res.data.success) return;
             const allData: any[] = res.data.data;
 
             const doc = new jsPDF({ orientation: 'landscape' });
             doc.setFontSize(14);
-            doc.text('Laporan Suggestion System (Ide Improvement)', 14, 15);
-            doc.setFontSize(10);
-            doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 21);
-            doc.text(`Total Data: ${allData.length}`, 260, 21, { align: 'right' });
+            doc.setFont('helvetica', 'bold');
+            doc.text((company.name || 'PT. GRAFINDO MITRASEMESTA').toUpperCase(), 14, 14);
+            doc.setFontSize(11);
+            doc.text('Laporan Rekapitulasi Suggestion System (Ide Improvement)', 14, 20);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 25);
+            doc.text(`Total Data: ${allData.length}`, 280, 25, { align: 'right' });
 
             const tableColumn = ["No", "Tanggal / No Form", "Karyawan / NIK", "Dept / Area", "Judul Ide", "Kondisi & Usulan", "Status"];
             const tableRows: any[] = [];
@@ -424,6 +443,15 @@ export default function SuggestionSystemPage() {
                                             <TableCell className="py-3">{getStatusBadge(item.statusApproval)}</TableCell>
                                             <TableCell className="text-right py-3 pr-5">
                                                 <div className="flex justify-end gap-1.5">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => handlePrintRowPDF(item)}
+                                                        title="Cetak Raport PDF Lengkap + Foto & Tanda Tangan"
+                                                        className="h-7 px-2 text-[10px] font-bold rounded-md bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
+                                                    >
+                                                        <Printer className="w-3.5 h-3.5 mr-1" /> PDF
+                                                    </Button>
                                                     {item.statusApproval === 'PENDING' ? (
                                                         <>
                                                             <Link href={`/admin/suggestions/edit/${item.id}`} passHref>
@@ -508,35 +536,39 @@ export default function SuggestionSystemPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className={`grid border-t border-slate-100 divide-x divide-slate-100 bg-slate-50/50 ${isSuperAdmin ? 'grid-cols-4' : isEvaluator ? 'grid-cols-3' : 'grid-cols-2'}`}>
-                                        <button onClick={() => { setViewDialogData(item); setIsViewOpen(true); }} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors">
+                                    <div className="flex border-t border-slate-100 divide-x divide-slate-100 bg-slate-50/50">
+                                        <button onClick={() => handlePrintRowPDF(item)} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-indigo-50 text-indigo-600 transition-colors">
+                                            <Printer className="w-4 h-4" />
+                                            <span className="text-[10px] font-bold">PDF</span>
+                                        </button>
+                                        <button onClick={() => { setViewDialogData(item); setIsViewOpen(true); }} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors">
                                             <Eye className="w-4 h-4" />
                                             <span className="text-[10px] font-bold">Detail</span>
                                         </button>
                                         {item.statusApproval === 'PENDING' ? (
-                                            <button onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DITERIMA?') && bulkUpdateSuggestion(item.id, 'RECEIVED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-indigo-50 text-indigo-600 transition-colors">
+                                            <button onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DITERIMA?') && bulkUpdateSuggestion(item.id, 'RECEIVED')} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-indigo-50 text-indigo-600 transition-colors">
                                                 <CheckCircle className="w-4 h-4" />
                                                 <span className="text-[10px] font-bold">Diterima</span>
                                             </button>
                                         ) : item.statusApproval === 'RECEIVED' ? (
-                                            <button onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DIEVALUSI?') && bulkUpdateSuggestion(item.id, 'EVALUATED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-blue-50 text-blue-600 transition-colors">
+                                            <button onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DIEVALUSI?') && bulkUpdateSuggestion(item.id, 'EVALUATED')} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-blue-50 text-blue-600 transition-colors">
                                                 <Wrench className="w-4 h-4" />
                                                 <span className="text-[10px] font-bold">Dievaluasi</span>
                                             </button>
                                         ) : item.statusApproval === 'EVALUATED' ? (
                                             <>
-                                                <button onClick={() => window.confirm('Apakah Anda yakin ingin menyetujui ide ini?') && bulkUpdateSuggestion(item.id, 'APPROVED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors">
+                                                <button onClick={() => window.confirm('Apakah Anda yakin ingin menyetujui ide ini?') && bulkUpdateSuggestion(item.id, 'APPROVED')} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 transition-colors">
                                                     <CheckCircle className="w-4 h-4" />
                                                     <span className="text-[10px] font-bold">Di Approve</span>
                                                 </button>
-                                                <button onClick={() => window.confirm('Apakah Anda yakin ingin menolak ide ini?') && bulkUpdateSuggestion(item.id, 'REJECTED')} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
+                                                <button onClick={() => window.confirm('Apakah Anda yakin ingin menolak ide ini?') && bulkUpdateSuggestion(item.id, 'REJECTED')} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
                                                     <AlertCircle className="w-4 h-4" />
                                                     <span className="text-[10px] font-bold">Di Tolak</span>
                                                 </button>
                                             </>
                                         ) : null}
                                         {isSuperAdmin && (
-                                            <button onClick={() => handleDelete(item.id)} className="flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
+                                            <button onClick={() => handleDelete(item.id)} className="flex-1 flex flex-col items-center justify-center gap-1 p-2 hover:bg-rose-50 text-rose-500 transition-colors">
                                                 <Trash2 className="w-4 h-4" />
                                                 <span className="text-[10px] font-bold">Hapus</span>
                                             </button>
@@ -667,31 +699,32 @@ export default function SuggestionSystemPage() {
                                             </div>
                                         )}
                                     </div>
-                                    {/* Status Action Buttons for Evaluators */}
-                                    {isEvaluator && (
-                                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-200">
-                                            {viewDialogData.statusApproval === 'PENDING' && (
-                                                <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DITERIMA?') && bulkUpdateSuggestion(String(viewDialogData.id), 'RECEIVED')} className="h-8 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-lg">
-                                                    <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Terima Ide
+                                    {/* Status Action Buttons & PDF Export */}
+                                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-200">
+                                        <Button size="sm" variant="outline" onClick={() => handlePrintRowPDF(viewDialogData)} className="h-8 px-4 text-xs font-bold bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 shadow-sm rounded-lg">
+                                            <Printer className="w-3.5 h-3.5 mr-1.5" /> Cetak Raport PDF
+                                        </Button>
+                                        {isEvaluator && viewDialogData.statusApproval === 'PENDING' && (
+                                            <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DITERIMA?') && bulkUpdateSuggestion(String(viewDialogData.id), 'RECEIVED')} className="h-8 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-lg">
+                                                <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Terima Ide
+                                            </Button>
+                                        )}
+                                        {isEvaluator && viewDialogData.statusApproval === 'RECEIVED' && (
+                                            <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DIEVALUSI?') && bulkUpdateSuggestion(String(viewDialogData.id), 'EVALUATED')} className="h-8 px-4 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded-lg">
+                                                <Wrench className="w-3.5 h-3.5 mr-1.5" /> Evaluasi Ide
+                                            </Button>
+                                        )}
+                                        {isEvaluator && viewDialogData.statusApproval === 'EVALUATED' && (
+                                            <>
+                                                <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin menyetujui ide ini?') && bulkUpdateSuggestion(String(viewDialogData.id), 'APPROVED')} className="h-8 px-4 text-xs font-bold bg-green-600 hover:bg-green-700 text-white shadow-sm rounded-lg">
+                                                    <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Approve Ide
                                                 </Button>
-                                            )}
-                                            {viewDialogData.statusApproval === 'RECEIVED' && (
-                                                <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin mengubah status menjadi DIEVALUSI?') && bulkUpdateSuggestion(String(viewDialogData.id), 'EVALUATED')} className="h-8 px-4 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded-lg">
-                                                    <Wrench className="w-3.5 h-3.5 mr-1.5" /> Evaluasi Ide
+                                                <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin menolak ide ini?') && bulkUpdateSuggestion(String(viewDialogData.id), 'REJECTED')} className="h-8 px-4 text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm rounded-lg">
+                                                    <AlertCircle className="w-3.5 h-3.5 mr-1.5" /> Tolak Ide
                                                 </Button>
-                                            )}
-                                            {viewDialogData.statusApproval === 'EVALUATED' && (
-                                                <>
-                                                    <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin menyetujui ide ini?') && bulkUpdateSuggestion(String(viewDialogData.id), 'APPROVED')} className="h-8 px-4 text-xs font-bold bg-green-600 hover:bg-green-700 text-white shadow-sm rounded-lg">
-                                                        <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Approve Ide
-                                                    </Button>
-                                                    <Button size="sm" onClick={() => window.confirm('Apakah Anda yakin ingin menolak ide ini?') && bulkUpdateSuggestion(String(viewDialogData.id), 'REJECTED')} className="h-8 px-4 text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm rounded-lg">
-                                                        <AlertCircle className="w-3.5 h-3.5 mr-1.5" /> Tolak Ide
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </>
