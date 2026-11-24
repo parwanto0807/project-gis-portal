@@ -3,7 +3,8 @@ import bcrypt from 'bcryptjs';
 import { generateTokens } from '../utils/jwt.js';
 import { OAuth2Client } from 'google-auth-library';
 
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // ─── Brute-Force Protection ──────────────────────────────────────────────
 const loginAttempts = new Map(); // key → { count, lockedUntil }
@@ -139,7 +140,7 @@ export const login = async (identifier, password) => {
 export const googleLogin = async (idToken) => {
   const ticket = await googleClient.verifyIdToken({
     idToken,
-    audience: process.env.GOOGLE_CLIENT_ID,
+    audience: GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
   const { sub: googleId, email, given_name, family_name, picture } = payload;

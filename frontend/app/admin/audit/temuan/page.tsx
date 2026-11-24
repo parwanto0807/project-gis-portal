@@ -275,7 +275,7 @@ export default function TemuanPeduliPage() {
 
         // Report Title
         doc.setFontSize(12); doc.setTextColor(30, 30, 30); doc.setFont("helvetica", "bold");
-        doc.text('LAPORAN AUDIT INTERNAL — Temuan Peduli Bersinergi', margin, 34);
+        doc.text('LAPORAN GEMBA TEAM AUDIT INTERNAL (PEDULI BERSINERGI)', margin, 34);
 
         // KPI Cards
         const kpiItems = [

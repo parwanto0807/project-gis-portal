@@ -452,7 +452,7 @@ export const generateSingleTemuanPDF = async (item: any, customCompany?: Company
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
     doc.setTextColor(15, 23, 42);
-    doc.text('LAPORAN TEMUAN AUDIT INTERNAL (PEDULI BERSINERGI)', pageWidth / 2, currentY + 2, { align: 'center' });
+    doc.text('LAPORAN GEMBA TEAM AUDIT INTERNAL (PEDULI BERSINERGI)', pageWidth / 2, currentY + 2, { align: 'center' });
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
